@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绩效考核报表系统 - 完整界面设计</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root{--green:#16a34a;--green-light:#dcfce7;--green-mid:#22c55e;--red:#dc2626;--red-light:#fee2e2;--blue:#2563eb;--blue-light:#dbeafe;--sidebar-bg:#0f172a;--sidebar-hover:#1e293b;--bg:#f1f5f9;--card-bg:#fff;--border:#e2e8f0;--text-primary:#0f172a;--text-secondary:#475569;--text-muted:#94a3b8;--mono:'IBM Plex Mono',monospace;--sans:'Noto Sans SC',sans-serif}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:var(--sans);background:var(--bg);color:var(--text-primary);font-size:13px;height:100vh;overflow:hidden}
+        .layout{display:flex;height:100vh}
+        .sidebar{width:200px;background:var(--sidebar-bg);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+        .sidebar-brand{padding:18px 16px;border-bottom:1px solid #1e293b}
+        .sidebar-brand-name{font-size:13px;font-weight:700;color:#f8fafc}
+        .sidebar-brand-sub{font-size:11px;color:#64748b;margin-top:2px}
+        .sidebar-section{padding:16px 0 4px}
+        .sidebar-section-label{font-size:10px;font-weight:600;color:#475569;letter-spacing:.08em;text-transform:uppercase;padding:0 16px 8px}
+        .sidebar-item{display:flex;align-items:center;gap:8px;padding:9px 16px;color:#94a3b8;font-size:12.5px;cursor:pointer;border-left:3px solid transparent;transition:all .15s}
+        .sidebar-item:hover{background:var(--sidebar-hover);color:#e2e8f0}
+        .sidebar-item.active{background:rgba(22,163,74,.12);color:#4ade80;border-left-color:var(--green-mid)}
+        .sidebar-item .icon{width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+        .sidebar-footer{margin-top:auto;padding:12px 16px;border-top:1px solid #1e293b}
+        .user-info{display:flex;align-items:center;gap:8px}
+        .user-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#16a34a,#059669);display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:700}
+        .user-name{font-size:12px;color:#cbd5e1}
+        .user-role{font-size:10px;color:#64748b}
+        .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+        .topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+        .topbar-left{display:flex;align-items:center;gap:16px}
+        .topbar-title{font-size:15px;font-weight:700}
+        .topbar-breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted)}
+        .topbar-breadcrumb span{color:var(--text-secondary)}
+        .topbar-breadcrumb .sep{color:var(--text-muted)}
+        .topbar-right{display:flex;align-items:center;gap:8px}
+        .topbar-btn{padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:#fff;font-size:12px;color:var(--text-secondary);cursor:pointer;font-family:var(--sans);transition:all .15s}
+        .topbar-btn:hover{background:var(--bg)}
+        .page{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:16px}
+        .info-bar{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 14px;font-size:12px;color:#1e40af;display:flex;align-items:flex-start;gap:8px}
+        .info-bar .icon{flex-shrink:0;margin-top:1px}
+        .filter-card{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+        .filter-head{padding:12px 16px;border-bottom:1px solid var(--border);background:#f8fafc}
+        .filter-head-title{font-size:13px;font-weight:600;color:var(--text-primary)}
+        .filter-body{padding:16px}
+        .filter-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 16px;margin-bottom:12px}
+        .filter-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 16px;margin-bottom:12px}
+        .f-item{display:flex;flex-direction:column;gap:4px}
+        .f-item label{font-size:11px;font-weight:600;color:var(--text-secondary)}
+        .f-item input,.f-item select{padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:12.5px;color:var(--text-primary);background:#fff;font-family:var(--sans);transition:all .15s;outline:none}
+        .f-item input:focus,.f-item select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(22,163,74,.1)}
+        .f-date-range .range-inputs{display:flex;align-items:center;gap:6px}
+        .f-date-range .range-inputs input{flex:1;min-width:0;padding:7px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#fff;outline:none;font-family:var(--sans);transition:all .15s}
+        .f-date-range .range-inputs input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(22,163,74,.1)}
+        .f-date-range .range-inputs .sep{font-size:11px;color:var(--text-muted);flex-shrink:0}
+        .filter-actions{display:flex;align-items:center;gap:8px;padding-top:4px;border-top:1px solid var(--border);margin-top:4px}
+        .btn{padding:7px 14px;border-radius:6px;border:none;font-size:12.5px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s;font-family:var(--sans)}
+        .btn-primary{background:var(--green);color:#fff}.btn-primary:hover{background:#15803d}
+        .btn-reset{background:#fff;color:var(--text-secondary);border:1px solid var(--border)}.btn-reset:hover{background:var(--bg)}
+        .btn-export-csv{background:#0284c7;color:#fff}.btn-export-csv:hover{background:#0369a1}
+        .filter-actions-right{margin-left:auto;display:flex;gap:8px}
+        .stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+        .stat-card{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+        .stat-label{font-size:11px;color:var(--text-muted);margin-bottom:2px;font-weight:500}
+        .stat-value{font-size:20px;font-weight:700;font-family:var(--mono);letter-spacing:-.02em}
+        .stat-value.green{color:var(--green)}.stat-value.blue{color:var(--blue)}
+        .tabs-wrap{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;flex:1;min-height:0}
+        .tabs-header{display:flex;border-bottom:1px solid var(--border);background:#f8fafc;flex-shrink:0}
+        .tab-btn{padding:11px 18px;font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none;font-family:var(--sans)}
+        .tab-btn:hover{color:var(--text-secondary)}
+        .tab-btn.active{color:var(--green);border-bottom-color:var(--green);background:#fff}
+        .tab-pane{display:none;flex:1;flex-direction:column;overflow:hidden}.tab-pane.active{display:flex}
+        .table-toolbar{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:#fff}
+        .table-toolbar-left{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text-secondary)}
+        .total-badge{background:var(--green-light);color:var(--green);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+        .table-outer{overflow:auto;flex:1}
+        table{border-collapse:collapse;white-space:nowrap;font-size:12.5px}
+        table th{position:sticky;top:0;z-index:10;background:#f8fafc;padding:9px 12px;text-align:left;font-weight:600;font-size:11px;color:var(--text-secondary);border-bottom:2px solid var(--border);white-space:nowrap}
+        table th.num{text-align:right}
+        table td{padding:9px 12px;border-bottom:1px solid #f1f5f9;color:var(--text-primary);vertical-align:middle}
+        table tr:hover td{background:#f8fafc}
+        td.num{text-align:right;font-family:var(--mono);font-size:12px}
+        td.num.pos{color:var(--green);font-weight:600}
+        td.num.neg{color:var(--red);font-weight:600}
+        td.num.muted{color:var(--text-muted)}
+        .plate{font-weight:700;font-family:var(--mono);letter-spacing:.03em}
+        .badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap}
+        .badge-green{background:var(--green-light);color:#15803d}
+        .badge-red{background:var(--red-light);color:#b91c1c}
+        .badge-blue{background:var(--blue-light);color:#1d4ed8}
+        .badge-gray{background:#f1f5f9;color:#64748b}
+        .badge-yellow{background:#fef9c3;color:#854d0e}
+        .badge-orange{background:#fff7ed;color:#9a3412}
+        .act-btn{padding:4px 8px;border-radius:4px;border:1px solid var(--border);background:#fff;font-size:11px;color:var(--text-secondary);cursor:pointer;transition:all .15s}
+        .act-btn:hover{background:var(--green-light);color:var(--green);border-color:#86efac}
+        tr.aftersale td{background:#fff5f5}
+        tr.aftersale:hover td{background:#fee2e2}
+        .table-footer{padding:10px 14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text-muted);background:#f8fafc;flex-shrink:0}
+        .warn-note{display:flex;align-items:center;gap:5px;color:#92400e;background:#fef3c7;padding:4px 10px;border-radius:4px;font-size:11px}
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;display:none;align-items:center;justify-content:center;padding:24px}
+        .modal-overlay.open{display:flex}
+        .modal{background:#fff;border-radius:12px;width:780px;max-width:100%;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 25px 50px rgba(0,0,0,.25)}
+        .modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:#f8fafc;flex-shrink:0}
+        .modal-title{font-size:15px;font-weight:700}
+        .modal-subtitle{font-size:12px;color:var(--text-muted);margin-top:2px}
+        .modal-close{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:all .15s}
+        .modal-close:hover{background:var(--red-light);color:var(--red);border-color:#fca5a5}
+        .modal-body{padding:20px;overflow-y:auto;flex:1}
+        .modal-section{margin-bottom:20px}
+        .modal-section-title{font-size:12px;font-weight:700;color:var(--text-secondary);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+        .info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+        .info-field{display:flex;flex-direction:column;gap:2px}
+        .info-field .label{font-size:11px;color:var(--text-muted)}
+        .info-field .value{font-size:13px;font-weight:500}
+        .info-field .value.mono{font-family:var(--mono)}
+        .finance-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+        .finance-row{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:#f8fafc;border-radius:6px;border:1px solid var(--border)}
+        .finance-row .name{font-size:12px;color:var(--text-secondary)}
+        .finance-row .amount{font-family:var(--mono);font-size:13px;font-weight:600}
+        .finance-row.total{background:var(--green-light);border-color:#86efac;grid-column:span 2}
+        .finance-row.total .name{color:var(--green);font-weight:600}
+        .finance-row.total .amount{color:var(--green);font-size:16px}
+        .finance-row.negative .amount{color:var(--red)}
+        .finance-row.positive .amount{color:var(--green)}
+        .timeline{position:relative;padding-left:28px}
+        .timeline::before{content:'';position:absolute;left:9px;top:16px;bottom:16px;width:2px;background:var(--border)}
+        .tl-item{position:relative;margin-bottom:16px}
+        .tl-dot{position:absolute;left:-24px;top:10px;width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 2px var(--border)}
+        .tl-dot.done{background:var(--green);box-shadow:0 0 0 2px var(--green-mid)}
+        .tl-dot.pending{background:#cbd5e1}
+        .tl-dot.warn{background:var(--red);box-shadow:0 0 0 2px #f87171}
+        .tl-card{background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+        .tl-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+        .tl-title{font-size:12.5px;font-weight:600}
+        .tl-time{font-size:11px;color:var(--text-muted);font-family:var(--mono)}
+        .tl-details{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 12px}
+        .tl-detail{font-size:11.5px;color:var(--text-secondary)}
+        .tl-detail strong{color:var(--text-primary)}
+        .modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:#f8fafc;flex-shrink:0}
+        @media(max-width:1200px){.filter-grid{grid-template-columns:repeat(3,1fr)}}
+        @media(max-width:1024px){.filter-grid{grid-template-columns:repeat(2,1fr)}.sidebar{width:160px}.stats-bar{grid-template-columns:1fr 1fr}}
+        @media(max-width:768px){.layout{flex-direction:column}.sidebar{width:100%;height:auto;flex-direction:row;flex-wrap:wrap}.filter-grid{grid-template-columns:1fr}.stats-bar{grid-template-columns:1fr}}
+        ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+    </style>
+</head>
+<body>
+<div class="layout">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-brand"><div class="sidebar-brand-name">📊 绩效报表</div><div class="sidebar-brand-sub">绩效考核报表系统</div></div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">报表中心</div>
+            <div class="sidebar-item" onclick="setActive(this)"><span class="icon">🏠</span> 首页</div>
+            <div class="sidebar-item" onclick="setActive(this)"><span class="icon">📈</span> 经管报表</div>
+            <div class="sidebar-item active" onclick="setActive(this)"><span class="icon">🚗</span> 车源绩效表</div>
+        </div>
+        <div class="sidebar-footer"><div class="user-info"><div class="user-avatar">张</div><div><div class="user-name">张三</div><div class="user-role">区域经理</div></div></div></div>
+    </div>
+    <!-- MAIN -->
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left"><div class="topbar-title">车源绩效考核表</div><div class="topbar-breadcrumb"><span>报表中心</span><span class="sep">›</span><span>车源绩效表</span></div></div>
+            <div class="topbar-right"><span style="font-size:12px;color:var(--text-secondary);margin-right:8px;">分管领导：韩立</span><button class="topbar-btn" onclick="logout()">退出</button></div>
+        </div>
+        <div class="page">
+            <!-- Tabs (moved above filter) -->
+            <div class="tabs-wrap">
+                <div class="tabs-header">
+                    <button class="tab-btn active" onclick="switchTab(this,'tabDashboard')">数据看板</button>
+                    <button class="tab-btn" onclick="switchTab(this,'tabPerf')">绩效表</button>
+                    <button class="tab-btn" onclick="switchTab(this,'tabGuide')">使用指南</button>
+                    <button class="tab-btn" onclick="switchTab(this,'tabGlossary')">字段含义</button>
+                    <button class="tab-btn" onclick="switchTab(this,'tabReqNotes')">需求说明</button>
+                    <button class="tab-btn" onclick="switchTab(this,'tabCases')">实际案例</button>
+                </div>
+                <!-- 数据看板 tab -->
+                <div class="tab-pane active" id="tabDashboard" style="overflow-y:auto;padding:20px;">
+                    <div style="max-width:1100px;" id="dashboardContent"></div>
+                </div>
+                <!-- 绩效表 -->
+                <div class="tab-pane" id="tabPerf">
+                    <!-- Filter inside 绩效表 tab -->
+                    <div class="filter-card" style="border-radius:0;border-left:none;border-right:none;border-top:none;">
+                        <div class="filter-head" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="toggleFilter()"><div class="filter-head-title">筛选条件</div><span id="filterToggle" style="font-size:12px;color:#94a3b8;transition:transform .2s;">▶</span></div>
+                        <div class="filter-body" id="filterBody" style="display:none;">
+                            <div class="filter-grid-3">
+                                <div class="f-item"><label>日期</label><div class="f-date-range"><div class="range-inputs"><input type="date" id="dateStart"><span class="sep">至</span><input type="date" id="dateEnd"></div></div></div>
+                                <div class="f-item"><label>订单清分日</label><div class="f-date-range"><div class="range-inputs"><input type="date" id="confirmStart" value="2026-03-01"><span class="sep">至</span><input type="date" id="confirmEnd" value="2026-03-11"></div></div></div>
+                                <div class="f-item"><label>检测过审日期</label><div class="f-date-range"><div class="range-inputs"><input type="date" id="inspStart"><span class="sep">至</span><input type="date" id="inspEnd"></div></div></div>
+                            </div>
+                            <div class="filter-grid">
+                                <div class="f-item"><label>车牌 / VIN / VID</label><input type="text" placeholder="输入关键字搜索..."></div>
+                                <div class="f-item"><label>合同类型</label><select><option>全部</option><option>收购</option><option>委拍</option></select></div>
+                                <div class="f-item"><label>车辆状态</label><select><option>全部</option><option>已入库</option><option>已检测</option><option>已上拍</option><option>已成交</option><option>已清分</option><option>已交付</option><option>已过户</option><option>已售后</option></select></div>
+                                <div class="f-item" style="position:relative;"><label>大区域</label><input type="text" id="regionInput" placeholder="输入大区域搜索..." oninput="searchRegion(this.value)" onfocus="searchRegion(this.value)" autocomplete="off"><div id="regionSuggest" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:6px;max-height:180px;overflow-y:auto;z-index:20;box-shadow:0 4px 12px rgba(0,0,0,.1);"></div></div>
+                            </div>
+                            <div class="filter-grid">
+                                <div class="f-item" style="position:relative;"><label>小区域</label><input type="text" id="subRegionInput" placeholder="请先选择大区域..." oninput="searchSubRegion(this.value)" onfocus="searchSubRegion(this.value)" autocomplete="off" disabled><div id="subRegionSuggest" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:6px;max-height:180px;overflow-y:auto;z-index:20;box-shadow:0 4px 12px rgba(0,0,0,.1);"></div></div>
+                                <div class="f-item" style="position:relative;"><label>门店名称</label><input type="text" id="storeInput" placeholder="输入门店关键字搜索..." oninput="searchStore(this.value)" autocomplete="off"><div id="storeSuggest" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:6px;max-height:180px;overflow-y:auto;z-index:20;box-shadow:0 4px 12px rgba(0,0,0,.1);"></div></div>
+                                <div class="f-item"></div><div class="f-item"></div>
+                            </div>
+                            <div class="filter-actions">
+                                <button class="btn btn-primary" onclick="doSearch()">搜索</button>
+                                <button class="btn btn-reset" onclick="doReset()">重置</button>
+                                <div class="filter-actions-right"><button class="btn btn-export-csv" onclick="exportFile('csv')">导出</button></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-toolbar"><div class="table-toolbar-left"><span>数据预览（前100条）</span><span class="total-badge">共 47 条</span><span style="color:#94a3b8;font-size:11px">⚠ 超出100条请导出查看</span></div></div>
+                    <div class="table-outer">
+                        <table id="mainTable"><thead><tr>
+                            <th style="min-width:80px">车牌</th><th style="min-width:130px">VIN码</th><th style="min-width:100px">VID</th>
+                            <th style="min-width:68px">合同类型</th><th style="min-width:60px">是否查验</th><th style="min-width:80px">车辆状态</th>
+                            <th style="min-width:68px">售后状态</th><th style="min-width:80px">责任方</th>
+                            <th style="min-width:88px">清分日期</th><th class="num" style="min-width:90px">成交价</th><th class="num" style="min-width:90px">合同价</th><th class="num" style="min-width:90px">起拍价</th>
+                            <th style="min-width:100px">门店名称</th><th style="min-width:60px">大区域</th><th style="min-width:60px">小区域</th>
+                            <th class="num" style="min-width:100px">交易总毛利</th><th class="num" style="min-width:88px">唯普毛利</th><th class="num" style="min-width:88px">唯普云毛利</th>
+                            <th class="num" style="min-width:88px">汇和毛利</th><th class="num" style="min-width:88px">机拍毛利</th>
+                            <th class="num" style="min-width:88px">综合服务费</th><th class="num" style="min-width:80px">评估费</th><th class="num" style="min-width:80px">检测成本</th><th class="num" style="min-width:80px">销售成本</th>
+                            <th style="min-width:72px">评估师</th><th style="min-width:72px">区域经理</th><th style="min-width:72px">副部长</th><th style="min-width:72px">事业部</th>
+                            <th class="num" style="min-width:88px">业务合作服务费</th><th class="num" style="min-width:80px">垫款利息</th>
+                            <th>入库时间</th><th style="min-width:80px">入库地点</th><th class="num" style="min-width:70px">提车费</th><th style="min-width:72px">提车人</th><th style="min-width:72px">提车类型</th>
+                            <th class="num" style="min-width:88px">现场交付成本</th><th style="min-width:80px">现场交付部门</th>
+                            <th class="num" style="min-width:88px">空中交付成本</th><th style="min-width:100px">空中交付部门</th><th style="min-width:88px">空中交付跟进人</th>
+                            <th class="num" style="min-width:88px">现场过户成本</th><th style="min-width:80px">现场过户部门</th>
+                            <th style="min-width:72px">检测员</th><th class="num" style="min-width:80px">数据成本</th><th class="num" style="min-width:80px">政企场地费</th>
+                            <th class="num" style="min-width:88px">收购车成本</th><th class="num" style="min-width:100px">绩效毛利</th><th class="num" style="min-width:80px">绩效工资</th>
+                            <th style="min-width:80px">操作</th>
+                        </tr></thead><tbody id="tableBody"></tbody></table>
+                    </div>
+                    <div class="table-footer"><div class="warn-note">⚠ 绩效工资、政企场地费为人工核算字段，仅供展示</div><div>已加载 <strong>5</strong> / 47 条（超出100条请导出）</div></div>
+                </div>
+                <!-- 使用指南 -->
+                <div class="tab-pane" id="tabGuide" style="padding:24px;overflow-y:auto;">
+                    <div style="max-width:640px">
+                        <h3 style="font-size:15px;font-weight:700;margin-bottom:12px;">📖 使用指南</h3>
+                        <div style="display:flex;flex-direction:column;gap:12px;font-size:13px;line-height:1.7;color:#475569;">
+                            <div><strong style="color:#0f172a;">1. 筛选查询</strong><br>支持按确认日期、成交日期、检测过审日期、车牌/VIN/VID、合同类型、车辆状态、门店、区域多维筛选，选择完毕后点击「搜索」。</div>
+                            <div><strong style="color:#0f172a;">2. 数据预览</strong><br>表格最多展示 100 条预览数据。如需查看全量数据，请使用导出功能。</div>
+                            <div><strong style="color:#0f172a;">3. 查看详情</strong><br>点击行末「详情」按钮可查看该车辆的完整财务明细及各时机点（T1-T6）事件日志。</div>
+                            <div><strong style="color:#0f172a;">4. 导出数据</strong><br>支持导出为 CSV 格式，系统将自动按您的权限范围过滤数据。</div>
+                            <div><strong style="color:#0f172a;">5. 数据权限</strong><br>系统根据您的角色自动限制数据可见范围（评估师仅见本人数据、门店总监见本店数据、区域经理见本区域数据）。</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 字段含义 -->
+                <div class="tab-pane" id="tabGlossary" style="padding:20px;overflow-y:auto;">
+                    <div style="max-width:760px">
+                        <h3 style="font-size:14px;font-weight:700;margin-bottom:14px;color:#0f172a;">📚 字段含义</h3>
+                        <table style="white-space:normal;width:100%;border-collapse:collapse;font-size:12.5px;">
+                            <thead><tr style="background:#f8fafc;"><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;width:140px;font-size:11px;color:#64748b;font-weight:600;">字段名</th><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;color:#64748b;font-weight:600;">含义说明</th></tr></thead>
+                            <tbody>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">交易总毛利</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">唯普毛利 + 唯普云毛利 + 汇和毛利 + 机拍毛利，一台车仅归属一方</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">绩效毛利</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">总交易毛利 − 交付成本 − 检测成本 − 销售成本 − 数据成本 − 政企场地费 − 收购车成本 − 业务合作费</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">冲正行</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">售后执行完成（T6）时系统自动生成的调整记录，冲正项：交易总毛利、各方毛利。所有成本项（含业务合作服务费）均不做冲正</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">沉没成本</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">售后不予冲回：检测成本、评估费、销售成本、收购车成本、提车费、垫款利息、交付成本、过户成本、业务合作服务费、数据成本</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">可冲回成本</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">售后退车时仅冲回毛利相关项（交易总毛利、各方毛利），所有成本项均不冲回</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">提车费</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">T1入库自动计入100元，同一VIN仅计一次。提车人=提车助手中谁将车辆送入唯普库</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">提车人</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">提车助手中将车辆送入唯普库的操作人，即实际执行提车入库的人员</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">检测成本</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">T2检测过审：省内85元/台，省外120元/台；同月多次检测分别计费</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">现场交付成本</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">T4交付型出库计入150元</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">空中交付成本</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">T5资料回收时车辆不在服务中心库/唯普库，计入50元</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">空中交付部门</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">区分两种情况：①服务中心 — 对应具体服务中心名称（如南沙服务中心、番禺服务中心等）；②中控 — 由中控部门统一调度处理</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">空中交付跟进人</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">点击资料回收完毕对应的系统账号操作人姓名，即实际执行空中交付资料回收操作的人员</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">现场过户成本</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">T5过户资料回收完毕且过户费≠0时计入350元</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">业务合作服务费</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">与订单清算挂钩，清分后立即计算。按集团/门店分档计费。售后仲裁退车不做冲正（沉没成本）</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">数据成本</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">查询成功后触发计费，包含维保查询、出险查询（26元/次）、电池查询等多个费用项</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">销售成本</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">订单清分后计入，按车源类型分档</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">收购车成本</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">订单清分后计入，仅收购车，按车价分档</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">交付型出库</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">T4时机点，车辆从库存转为交付状态的出库操作，触发现场交付成本计入（150元/台）。包含4种情况：①服务中心出库，且出库类型=已售交付；②服务中心出库，且出库类型=过户临时过户出库（过户专员-过户不回库）；③服务中心出库，且出库类型=过户前临时放行；④服务中心出库，且出库类型=自过户提车</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">现场交付</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">买家到服务中心现场提车的交付方式，由现场交付部门负责，T4交付型出库时计入现场交付成本150元</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">提车类型</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">分为两种：①自提 — 自己送车，即车源部门人员亲自将车辆送入唯普库；②第三方 — 他人送车（姓名+手机号，在唯普系统不存在），委托外部人员提车入库。两种类型均计入提车费100元/台</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">绩效工资</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">人工核算占位字段</td></tr>
+                            </tbody>
+                        </table>
+                        <h3 style="font-size:14px;font-weight:700;margin:24px 0 14px;color:#0f172a;">⏱ 时机点触发与数据写入</h3>
+                        <table style="white-space:normal;width:100%;border-collapse:collapse;font-size:12.5px;">
+                            <thead><tr style="background:#f8fafc;"><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;width:80px;font-size:11px;color:#64748b;font-weight:600;">时机点</th><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;width:140px;font-size:11px;color:#64748b;font-weight:600;">触发事件</th><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;color:#64748b;font-weight:600;">写入数据</th></tr></thead>
+                            <tbody>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T1</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">车辆入库</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">提车费100元、入库时间、入库地点、提车人、提车类型</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T2</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">检测报告过审</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">检测成本（省内85/省外120）、检测员、确认日期</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">—</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">数据查询成功</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">数据成本（维保/出险/电池等查询费用，查询成功后触发）</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T3</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">成交付款清分后</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">成交价、合同价、起拍价、交易总毛利、各方毛利（唯普/唯普云/汇和/机拍）、评估费、销售成本、收购车成本、业务合作服务费</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T4</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">交付型出库</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">现场交付成本150元、现场交付部门</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T5</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">过户资料回收</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">现场过户成本350元（过户费≠0时）、空中交付成本50元（车辆不在服务中心库/唯普库时）、过户部门、空中交付跟进人</td></tr>
+                                <tr><td style="padding:7px 12px;font-weight:600;color:#dc2626;">T6</td><td style="padding:7px 12px;color:#475569;">售后执行完成</td><td style="padding:7px 12px;color:#475569;">冲正行：仅冲回交易总毛利、各方毛利；所有成本项不做冲正。写入售后原因、责任方、是否豁免</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- 需求说明 tab -->
+                <div class="tab-pane" id="tabReqNotes" style="overflow-y:auto;padding:24px;">
+                    <div style="max-width:900px;margin:0 auto;" id="reqNotesContent"></div>
+                </div>
+                <!-- 实际案例 -->
+                <div class="tab-pane" id="tabCases" style="overflow-y:auto;padding:24px;">
+                    <div style="max-width:900px;margin:0 auto;" id="casesContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal">
+    <div class="modal">
+        <div class="modal-header"><div><div class="modal-title" id="modalTitle">车辆详情</div><div class="modal-subtitle" id="modalSubtitle"></div></div><button class="modal-close" onclick="closeModal()">✕</button></div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer"><button class="btn btn-reset" onclick="closeModal()">关闭</button><button class="btn btn-primary" onclick="printDetail()">打印</button></div>
+    </div>
+</div>
+<script>
+const rows=[
+{confirmDate:'2026-03-02',plate:'粤B·12345',vin:'LFV2A2150J3123456',vid:'1705143374',contractType:'委拍',inspected:'是',status:'已过户',paid:'已付款',aftersale:'无',responsibility:'-',dealPrice:50000,contractPrice:48000,startPrice:45000,store:'深圳南沙',region:'广东-深圳',subRegion:'广东-深圳',totalProfit:6000,weipuProfit:6000,weipuyunProfit:0,huiheProfit:0,jipaProfit:0,serviceFee:200,evalFee:1000,inspCost:85,salesCost:300,assessor:'王五',regionMgr:'张三',vp:'李四',dept:'车源部',bizFee:0,loanInterest:0,inboundTime:'2026-02-10',inboundLoc:'深圳服务中心',pickupFee:100,pickupPerson:'陈小明',pickupType:'自提',deliveryCost:150,deliveryDept:'南沙服务中心',airDeliveryCost:0,airDeliveryDept:'-',airDeliveryFollower:'-',transferCost:350,transferDept:'南沙服务中心',inspector:'李五',dataCost:10,siteFee:0,repoCost:0,perfProfit:4705,perfSalary:0,aftersaleRecord:null},
+{confirmDate:'',plate:'粤A·22222',vin:'LFV2A21509C234567',vid:'1705143376',contractType:'收购',inspected:'是',status:'已检测',paid:'',aftersale:'无',responsibility:'-',dealPrice:0,contractPrice:80000,startPrice:75000,store:'佛山汇和广州分公司',region:'广东-广州',subRegion:'番禺区域',totalProfit:0,weipuProfit:0,weipuyunProfit:0,huiheProfit:0,jipaProfit:0,serviceFee:0,evalFee:0,inspCost:120,salesCost:0,assessor:'赵六',regionMgr:'钱七',vp:'孙八',dept:'车源部',bizFee:0,loanInterest:0,inboundTime:'2026-02-20',inboundLoc:'白云服务中心',pickupFee:100,pickupPerson:'刘大力',pickupType:'第三方',deliveryCost:0,deliveryDept:'-',airDeliveryCost:0,airDeliveryDept:'-',airDeliveryFollower:'-',transferCost:0,transferDept:'-',inspector:'周九',dataCost:15,siteFee:0,repoCost:0,perfProfit:-235,perfSalary:0,aftersaleRecord:null},
+{confirmDate:'2026-03-06',plate:'粤B·55555',vin:'LFV2A21509D345678',vid:'1705143380',contractType:'委拍',inspected:'是',status:'已售后',paid:'已付款',aftersale:'售后退车',responsibility:'车源部',dealPrice:42000,contractPrice:40000,startPrice:38000,store:'深圳福田',region:'广东-深圳',subRegion:'南山片区',totalProfit:4500,weipuProfit:4500,weipuyunProfit:0,huiheProfit:0,jipaProfit:0,serviceFee:800,evalFee:200,inspCost:85,salesCost:300,assessor:'吴十',regionMgr:'张三',vp:'李四',dept:'车源部',bizFee:500,loanInterest:0,inboundTime:'2026-02-15',inboundLoc:'1库',pickupFee:100,pickupPerson:'张伟',pickupType:'自提',deliveryCost:150,deliveryDept:'福田服务中心',airDeliveryCost:0,airDeliveryDept:'-',airDeliveryFollower:'-',transferCost:350,transferDept:'福田服务中心',inspector:'郑十一',dataCost:10,siteFee:0,repoCost:0,perfProfit:-1495,perfSalary:0,aftersaleRecord:{reason:'车辆质量问题',responsibility:'车源生态事业部',extraLoss:0,exempt:false}},
+{confirmDate:'2026-03-07',plate:'粤A·88888',vin:'LFV2A21509E456789',vid:'1705143385',contractType:'委拍',inspected:'是',status:'已售后',paid:'已付款',aftersale:'售后仲裁',responsibility:'检测部门',dealPrice:38000,contractPrice:36000,startPrice:34000,store:'广州番禺',region:'广东-广州',subRegion:'番禺区域',totalProfit:3800,weipuProfit:0,weipuyunProfit:3800,huiheProfit:0,jipaProfit:0,serviceFee:700,evalFee:200,inspCost:85,salesCost:200,assessor:'赵六',regionMgr:'钱七',vp:'孙八',dept:'车源部',bizFee:300,loanInterest:0,inboundTime:'2026-02-05',inboundLoc:'广州南沙库',pickupFee:100,pickupPerson:'王强',pickupType:'第三方',deliveryCost:150,deliveryDept:'番禺服务中心',airDeliveryCost:0,airDeliveryDept:'-',airDeliveryFollower:'-',transferCost:350,transferDept:'番禺服务中心',inspector:'周九',dataCost:10,siteFee:0,repoCost:0,perfProfit:2505,perfSalary:0,aftersaleRecord:{reason:'检测遗漏问题',responsibility:'检测部门',extraLoss:0,exempt:true}},
+{confirmDate:'2026-03-08',plate:'沪A·66666',vin:'LFV2A21509F567890',vid:'1705143390',contractType:'委拍',inspected:'是',status:'已清分',paid:'已付款',aftersale:'无',responsibility:'-',dealPrice:28000,contractPrice:26000,startPrice:24000,store:'上海浦东',region:'贵州-贵阳',subRegion:'贵州-贵阳',totalProfit:3200,weipuProfit:0,weipuyunProfit:0,huiheProfit:0,jipaProfit:3200,serviceFee:600,evalFee:150,inspCost:85,salesCost:200,assessor:'冯十二',regionMgr:'陈十三',vp:'褚十四',dept:'车源部',bizFee:0,loanInterest:0,inboundTime:'2026-03-01',inboundLoc:'贵州服务中心',pickupFee:100,pickupPerson:'赵磊',pickupType:'自提',deliveryCost:0,deliveryDept:'-',airDeliveryCost:0,airDeliveryDept:'-',airDeliveryFollower:'-',transferCost:0,transferDept:'-',inspector:'卫十五',dataCost:10,siteFee:0,repoCost:0,perfProfit:2520,perfSalary:0,aftersaleRecord:null}
+];
+function fmt(n){return n===0?'<span style="color:#94a3b8">—</span>':n.toLocaleString('zh-CN')}
+function fmtRaw(n){return n===0?'—':n.toLocaleString('zh-CN')}
+function profitClass(n){return n>0?'num pos':n<0?'num neg':'num muted'}
+function statusBadge(s){const m={'已入库':'badge-gray','已检测':'badge-yellow','已上拍':'badge-orange','已成交':'badge-blue','已清分':'badge-blue','已交付':'badge-green','已过户':'badge-green','已售后':'badge-red'};return `<span class="badge ${m[s]||'badge-gray'}">${s}</span>`}
+function renderDashboard(){
+    const sc=`background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:14px 16px;`;
+    const numS=`font-size:22px;font-weight:700;font-family:var(--mono);`;
+    const lblS=`font-size:11px;color:#94a3b8;margin-bottom:2px;font-weight:500;`;
+    const subS=`font-size:11px;color:#64748b;margin-top:2px;`;
+    function card(bg,border,label,value,unit,color){
+        return `<div style="background:${bg};border:1px solid ${border};border-radius:8px;padding:14px 16px;">
+            <div style="${lblS}">${label}</div>
+            <div style="${numS}color:${color||'var(--text-primary)'}">${value}</div>
+            <div style="${subS}">${unit}</div></div>`;
+    }
+    function sectionTitle(icon,text,color){
+        return `<div style="font-size:14px;font-weight:700;color:${color};display:flex;align-items:center;gap:6px;margin-bottom:12px;border-left:3px solid ${color};padding-left:8px;">${icon} ${text}</div>`;
+    }
+    // 成交率子维度表格
+    const rateData=[
+        {region:'广东-广州',upload:38,deal:32,rate:'84.21%'},
+        {region:'广东-佛山',upload:15,deal:12,rate:'80.00%'},
+        {region:'广东-深圳',upload:42,deal:35,rate:'83.33%'},
+        {region:'广东-东莞',upload:18,deal:14,rate:'77.78%'},
+        {region:'广东-惠州',upload:8,deal:6,rate:'75.00%'},
+        {region:'广东-中珠',upload:10,deal:8,rate:'80.00%'},
+        {region:'广东-粤东',upload:12,deal:9,rate:'75.00%'},
+        {region:'广东-粤西',upload:9,deal:7,rate:'77.78%'},
+        {region:'广西-南宁',upload:6,deal:5,rate:'83.33%'},
+        {region:'湖北-武汉',upload:11,deal:8,rate:'72.73%'},
+        {region:'湖南-长沙',upload:7,deal:5,rate:'71.43%'},
+        {region:'其他',upload:14,deal:10,rate:'71.43%'}
+    ];
+    const rateRows=rateData.map(d=>`<tr>
+        <td style="padding:6px 10px;border-bottom:1px solid #f1f5f9;font-size:12px;">${d.region}</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f1f5f9;text-align:right;font-family:var(--mono);font-size:12px;">${d.upload}</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f1f5f9;text-align:right;font-family:var(--mono);font-size:12px;">${d.deal}</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f1f5f9;text-align:right;font-family:var(--mono);font-size:12px;font-weight:600;color:${parseFloat(d.rate)>=80?'#16a34a':'#d97706'}">${d.rate}</td>
+    </tr>`).join('');
+
+    document.getElementById('dashboardContent').innerHTML=`
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <div style="font-size:15px;font-weight:700;color:var(--text-primary);">数据看板</div>
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="font-size:11px;color:var(--text-muted);">统计周期：2026-03-01 至 2026-03-11</div>
+            </div>
+        </div>
+
+        <!-- ===== 业务面板（汇总） ===== -->
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 20px;margin-bottom:20px;">
+            <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:14px;">业务汇总</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+                ${card('#f0fdf4','#bbf7d0','上拍台次（去重）',242,'台','#16a34a')}
+                ${card('#f0fdf4','#bbf7d0','成交台次（去重）',192,'台','#16a34a')}
+                ${card('#f0fdf4','#bbf7d0','成交率（去重）','79.34%','成交/上拍','#16a34a')}
+                ${card('#f8fafc','#e2e8f0','检测台次',215,'台','')}
+                ${card('#eff6ff','#bfdbfe','交易总毛利','284,500','元','#2563eb')}
+                ${card('#eff6ff','#bfdbfe','绩效毛利','198,350','元','#2563eb')}
+                ${card('#fff1f2','#fecdd3','售后台次',5,'台','#dc2626')}
+                ${card('#fff1f2','#fecdd3','售后退车台次',3,'台','#dc2626')}
+            </div>
+        </div>
+
+        <!-- ===== 委拍板块 ===== -->
+        <div style="background:#fff;border:1px solid #bbf7d0;border-radius:10px;padding:18px 20px;margin-bottom:20px;">
+            ${sectionTitle('🏷','委拍板块','#16a34a')}
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;">
+                ${card('#f0fdf4','#bbf7d0','上拍台次(委拍)',190,'台（去重）','#16a34a')}
+                ${card('#f0fdf4','#bbf7d0','成交台次(委拍)',151,'台（去重）','#16a34a')}
+                ${card('#f0fdf4','#bbf7d0','去重成交率(委拍)','79.47%','成交/上拍','#16a34a')}
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px;">
+                ${card('#f8fafc','#e2e8f0','检测台次',168,'台（不排重）','')}
+                ${card('#f8fafc','#e2e8f0','交易总毛利','218,600','元','')}
+                ${card('#f8fafc','#e2e8f0','绩效毛利','152,800','元','')}
+                ${card('#fff1f2','#fecdd3','售后台次',3,'台（不排重）','#dc2626')}
+                ${card('#fff1f2','#fecdd3','售后退车台次',2,'台（不排重）','#dc2626')}
+                ${card('#f8fafc','#e2e8f0','管理门店',18,'家（账号关联）','')}
+            </div>
+            <!-- 成交率子维度 -->
+            <div style="margin-bottom:16px;">
+                <div style="font-size:12px;font-weight:600;color:#475569;margin-bottom:8px;">成交率 — 按城市/大区域</div>
+                <div style="overflow-x:auto;border:1px solid #e2e8f0;border-radius:6px;">
+                    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+                        <thead><tr style="background:#f8fafc;">
+                            <th style="padding:7px 10px;text-align:left;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;">城市/大区域</th>
+                            <th style="padding:7px 10px;text-align:right;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;">上拍台次</th>
+                            <th style="padding:7px 10px;text-align:right;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;">成交台次</th>
+                            <th style="padding:7px 10px;text-align:right;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;">去重成交率</th>
+                        </tr></thead>
+                        <tbody>${rateRows}</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 收购板块 ===== -->
+        <div style="background:#fff;border:1px solid #bfdbfe;border-radius:10px;padding:18px 20px;margin-bottom:20px;">
+            ${sectionTitle('📦','收购板块','#2563eb')}
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;">
+                ${card('#eff6ff','#bfdbfe','上拍台次(收购)',52,'台（去重）','#2563eb')}
+                ${card('#eff6ff','#bfdbfe','成交台次(收购)',41,'台（去重）','#2563eb')}
+                ${card('#eff6ff','#bfdbfe','去重成交率(收购)','78.85%','成交/上拍','#2563eb')}
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;">
+                ${card('#f8fafc','#e2e8f0','检测台次',47,'台（不排重）','')}
+                ${card('#f8fafc','#e2e8f0','交易总毛利','65,900','元','')}
+                ${card('#f8fafc','#e2e8f0','绩效毛利','45,550','元','')}
+                ${card('#fff1f2','#fecdd3','售后台次',2,'台（不排重）','#dc2626')}
+                ${card('#fff1f2','#fecdd3','售后退车台次',1,'台（不排重）','#dc2626')}
+                ${card('#f8fafc','#e2e8f0','管理门店',12,'家（账号关联）','')}
+            </div>
+        </div>`;
+}
+function renderTable(){
+    document.getElementById('tableBody').innerHTML=rows.map((r,i)=>`
+        <tr class="${r.aftersale!=='无'&&r.aftersale?'aftersale':''}">
+            <td><span class="plate">${r.plate}</span></td>
+            <td style="font-family:var(--mono);font-size:11px">${r.vin}</td><td style="font-family:var(--mono);font-size:11px">${r.vid}</td>
+            <td>${r.contractType}</td><td>${r.inspected}</td><td>${statusBadge(r.status)}</td>
+            <td>${r.aftersale!=='无'&&r.aftersale?'<span class="badge badge-red">'+r.aftersale+'</span>':'<span class="badge badge-gray">无</span>'}</td>
+            <td>${r.responsibility}</td>
+            <td>${r.confirmDate}</td>
+            <td class="num">${r.dealPrice?fmt(r.dealPrice):'<span style="color:#94a3b8">—</span>'}</td>
+            <td class="num">${r.contractPrice?fmt(r.contractPrice):'<span style="color:#94a3b8">—</span>'}</td>
+            <td class="num">${fmt(r.startPrice)}</td>
+            <td>${r.store}</td><td>${r.region}</td><td>${r.subRegion}</td>
+            <td class="${profitClass(r.totalProfit)}">${fmt(r.totalProfit)}</td>
+            <td class="${profitClass(r.weipuProfit)}">${fmt(r.weipuProfit)}</td>
+            <td class="num muted">${fmt(r.weipuyunProfit)}</td>
+            <td class="${profitClass(r.huiheProfit)}">${fmt(r.huiheProfit)}</td>
+            <td class="num muted">${fmt(r.jipaProfit)}</td>
+            <td class="num">${fmt(r.serviceFee)}</td><td class="num">${fmt(r.evalFee)}</td>
+            <td class="num">${fmt(r.inspCost)}</td><td class="num">${fmt(r.salesCost)}</td>
+            <td>${r.assessor}</td><td>${r.regionMgr}</td><td>${r.vp}</td><td>${r.dept}</td>
+            <td class="num muted">${fmt(r.bizFee)}</td><td class="num muted">${fmt(r.loanInterest)}</td>
+            <td style="font-size:11px">${r.inboundTime}</td><td>${r.inboundLoc}</td>
+            <td class="num">${fmt(r.pickupFee)}</td><td>${r.pickupPerson}</td><td>${r.pickupType}</td>
+            <td class="num">${fmt(r.deliveryCost)}</td><td>${r.deliveryDept}</td>
+            <td class="num muted">${fmt(r.airDeliveryCost)}</td><td>${r.airDeliveryDept}</td><td>${r.airDeliveryFollower}</td>
+            <td class="num">${fmt(r.transferCost)}</td><td>${r.transferDept}</td>
+            <td>${r.inspector}</td><td class="num muted">${fmt(r.dataCost)}</td>
+            <td class="num" style="color:#92400e">${r.siteFee?fmt(r.siteFee):'<span style="color:#94a3b8">—</span>'}</td>
+            <td class="num">${fmt(r.repoCost)}</td>
+            <td class="${profitClass(r.perfProfit)}" style="font-size:13px">${fmt(r.perfProfit)}</td>
+            <td class="num muted">${r.perfSalary?fmt(r.perfSalary):'<span style="color:#94a3b8">人工填</span>'}</td>
+            <td><div style="display:flex;gap:4px"><button class="act-btn" onclick="openDetail(${i})">详情</button></div></td>
+        </tr>`).join('');
+}
+function openDetail(idx){
+    const r=rows[idx];
+    document.getElementById('modalTitle').textContent=`${r.plate} — 绩效详情`;
+    document.getElementById('modalSubtitle').textContent=`VIN: ${r.vin} · 清分日期: ${r.confirmDate}`;
+    const afSec=r.aftersaleRecord?`
+        <div class="modal-section"><div class="modal-section-title" style="color:#dc2626">⚠ 售后信息</div>
+        <div class="finance-grid">
+            <div class="finance-row"><span class="name">售后原因</span><span class="amount" style="font-family:var(--sans);font-size:12px">${r.aftersaleRecord.reason}</span></div>
+            <div class="finance-row"><span class="name">责任方</span><span class="amount" style="font-family:var(--sans);font-size:12px;color:#dc2626">${r.aftersaleRecord.responsibility}</span></div>
+            <div class="finance-row"><span class="name">是否豁免</span><span class="amount" style="font-family:var(--sans);color:${r.aftersaleRecord.exempt?'#16a34a':'#dc2626'}">${r.aftersaleRecord.exempt?'✓ 豁免':'✗ 非豁免（全额纳入考核）'}</span></div>
+        </div></div>`:'';
+    document.getElementById('modalBody').innerHTML=`
+        <div class="modal-section"><div class="modal-section-title">基础信息</div>
+        <div class="info-grid">
+            <div class="info-field"><span class="label">车牌</span><span class="value mono" style="font-weight:700;font-size:15px">${r.plate}</span></div>
+            <div class="info-field"><span class="label">VIN码</span><span class="value mono" style="font-size:11px">${r.vin}</span></div>
+            <div class="info-field"><span class="label">VID</span><span class="value mono">${r.vid}</span></div>
+            <div class="info-field"><span class="label">合同类型</span><span class="value">${r.contractType}</span></div>
+            <div class="info-field"><span class="label">车辆状态</span><span class="value">${r.status}</span></div>
+            <div class="info-field"><span class="label">付款状态</span><span class="value">${r.paid}</span></div>
+            <div class="info-field"><span class="label">门店</span><span class="value">${r.store}</span></div>
+            <div class="info-field"><span class="label">评估师</span><span class="value">${r.assessor}</span></div>
+            <div class="info-field"><span class="label">成交价</span><span class="value mono" style="font-weight:700">${r.dealPrice?r.dealPrice.toLocaleString()+'元':'—'}</span></div>
+            <div class="info-field"><span class="label">提车人</span><span class="value">${r.pickupPerson}</span></div>
+            <div class="info-field"><span class="label">提车类型</span><span class="value">${r.pickupType}</span></div>
+            <div class="info-field"><span class="label">空中交付跟进人</span><span class="value">${r.airDeliveryFollower}</span></div>
+        </div></div>
+        <div class="modal-section"><div class="modal-section-title">毛利明细</div>
+        <div class="finance-grid">
+            <div class="finance-row ${r.weipuProfit>0?'positive':r.weipuProfit<0?'negative':''}"><span class="name">唯普毛利</span><span class="amount">${fmtRaw(r.weipuProfit)}</span></div>
+            <div class="finance-row"><span class="name">唯普云毛利</span><span class="amount" style="color:#94a3b8">${fmtRaw(r.weipuyunProfit)}</span></div>
+            <div class="finance-row ${r.huiheProfit>0?'positive':''}"><span class="name">汇和毛利</span><span class="amount">${fmtRaw(r.huiheProfit)}</span></div>
+            <div class="finance-row"><span class="name">机拍毛利</span><span class="amount" style="color:#94a3b8">${fmtRaw(r.jipaProfit)}</span></div>
+            <div class="finance-row total"><span class="name">交易总毛利</span><span class="amount">${r.totalProfit.toLocaleString()}</span></div>
+        </div></div>
+        <div class="modal-section"><div class="modal-section-title">成本明细</div>
+        <div class="finance-grid">
+            <div class="finance-row"><span class="name">提车费（T1）</span><span class="amount">${fmtRaw(r.pickupFee)}</span></div>
+            <div class="finance-row"><span class="name">检测成本（T2）</span><span class="amount">${fmtRaw(r.inspCost)}</span></div>
+            <div class="finance-row"><span class="name">评估费（T3）</span><span class="amount">${fmtRaw(r.evalFee)}</span></div>
+            <div class="finance-row"><span class="name">销售成本（T3）</span><span class="amount">${fmtRaw(r.salesCost)}</span></div>
+            <div class="finance-row"><span class="name">现场交付成本（T4）</span><span class="amount">${fmtRaw(r.deliveryCost)}</span></div>
+            <div class="finance-row"><span class="name">空中交付成本（T5）</span><span class="amount" style="color:#94a3b8">${fmtRaw(r.airDeliveryCost)}</span></div>
+            <div class="finance-row"><span class="name">现场过户成本（T5）</span><span class="amount">${fmtRaw(r.transferCost)}</span></div>
+            <div class="finance-row"><span class="name">收购车成本</span><span class="amount">${fmtRaw(r.repoCost)}</span></div>
+            <div class="finance-row"><span class="name">业务合作服务费</span><span class="amount">${fmtRaw(r.bizFee)}</span></div>
+            <div class="finance-row"><span class="name">数据成本</span><span class="amount" style="color:#94a3b8">${fmtRaw(r.dataCost)}</span></div>
+            <div class="finance-row"><span class="name">垫款利息</span><span class="amount" style="color:#94a3b8">${fmtRaw(r.loanInterest)}</span></div>
+            <div class="finance-row"><span class="name">政企场地费</span><span class="amount" style="color:#92400e">${r.siteFee?fmtRaw(r.siteFee):'人工核算'}</span></div>
+        </div></div>
+        <div class="modal-section"><div class="modal-section-title">绩效结果</div>
+        <div class="finance-grid">
+            <div class="finance-row total" style="${r.perfProfit<0?'background:#fee2e2;border-color:#fca5a5':''}"><span class="name" style="${r.perfProfit<0?'color:#dc2626':''}">绩效毛利</span><span class="amount" style="color:${r.perfProfit>=0?'#16a34a':'#dc2626'};font-size:20px">${r.perfProfit.toLocaleString()}</span></div>
+            <div class="finance-row"><span class="name">绩效工资</span><span class="amount" style="font-family:var(--sans);font-size:12px;color:#92400e">人工核算</span></div>
+        </div></div>
+        ${afSec}
+        <div class="modal-section"><div class="modal-section-title">时机点日志</div>
+        <div class="timeline">
+            <div class="tl-item"><div class="tl-dot done"></div><div class="tl-card"><div class="tl-header"><span class="tl-title">T1 · 车辆入库</span><span class="tl-time">${r.inboundTime}</span></div><div class="tl-details"><div class="tl-detail">入库地点：<strong>${r.inboundLoc}</strong></div><div class="tl-detail">提车费：<strong>+${r.pickupFee}元</strong></div><div class="tl-detail">提车人：<strong>${r.pickupPerson}</strong></div><div class="tl-detail">提车类型：<strong>${r.pickupType}</strong></div></div></div></div>
+            <div class="tl-item"><div class="tl-dot done"></div><div class="tl-card"><div class="tl-header"><span class="tl-title">T2 · 检测报告过审</span><span class="tl-time">${r.confirmDate}</span></div><div class="tl-details"><div class="tl-detail">检测成本：<strong>+${r.inspCost}元（${r.inspCost===85?'省内':'省外'}）</strong></div><div class="tl-detail">检测员：<strong>${r.inspector}</strong></div></div></div></div>
+            <div class="tl-item"><div class="tl-dot ${r.dealPrice>0?'done':'pending'}"></div><div class="tl-card"><div class="tl-header"><span class="tl-title">T3 · 成交付款清分</span><span class="tl-time">${r.dealPrice>0?r.confirmDate:'未成交'}</span></div><div class="tl-details"><div class="tl-detail">成交价：<strong>${r.dealPrice?r.dealPrice.toLocaleString()+'元':'—'}</strong></div><div class="tl-detail">评估费：<strong>${r.evalFee?'+'+r.evalFee+'元':'—'}</strong></div></div></div></div>
+            <div class="tl-item"><div class="tl-dot ${r.deliveryCost>0?'done':'pending'}"></div><div class="tl-card"><div class="tl-header"><span class="tl-title">T4 · 交付型出库</span><span class="tl-time">${r.deliveryCost>0?r.confirmDate:'未完成'}</span></div><div class="tl-details"><div class="tl-detail">交付部门：<strong>${r.deliveryDept}</strong></div><div class="tl-detail">现场交付成本：<strong>${r.deliveryCost>0?'+'+r.deliveryCost+'元':'—'}</strong></div></div></div></div>
+            <div class="tl-item"><div class="tl-dot ${r.transferCost>0?'done':'pending'}"></div><div class="tl-card"><div class="tl-header"><span class="tl-title">T5 · 过户资料回收</span><span class="tl-time">${r.transferCost>0?r.confirmDate:'未完成'}</span></div><div class="tl-details"><div class="tl-detail">现场过户成本：<strong>${r.transferCost>0?'+'+r.transferCost+'元':'—'}</strong></div><div class="tl-detail">空中交付成本：<strong>${r.airDeliveryCost>0?'+'+r.airDeliveryCost+'元':'未触发'}</strong></div><div class="tl-detail">空中交付跟进人：<strong>${r.airDeliveryFollower||'—'}</strong></div></div></div></div>
+            <div class="tl-item"><div class="tl-dot ${r.aftersaleRecord?'warn':'pending'}"></div><div class="tl-card" style="${r.aftersaleRecord?'border-color:#fca5a5;background:#fff5f5':''}"><div class="tl-header"><span class="tl-title" style="${r.aftersaleRecord?'color:#dc2626':''}">T6 · 售后执行完成</span><span class="tl-time">${r.aftersaleRecord?r.confirmDate:'未发生'}</span></div>${r.aftersaleRecord?`<div class="tl-details"><div class="tl-detail">售后原因：<strong>${r.aftersaleRecord.reason}</strong></div><div class="tl-detail">责任方：<strong style="color:#dc2626">${r.aftersaleRecord.responsibility}</strong></div><div class="tl-detail">是否豁免：<strong>${r.aftersaleRecord.exempt?'✓ 豁免':'✗ 非豁免'}</strong></div><div class="tl-detail" style="grid-column:span 2">冲正项：<strong>交易总毛利、各方毛利（所有成本项不冲正）</strong></div></div>`:'<div style="font-size:12px;color:#94a3b8;margin-top:4px">暂无售后记录</div>'}</div></div>
+        </div></div>`;
+    document.getElementById('detailModal').classList.add('open');
+}
+function closeModal(){document.getElementById('detailModal').classList.remove('open')}
+function renderCases(){
+    // Helper: build a case table row with split delivery columns
+    function caseRow(date,plate,status,statusColor,paid,dealPrice,totalProfit,profitColor,weipuProfit,inspCost,pickupFee,siteDeliver,airDeliver,siteTransfer,bizFee,dataCost,perfProfit,perfColor,note){
+        const sc={'green':'background:#dcfce7;color:#15803d','red':'background:#fee2e2;color:#b91c1c','yellow':'background:#fef9c3;color:#854d0e','blue':'background:#dbeafe;color:#1d4ed8','orange':'background:#fff7ed;color:#9a3412'};
+        const bg=note&&note.includes('冲')?'background:#fff8f8':'background:#f8fafc';
+        const c='padding:8px 12px;border-bottom:1px solid #e2e8f0;';
+        return `<tr style="${bg}">
+            <td style="${c}text-align:center;color:#64748b;">${date}</td>
+            <td style="${c}text-align:center;"><div style="font-size:11px;color:#64748b;">粤</div><div style="font-weight:700;font-family:monospace;">${plate}</div></td>
+            <td style="${c}text-align:center;"><span style="${sc[statusColor]||''};padding:2px 8px;border-radius:3px;font-size:11px;font-weight:600;">${status}</span></td>
+            <td style="${c}text-align:center;${paid==='已付款'?'':'color:#94a3b8'}">${paid}</td>
+            <td style="${c}text-align:right;font-family:monospace;${dealPrice==='—'?'color:#94a3b8':''}">${dealPrice}</td>
+            <td style="${c}text-align:right;font-family:monospace;color:${profitColor};font-weight:700;">${totalProfit}</td>
+            <td style="${c}text-align:right;font-family:monospace;color:${profitColor}">${weipuProfit}</td>
+            <td style="${c}text-align:right;font-family:monospace;">${inspCost}</td>
+            <td style="${c}text-align:right;font-family:monospace;">${pickupFee}</td>
+            <td style="${c}text-align:right;font-family:monospace;">${siteDeliver}</td>
+            <td style="${c}text-align:right;font-family:monospace;">${airDeliver}</td>
+            <td style="${c}text-align:right;font-family:monospace;">${siteTransfer}</td>
+            <td style="${c}text-align:right;font-family:monospace;">${bizFee}</td>
+            <td style="${c}text-align:right;font-family:monospace;color:#94a3b8;">${dataCost}</td>
+            <td style="${c}text-align:right;font-family:monospace;font-weight:700;color:${perfColor};${perfColor==='#dc2626'?'background:#fff1f2':perfColor==='#16a34a'?'background:#f0fdf4':''}">${perfProfit}</td>
+            <td style="${c}color:#64748b;font-size:11px;">${note||''}</td>
+        </tr>`;
+    }
+    function sectionHeader(text,color){
+        return `<tr><td colspan="16" style="padding:6px 12px;background:${color==='green'?'#f0fdf4;color:#15803d;border-bottom:1px solid #bbf7d0':color==='red'?'#fff1f2;color:#b91c1c;border-bottom:1px solid #fca5a5':'#fef3c7;color:#92400e;border-bottom:1px solid #fcd34d'};font-size:11px;font-weight:600;">${text}</td></tr>`;
+    }
+    const th=`<thead><tr style="background:#1e3a5f;color:white;">
+        <th style="padding:9px 12px;text-align:center;font-weight:600;">日期</th>
+        <th style="padding:9px 12px;text-align:center;font-weight:600;">车牌</th>
+        <th style="padding:9px 12px;text-align:center;font-weight:600;">车辆状态</th>
+        <th style="padding:9px 12px;text-align:center;font-weight:600;">付款状态</th>
+        <th style="padding:9px 12px;text-align:right;font-weight:600;">成交价</th>
+        <th style="padding:9px 12px;text-align:right;font-weight:600;">交易总毛利</th>
+        <th style="padding:9px 12px;text-align:right;font-weight:600;">唯普毛利</th>
+        <th style="padding:9px 12px;text-align:right;font-weight:600;">检测成本</th>
+        <th style="padding:9px 12px;text-align:right;font-weight:600;">提车费</th>
+        <th style="padding:9px 12px;text-align:right;font-weight:600;">现场交付</th>
+        <th style="padding:9px 12px;text-align:right;font-weight:600;">空中交付</th>
+        <th style="padding:9px 12px;text-align:right;font-weight:600;">现场过户</th>
+        <th style="padding:9px 12px;text-align:right;font-weight:600;">业务合作费</th>
+        <th style="padding:9px 12px;text-align:right;font-weight:600;">数据成本</th>
+        <th style="padding:9px 12px;text-align:right;font-weight:600;background:#d97706;">绩效毛利</th>
+        <th style="padding:9px 12px;text-align:left;font-weight:600;">备注</th>
+    </tr></thead>`;
+
+    document.getElementById('casesContent').innerHTML=`
+<!-- 案例一 -->
+<div style="margin-bottom:40px;">
+    <div style="font-size:16px;font-weight:700;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px;margin-bottom:6px;">案例一：正常成交场景（评估师视角）</div>
+    <div style="font-size:13px;color:#475569;margin-bottom:14px;padding-left:14px;">粤B12345 委拍车，归属唯普，省内检测，完整走完T1→T5，无售后。逐行展示每个时机点报表数据的变化。</div>
+    <div style="overflow-x:auto;margin-bottom:12px;">
+        <table style="border-collapse:collapse;width:100%;font-size:12px;min-width:900px;">
+            ${th}<tbody>
+            ${sectionHeader('T1 入库（3/8 09:30）— 仅提车费计入','green')}
+            ${caseRow('3/8','B12345','已入库','yellow','—','—','0','#94a3b8','0','0','100','0','0','0','0','0','-100','#dc2626','T1仅计提车费100元')}
+            ${sectionHeader('T2 检测过审（3/8 14:20）— 检测成本+数据成本计入','green')}
+            ${caseRow('3/8','B12345','已检测','yellow','—','—','0','#94a3b8','0','85','100','0','0','0','0','10','-195','#dc2626','省内85元+数据成本10元')}
+            ${sectionHeader('T3 付款完成（3/10 15:00）— 毛利清分+业务合作费计入','green')}
+            ${caseRow('3/10','B12345','已付款','blue','已付款','50,000','6,000','#16a34a','6,000','85','100','0','0','0','0','10','+5,505','#16a34a','毛利6000+业务合作费0，销售成本300计入')}
+            ${sectionHeader('T4 交付型出库（3/10 16:00）— 现场交付成本计入','green')}
+            ${caseRow('3/10','B12345','已交付','green','已付款','50,000','6,000','#16a34a','6,000','85','100','150','0','0','0','10','+5,355','#16a34a','现场交付成本150元')}
+            ${sectionHeader('T5 过户资料回收（3/11 11:30）— 过户成本计入','green')}
+            ${caseRow('3/11','B12345','已交付','green','已付款','50,000','6,000','#16a34a','6,000','85','100','150','0','350','0','10','+5,005','#16a34a','现场过户350元')}
+            </tbody>
+        </table>
+    </div>
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:12px 16px;font-size:12.5px;">
+        <div style="font-weight:600;margin-bottom:6px;color:#374151;">绩效毛利计算过程：</div>
+        <div style="display:flex;flex-direction:column;gap:4px;color:#475569;">
+            <div>• T1：绩效毛利 = 0 − 100（提车费）= <b style="color:#dc2626;">-100</b>（仅提车费，检测尚未发生）</div>
+            <div>• T2：绩效毛利 = 0 − 85（检测）− 100（提车）− 10（数据成本）= <b style="color:#dc2626;">-195</b></div>
+            <div>• T3付款后：绩效毛利 = 6,000 − 85 − 100 − 10 − 300（销售成本）= <b style="color:#16a34a;">+5,505</b></div>
+            <div>• T4：绩效毛利 = 6,000 − 85 − 100 − 10 − 300 − 150（现场交付）= <b style="color:#16a34a;">+5,355</b></div>
+            <div>• T5最终：绩效毛利 = 6,000 − 85 − 100 − 10 − 300 − 150 − 350（过户）= <b style="color:#16a34a;">+5,005</b></div>
+            <div style="margin-top:4px;padding-top:4px;border-top:1px dashed #e2e8f0;color:#64748b;font-size:11.5px;">注：数据成本10元在T2检测过审时计入；业务合作服务费在T3付款时计入（本例为0）</div>
+        </div>
+    </div>
+</div>
+<!-- 案例二：当月售后非豁免 -->
+<div style="margin-bottom:40px;">
+    <div style="font-size:16px;font-weight:700;color:#dc2626;border-left:4px solid #dc2626;padding-left:10px;margin-bottom:6px;">案例二：当月售后冲正 — 非豁免（车源部门责任）</div>
+    <div style="font-size:13px;color:#475569;margin-bottom:14px;padding-left:14px;">粤B55555 委拍车，归属唯普，1/4付款后1/5发生售后退车。责任方=车源生态事业部（非豁免），冲正金额全额纳入考核。业务合作服务费500元为沉没成本，不做冲正。</div>
+    <div style="overflow-x:auto;margin-bottom:12px;">
+        <table style="border-collapse:collapse;width:100%;font-size:12px;min-width:900px;">
+            ${th}<tbody>
+            ${sectionHeader('1/4 已付款状态（售后前）','green')}
+            ${caseRow('1/4','B55555','已付款','blue','已付款','42,000','4,500','#16a34a','4,500','85','100','150','0','350','500','10','+2,505','#16a34a','正常状态，业务合作费500')}
+            ${sectionHeader('1/5 售后退车（当月冲正 — 非豁免）','red')}
+            ${caseRow('1/5','B55555','已售后','red','已付款','42,000','-4,500','#dc2626','-4,500','0','0','0','0','0','0','0','-4,500','#dc2626','仅冲回毛利4500，业务合作费不冲正')}
+            </tbody>
+        </table>
+    </div>
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:12px 16px;font-size:12.5px;margin-bottom:8px;">
+        <div style="font-weight:600;margin-bottom:6px;color:#374151;">关键说明：</div>
+        <div style="display:flex;flex-direction:column;gap:4px;color:#475569;">
+            <div>• 冲正行冲回项目：交易总毛利 -4,500（仅冲回毛利，所有成本项不冲正）</div>
+            <div>• 沉没成本（检测85 + 提车100 + 现场交付150 + 现场过户350 + 评估200 + 销售300 + 数据10 + 业务合作费500 = 1,695）<b>不冲回</b></div>
+            <div>• 责任方=车源生态事业部，标记为<b style="color:#dc2626;">非豁免</b>，冲正后绩效毛利<b>全额纳入该评估师考核</b></div>
+        </div>
+    </div>
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:12px 16px;font-size:12.5px;">
+        <div style="font-weight:600;margin-bottom:6px;color:#1d4ed8;">本月绩效毛利汇总：</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 24px;color:#475569;">
+            <div>1/4 原行绩效毛利：<b style="color:#16a34a;font-family:monospace">+2,505</b></div>
+            <div>1/5 冲正行绩效毛利：<b style="color:#dc2626;font-family:monospace">-4,500</b></div>
+        </div>
+        <div style="margin-top:8px;padding-top:8px;border-top:1px dashed #bfdbfe;font-weight:600;color:#1d4ed8;">
+            月度合计 = 2,505 + (-4,500) = <span style="color:#dc2626;">-1,995（全额纳入考核，非豁免）</span>
+        </div>
+    </div>
+</div>
+<!-- 案例三：跨月售后豁免 -->
+<div style="margin-bottom:40px;">
+    <div style="font-size:16px;font-weight:700;color:#d97706;border-left:4px solid #d97706;padding-left:10px;margin-bottom:6px;">案例三：跨月售后冲正 — 豁免（检测部门责任）</div>
+    <div style="font-size:13px;color:#475569;margin-bottom:14px;padding-left:14px;">粤A88888 委拍车，归属唯普云，2月检测+入库，3月成交付款后发生售后。责任方=检测部门（豁免），冲正后唯普云毛利=0、交易总毛利=0，但绩效毛利仍需计算（沉没成本不可冲回）。业务合作服务费300元为沉没成本，不做冲正。</div>
+    <div style="overflow-x:auto;margin-bottom:12px;">
+        <table style="border-collapse:collapse;width:100%;font-size:12px;min-width:900px;">
+            ${th}<tbody>
+            ${sectionHeader('3/5 已付款状态（售后前）','green')}
+            ${caseRow('3/5','A88888','已付款','blue','已付款','38,000','3,800','#16a34a','3,800','85','100','150','0','350','300','10','+2,505','#16a34a','2月检测不重复计费')}
+            ${sectionHeader('3/18 售后退车（跨月冲正 — 豁免）','yellow')}
+            ${caseRow('3/18','A88888','已售后','red','已付款','38,000','-3,800','#dc2626','-3,800','0','0','0','0','0','0','0','-3,800','#d97706','仅冲回毛利3800，业务合作费不冲正，因豁免不纳入考核')}
+            </tbody>
+        </table>
+    </div>
+    <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:6px;padding:12px 16px;font-size:12.5px;margin-bottom:8px;">
+        <div style="font-weight:600;margin-bottom:6px;color:#92400e;">豁免逻辑详解：</div>
+        <div style="display:flex;flex-direction:column;gap:4px;color:#475569;">
+            <div>• 冲正行仅冲回：交易总毛利 -3,800 + 唯普云毛利 -3,800（所有成本项不做冲正）</div>
+            <div>• 冲正后：唯普云毛利 = 3,800 + (-3,800) = <b>0</b>，交易总毛利 = 3,800 + (-3,800) = <b>0</b></div>
+            <div>• 沉没成本（检测85 + 提车100 + 现场交付150 + 现场过户350 + 评估200 + 销售200 + 数据10 + 业务合作费300 = 1,395）<b>不冲回</b></div>
+            <div style="margin-top:4px;padding-top:4px;border-top:1px dashed #fcd34d;">
+                <b style="color:#92400e;">冲正行绩效毛利计算（豁免 ≠ 不计算）：</b>
+            </div>
+            <div>• 冲正行绩效毛利 = -3,800（毛利冲回）− 0（所有成本项不冲正）= <b style="color:#d97706;">-3,800</b></div>
+            <div>• 因责任方=检测部门，标记为<b style="color:#16a34a;">豁免</b>，该 -3,800 <b>不纳入评估师考核扣减</b></div>
+        </div>
+    </div>
+    <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:6px;padding:12px 16px;font-size:12.5px;">
+        <div style="font-weight:600;margin-bottom:6px;color:#15803d;">豁免结果：</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 24px;color:#475569;">
+            <div>3/5 原行绩效毛利：<b style="color:#16a34a;font-family:monospace">+2,505</b></div>
+            <div>3/18 冲正行绩效毛利：<b style="font-family:monospace;color:#d97706">-3,800（豁免，不纳入考核）</b></div>
+        </div>
+        <div style="margin-top:8px;padding-top:8px;border-top:1px dashed #86efac;">
+            <div style="color:#475569;">• 责任方为<b>检测部门（非车源部门）</b>，标记为<b style="color:#16a34a;">豁免</b></div>
+            <div style="color:#475569;">• 豁免含义：冲正行绩效毛利虽为 -3,800，但<b>不对评估师产生负面扣减</b></div>
+            <div style="color:#475569;">• 该评估师本月绩效仍按原始 +2,505 计算</div>
+            <div style="color:#64748b;font-size:11.5px;margin-top:4px;">跨月要点：2月检测过审计入检测成本85元，3月成交时不重复计费</div>
+        </div>
+    </div>
+</div>
+<!-- 案例四：同月多次检测 -->
+<div style="margin-bottom:40px;">
+    <div style="font-size:16px;font-weight:700;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px;margin-bottom:6px;">案例四：同月多次检测（检测单不一致）</div>
+    <div style="font-size:13px;color:#475569;margin-bottom:14px;padding-left:14px;">粤C77777 同一车辆在同月内因检测单不一致进行了多次检测，每次分别计入检测成本。延期和过审修正不算多次检测。</div>
+    <div style="overflow-x:auto;margin-bottom:12px;">
+        <table style="border-collapse:collapse;width:100%;font-size:12px;min-width:600px;">
+            <thead><tr style="background:#1e3a5f;color:white;">
+                <th style="padding:9px 12px;text-align:center;font-weight:600;">日期</th>
+                <th style="padding:9px 12px;text-align:left;font-weight:600;">事件</th>
+                <th style="padding:9px 12px;text-align:left;font-weight:600;">检测单号</th>
+                <th style="padding:9px 12px;text-align:right;font-weight:600;">成本变动</th>
+                <th style="padding:9px 12px;text-align:right;font-weight:600;">累计检测成本</th>
+                <th style="padding:9px 12px;text-align:left;font-weight:600;">说明</th>
+            </tr></thead><tbody>
+            <tr style="background:#f8fafc;">
+                <td style="padding:8px 12px;text-align:center;color:#64748b;border-bottom:1px solid #e2e8f0;">3/5</td>
+                <td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:600;">第1次检测过审</td>
+                <td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;font-family:monospace;font-size:11px;">JC-2026030501</td>
+                <td style="padding:8px 12px;text-align:right;border-bottom:1px solid #e2e8f0;font-family:monospace;color:#dc2626;">+85</td>
+                <td style="padding:8px 12px;text-align:right;border-bottom:1px solid #e2e8f0;font-family:monospace;font-weight:600;">85</td>
+                <td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#475569;font-size:11px;">首次检测，正常计费</td>
+            </tr>
+            <tr style="background:#f8fafc;">
+                <td style="padding:8px 12px;text-align:center;color:#64748b;border-bottom:1px solid #e2e8f0;">3/8</td>
+                <td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#94a3b8;">过审修正</td>
+                <td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;font-family:monospace;font-size:11px;">JC-2026030501</td>
+                <td style="padding:8px 12px;text-align:right;border-bottom:1px solid #e2e8f0;font-family:monospace;color:#94a3b8;">0</td>
+                <td style="padding:8px 12px;text-align:right;border-bottom:1px solid #e2e8f0;font-family:monospace;font-weight:600;">85</td>
+                <td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#94a3b8;font-size:11px;">同一检测单修正，不计费</td>
+            </tr>
+            <tr style="background:#f8fafc;">
+                <td style="padding:8px 12px;text-align:center;color:#64748b;border-bottom:1px solid #e2e8f0;">3/12</td>
+                <td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:600;">第2次检测过审</td>
+                <td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;font-family:monospace;font-size:11px;">JC-2026031201</td>
+                <td style="padding:8px 12px;text-align:right;border-bottom:1px solid #e2e8f0;font-family:monospace;color:#dc2626;">+85</td>
+                <td style="padding:8px 12px;text-align:right;border-bottom:1px solid #e2e8f0;font-family:monospace;font-weight:600;">170</td>
+                <td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#475569;font-size:11px;">新检测单，分别计费</td>
+            </tr>
+            <tr style="background:#f8fafc;">
+                <td style="padding:8px 12px;text-align:center;color:#64748b;border-bottom:1px solid #e2e8f0;">3/15</td>
+                <td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#94a3b8;">延期</td>
+                <td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;font-family:monospace;font-size:11px;">JC-2026031201</td>
+                <td style="padding:8px 12px;text-align:right;border-bottom:1px solid #e2e8f0;font-family:monospace;color:#94a3b8;">0</td>
+                <td style="padding:8px 12px;text-align:right;border-bottom:1px solid #e2e8f0;font-family:monospace;font-weight:600;">170</td>
+                <td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#94a3b8;font-size:11px;">延期不算多次检测</td>
+            </tr>
+            <tr style="background:#f8fafc;">
+                <td style="padding:8px 12px;text-align:center;color:#64748b;">3/20</td>
+                <td style="padding:8px 12px;font-weight:600;">第3次检测过审</td>
+                <td style="padding:8px 12px;font-family:monospace;font-size:11px;">JC-2026032001</td>
+                <td style="padding:8px 12px;text-align:right;font-family:monospace;color:#dc2626;">+85</td>
+                <td style="padding:8px 12px;text-align:right;font-family:monospace;font-weight:600;">255</td>
+                <td style="padding:8px 12px;color:#475569;font-size:11px;">新检测单，分别计费</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:12px 16px;font-size:12.5px;">
+        <div style="font-weight:600;margin-bottom:6px;color:#374151;">计算结果：</div>
+        <div style="color:#475569;">当月检测成本合计 = 85 × 3 = <b>255元</b>（3次不同检测单，分别计费）。过审修正和延期不产生额外检测成本。</div>
+    </div>
+</div>
+<!-- 案例五：当月检测跨月成交 -->
+<div style="margin-bottom:40px;">
+    <div style="font-size:16px;font-weight:700;color:#7c3aed;border-left:4px solid #7c3aed;padding-left:10px;margin-bottom:6px;">案例五：当月检测跨月成交</div>
+    <div style="font-size:13px;color:#475569;margin-bottom:14px;padding-left:14px;">粤D99999 委拍车，归属唯普，2月入库+检测过审，3月才成交付款交付。检测成本归属2月（检测过审月），成交毛利归属3月（付款月）。跨月场景下成本与毛利分属不同月份。</div>
+    <div style="overflow-x:auto;margin-bottom:12px;">
+        <table style="border-collapse:collapse;width:100%;font-size:12px;min-width:900px;">
+            ${th}<tbody>
+            ${sectionHeader('2月 — 入库+检测（成本先行）','green')}
+            ${caseRow('2/15','D99999','已入库','yellow','—','—','0','#94a3b8','0','0','100','0','0','0','0','0','-100','#dc2626','T1入库，提车费100元计入2月')}
+            ${caseRow('2/18','D99999','已检测','yellow','—','—','0','#94a3b8','0','85','100','0','0','0','0','0','-185','#dc2626','T2检测过审，省内85元计入2月')}
+            ${sectionHeader('3月 — 成交+付款+交付（毛利确认）','green')}
+            ${caseRow('3/6','D99999','已付款','blue','已付款','55,000','7,200','#16a34a','7,200','0','0','0','0','0','0','0','+6,700','#16a34a','付款清分，3月无检测/提车成本（已在2月计入）')}
+            ${caseRow('3/7','D99999','已交付','green','已付款','55,000','7,200','#16a34a','7,200','0','0','150','0','350','0','10','+6,190','#16a34a','现场交付150+过户350+数据10计入3月')}
+            </tbody>
+        </table>
+    </div>
+    <div style="background:#f5f3ff;border:1px solid #c4b5fd;border-radius:6px;padding:12px 16px;font-size:12.5px;margin-bottom:8px;">
+        <div style="font-weight:600;margin-bottom:6px;color:#6d28d9;">跨月归属规则：</div>
+        <div style="display:flex;flex-direction:column;gap:4px;color:#475569;">
+            <div>• <b>2月报表</b>：提车费100 + 检测成本85 = 成本185元，绩效毛利 = <b style="color:#dc2626;">-185</b>（无毛利，仅有成本）</div>
+            <div>• <b>3月报表</b>：毛利7,200 − 现场交付150 − 过户350 − 销售成本500 − 数据10 = 绩效毛利 <b style="color:#16a34a;">+6,190</b></div>
+            <div>• 检测成本和提车费<b>不在3月重复计入</b>，已归属2月</div>
+        </div>
+    </div>
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:12px 16px;font-size:12.5px;">
+        <div style="font-weight:600;margin-bottom:6px;color:#374151;">跨月场景要点：</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;color:#475569;">
+            <div style="background:#fff;border:1px solid #e2e8f0;border-radius:4px;padding:8px 10px;">
+                <div style="font-size:11px;color:#94a3b8;margin-bottom:2px;">2月绩效毛利</div>
+                <div style="font-family:monospace;font-weight:700;color:#dc2626;font-size:14px;">-185</div>
+                <div style="font-size:11px;color:#64748b;">提车100 + 检测85</div>
+            </div>
+            <div style="background:#fff;border:1px solid #e2e8f0;border-radius:4px;padding:8px 10px;">
+                <div style="font-size:11px;color:#94a3b8;margin-bottom:2px;">3月绩效毛利</div>
+                <div style="font-family:monospace;font-weight:700;color:#16a34a;font-size:14px;">+6,190</div>
+                <div style="font-size:11px;color:#64748b;">毛利7200 − 交付500 − 销售500 − 数据10</div>
+            </div>
+        </div>
+    </div>
+</div>
+`;
+}
+function renderReqNotes(){
+    document.getElementById('reqNotesContent').innerHTML=`
+<div style="margin-bottom:40px;">
+    <div style="font-size:16px;font-weight:700;color:#0f172a;border-left:4px solid #16a34a;padding-left:10px;margin-bottom:6px;">需求补充说明</div>
+    <div style="font-size:13px;color:#475569;margin-bottom:14px;padding-left:14px;">关联需求和其他需求点说明</div>
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
+        <div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:10px;">费用计算规则</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:#475569;line-height:1.7;">
+            <div>• 数据成本中的"出险成本"调整为 <b style="color:#dc2626;">26元</b>（原28元）</div>
+            <div>• 销售成本计算公式（待确认具体公式）</div>
+            <div>• 收购车成本计算公式（待确认具体公式）</div>
+            <div>• 汇和收益计算公式（待确认具体公式）</div>
+            <div>• 检测成本计算公式：看门店归属小区，如果属于广东省 = <b>85元</b>（需拿出小区表请经管确认）</div>
+        </div>
+    </div>
+    <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:16px 20px;">
+        <div style="font-size:13px;font-weight:700;color:#92400e;margin-bottom:10px;">费用项变更规则</div>
+        <div style="font-size:12.5px;color:#475569;line-height:1.7;">
+            费用项会发生变化，调整后，<b style="color:#dc2626;">调整前已生成的费用项成本不变</b>。<br>
+            例：原检测成本75元，后改成85元，已生成的75元不变，仅新生成的按85元计算。
+        </div>
+    </div>
+</div>`;
+}
+function switchTab(btn,id){
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(id).classList.add('active');
+}
+function setActive(el){document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));el.classList.add('active')}
+function doSearch(){const b=event.currentTarget;b.textContent='搜索中...';setTimeout(()=>{b.textContent='搜索'},600)}
+function doReset(){['confirmStart','confirmEnd','dateStart','dateEnd','inspStart','inspEnd'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});document.getElementById('storeInput').value='';document.getElementById('regionInput').value='';document.getElementById('subRegionInput').value='';document.getElementById('subRegionInput').disabled=true;document.getElementById('subRegionInput').placeholder='请先选择大区域...';selectedRegion=''}
+function toggleFilter(){const b=document.getElementById('filterBody');const t=document.getElementById('filterToggle');if(b.style.display==='none'){b.style.display='';t.textContent='▼'}else{b.style.display='none';t.textContent='▶'}}
+const regionList=['广东-广州','广东-佛山','广东-深圳','广东-东莞','广东-惠州','广东-中珠','广东-粤东','广东-粤西','广西-南宁','贵州-贵阳','海南-海口','四川-成都','湖北-武汉','湖南-长沙','山西-太原','江西-南昌','河南-郑州','江苏-南京','浙江-杭州','福建-福州','陕西-西安','省外-其他','事业部-本部'];
+const regionSubMap={'广东-广州':['广东-广州','广东-广州（合资）','广东-广州（合资零售）','天河区域','白云区域','番禺区域','海珠片区','黄埔一区','天河片区'],'广东-佛山':['广东-佛山','广东-佛山（合资）','广东-佛山（合资零售）','佛山区域'],'广东-深圳':['广东-深圳','广东-深圳2','广东-深圳3','南山片区','龙岗罗湖区'],'广东-东莞':['广东-东莞','广东-东莞（合资）','东莞片区'],'广东-惠州':['广东-惠州'],'广东-中珠':['广东-中山','广东-珠海','中山片区'],'广东-粤东':['粤东区域','粤东区域（合资）','广东-汕头','广东-潮州','广东-揭阳','广东-梅州','广东-普宁'],'广东-粤西':['粤西区域','粤西区域（合资）','粤西区域（合资零售）','广东-湛江','广东-茂名','广东-阳江','江门片区'],'广西-南宁':['广西-南宁','南宁片区','广西-柳州','广西-桂林','广西-其他'],'贵州-贵阳':['贵州-贵阳','贵州-其他'],'海南-海口':['海南-海口','海南-其他'],'四川-成都':['四川-成都','四川-其他'],'湖北-武汉':['湖北-武汉','湖北-其他','湖北-十堰','湖北-宜昌'],'湖南-长沙':['湖南-长沙','湖南片区','湖南-其他','湖南-衡阳'],'山西-太原':['山西-太原','山西-其他'],'江西-南昌':['江西-南昌','江西-赣州','江西-其他'],'河南-郑州':['河南-郑州','河南-其他'],'江苏-南京':['江苏-南京','江苏-其他'],'浙江-杭州':['浙江-杭州','浙江-其他'],'福建-福州':['福建-福州','福建-泉州','福建-其他'],'陕西-西安':['陕西-西安','陕西-其他'],'省外-其他':['省外-其他','外省区域','外省区域A'],'事业部-本部':['事业部-本部','服务中心','大客户']};
+let selectedRegion='';
+function searchRegion(val){const box=document.getElementById('regionSuggest');const hits=val?regionList.filter(r=>r.includes(val)):regionList;if(!hits.length){box.style.display='none';return}box.innerHTML=hits.map(r=>`<div style="padding:7px 10px;font-size:12px;cursor:pointer;border-bottom:1px solid #f1f5f9;color:#475569;" onmouseover="this.style.background='#f0fdf4'" onmouseout="this.style.background=''" onclick="selectRegion('${r}')">${val?r.replace(new RegExp(val,'g'),'<b style=color:#16a34a>'+val+'</b>'):r}</div>`).join('');box.style.display='block'}
+function selectRegion(r){document.getElementById('regionInput').value=r;document.getElementById('regionSuggest').style.display='none';selectedRegion=r;const sub=document.getElementById('subRegionInput');sub.disabled=false;sub.placeholder='输入小区域搜索...';sub.value=''}
+function searchSubRegion(val){const box=document.getElementById('subRegionSuggest');if(!selectedRegion){box.style.display='none';return}const subs=regionSubMap[selectedRegion]||[];const hits=val?subs.filter(s=>s.includes(val)):subs;if(!hits.length){box.style.display='none';return}box.innerHTML=hits.map(s=>`<div style="padding:7px 10px;font-size:12px;cursor:pointer;border-bottom:1px solid #f1f5f9;color:#475569;" onmouseover="this.style.background='#f0fdf4'" onmouseout="this.style.background=''" onclick="document.getElementById('subRegionInput').value='${s}';document.getElementById('subRegionSuggest').style.display='none'">${val?s.replace(new RegExp(val,'g'),'<b style=color:#16a34a>'+val+'</b>'):s}</div>`).join('');box.style.display='block'}
+const storeList=['广东广物福恒汽车贸易有限公司','广东广物羊城汽车销售有限公司','广州广物宝骏汽车销售服务有限公司','广东恒远汽车贸易有限公司','广东广物东本汽车贸易有限公司','广州广物盈凯汽车销售有限公司','广东长安汽车销售有限公司','广东君乐汽车贸易有限公司','广东五菱汽车销售服务有限公司','广州广物骏锐汽车销售服务有限公司','广东物通凯骏汽车有限公司','广州福远汽车贸易有限公司','广东物通鸿骏汽车有限公司','佛山市广物福恒汽车贸易有限公司','东莞市广物东捷汽车销售服务有限公司','广东广物骏孚汽车销售服务有限公司','广东物资君豪汽车贸易有限公司','广州广物德远汽车销售服务有限公司','广东广物骏达汽车贸易有限公司','湛江市广物福昌汽车销售服务有限公司','广东物通驭达汽车有限公司','广东广物上联汽车销售服务有限公司'];
+function searchStore(val){const box=document.getElementById('storeSuggest');if(!val||val.length<3){box.style.display='none';return}const hits=storeList.filter(s=>s.includes(val)).slice(0,8);if(!hits.length){box.style.display='none';return}box.innerHTML=hits.map(s=>`<div style="padding:7px 10px;font-size:12px;cursor:pointer;border-bottom:1px solid #f1f5f9;color:#475569;" onmouseover="this.style.background='#f0fdf4'" onmouseout="this.style.background=''" onclick="document.getElementById('storeInput').value='${s}';document.getElementById('storeSuggest').style.display='none'">${s.replace(new RegExp(val,'g'),'<b style=color:#16a34a>'+val+'</b>')}</div>`).join('');box.style.display='block'}
+function exportFile(type){alert(`正在导出 CSV 文件...\n文件名：车源绩效表_${new Date().toISOString().slice(0,10)}.csv`)}
+function printDetail(){window.print()}
+function logout(){if(confirm('确认退出系统？'))alert('已退出')}
+// Init
+renderDashboard();
+renderTable();
+renderCases();
+renderReqNotes();
+document.getElementById('detailModal').addEventListener('click',function(e){if(e.target===this)closeModal()});
+document.addEventListener('click',function(e){['regionSuggest','subRegionSuggest','storeSuggest'].forEach(id=>{const box=document.getElementById(id);if(box&&!box.contains(e.target)&&e.target.id!==id.replace('Suggest','Input'))box.style.display='none'})});
+</script>
+</body>
+</html>
