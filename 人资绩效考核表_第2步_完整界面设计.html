@@ -219,21 +219,24 @@
                     <div class="table-outer">
                         <table id="mainTable"><thead><tr>
                             <th style="min-width:80px">车牌</th><th style="min-width:130px">VIN码</th><th style="min-width:100px">VID</th>
-                            <th style="min-width:68px">合同类型</th><th style="min-width:60px">是否查验</th><th style="min-width:80px">车辆状态</th>
+                            <th style="min-width:68px">合同类型</th><th style="min-width:60px">是否检测</th><th style="min-width:80px">车辆状态</th>
                             <th style="min-width:68px">售后状态</th><th style="min-width:80px">责任方</th>
                             <th style="min-width:88px">清分日期</th><th class="num" style="min-width:90px">成交价</th><th class="num" style="min-width:90px">合同价</th><th class="num" style="min-width:90px">起拍价</th>
                             <th style="min-width:100px">门店名称</th><th style="min-width:60px">大区域</th><th style="min-width:60px">小区域</th>
-                            <th class="num" style="min-width:100px">交易总毛利</th><th class="num" style="min-width:88px">唯普毛利</th><th class="num" style="min-width:88px">唯普云毛利</th>
-                            <th class="num" style="min-width:88px">汇和毛利</th><th class="num" style="min-width:88px">机拍毛利</th>
-                            <th class="num" style="min-width:88px">综合服务费</th><th class="num" style="min-width:80px">评估费</th><th class="num" style="min-width:80px">检测成本</th><th class="num" style="min-width:80px">销售成本</th>
                             <th style="min-width:72px">评估师</th><th style="min-width:72px">区域经理</th><th style="min-width:72px">副部长</th><th style="min-width:72px">事业部</th>
-                            <th class="num" style="min-width:88px">业务合作服务费</th><th class="num" style="min-width:80px">垫款利息</th>
                             <th>入库时间</th><th style="min-width:80px">入库地点</th><th class="num" style="min-width:70px">提车费</th><th style="min-width:72px">提车人</th><th style="min-width:72px">提车类型</th>
+                            <th class="num" style="min-width:80px">检测成本</th><th style="min-width:72px">检测员</th><th class="num" style="min-width:80px">数据成本</th>
+                            <th class="num" style="min-width:88px">综合服务费</th><th class="num" style="min-width:80px">评估费</th>
+                            <th class="num" style="min-width:88px">中间商费用</th><th class="num" style="min-width:80px">分成</th>
+                            <th class="num" style="min-width:80px">销售成本</th><th class="num" style="min-width:88px">业务合作服务费</th>
+                            <th class="num" style="min-width:88px">收购车成本</th><th class="num" style="min-width:80px">垫款利息</th><th class="num" style="min-width:80px">政企场地费</th>
+                            <th class="num" style="min-width:88px">唯普毛利</th><th class="num" style="min-width:88px">唯普云毛利</th>
+                            <th class="num" style="min-width:88px">汇和毛利</th><th class="num" style="min-width:88px">机拍毛利</th>
+                            <th class="num" style="min-width:80px">毛利</th><th class="num" style="min-width:100px">交易总毛利</th>
                             <th class="num" style="min-width:88px">现场交付成本</th><th style="min-width:80px">现场交付部门</th>
                             <th class="num" style="min-width:88px">空中交付成本</th><th style="min-width:100px">空中交付部门</th><th style="min-width:88px">空中交付跟进人</th>
                             <th class="num" style="min-width:88px">现场过户成本</th><th style="min-width:80px">现场过户部门</th>
-                            <th style="min-width:72px">检测员</th><th class="num" style="min-width:80px">数据成本</th><th class="num" style="min-width:80px">政企场地费</th>
-                            <th class="num" style="min-width:88px">收购车成本</th><th class="num" style="min-width:100px">绩效毛利</th><th class="num" style="min-width:80px">绩效工资</th>
+                            <th class="num" style="min-width:100px">绩效毛利</th><th class="num" style="min-width:80px">绩效工资</th>
                             <th style="min-width:80px">操作</th>
                         </tr></thead><tbody id="tableBody"></tbody></table>
                     </div>
@@ -369,8 +372,7 @@ const fieldDefs=[
 ['现场过户成本','350元；T5过户资料回收完毕时，且过户费≠0时\\n现场过户：过户费≠0'],
 ['现场过户部门','执行过户的服务中心（唯普云服务站？待小欣确认）'],
 ['绩效毛利','总毛利−所有成本费用项(提车费+检测成本+ 数据成本+ 销售成本 + 政企场地费 +收购车成本+业务合作费+中间商费用+现场交付成本/空中交付成本+现场过户成本)'],
-['绩效工资','人工核算，占位字段'],
-['毛利调整','待与陈霞确认字段含义']
+['绩效工资','人工核算，占位字段']
 ];
 const rows=[
 {confirmDate:'2026-03-02',plate:'粤B·12345',vin:'LFV2A2150J3123456',vid:'1705143374',contractType:'委拍',inspected:'是',status:'已过户',paid:'已付款',aftersale:'无',responsibility:'-',dealPrice:50000,contractPrice:48000,startPrice:45000,store:'深圳南沙',region:'广东-深圳',subRegion:'广东-深圳',totalProfit:6000,weipuProfit:6000,weipuyunProfit:0,huiheProfit:0,jipaProfit:0,serviceFee:200,evalFee:1000,inspCost:85,salesCost:300,assessor:'王五',regionMgr:'张三',vp:'李四',dept:'车源部',bizFee:0,loanInterest:0,inboundTime:'2026-02-10',inboundLoc:'深圳服务中心',pickupFee:100,pickupPerson:'陈小明',pickupType:'自提',deliveryCost:150,deliveryDept:'南沙服务中心',airDeliveryCost:0,airDeliveryDept:'-',airDeliveryFollower:'-',transferCost:350,transferDept:'南沙服务中心',inspector:'李五',dataCost:10,siteFee:0,repoCost:0,perfProfit:4705,perfSalary:0,aftersaleRecord:null},
@@ -521,23 +523,24 @@ function renderTable(){
             <td class="num">${r.contractPrice?fmt(r.contractPrice):'<span style="color:#94a3b8">—</span>'}</td>
             <td class="num">${fmt(r.startPrice)}</td>
             <td>${r.store}</td><td>${r.region}</td><td>${r.subRegion}</td>
-            <td class="${profitClass(r.totalProfit)}">${fmt(r.totalProfit)}</td>
+            <td>${r.assessor}</td><td>${r.regionMgr}</td><td>${r.vp}</td><td>${r.dept}</td>
+            <td style="font-size:11px">${r.inboundTime}</td><td>${r.inboundLoc}</td>
+            <td class="num">${fmt(r.pickupFee)}</td><td>${r.pickupPerson}</td><td>${r.pickupType}</td>
+            <td class="num">${fmt(r.inspCost)}</td><td>${r.inspector}</td><td class="num muted">${fmt(r.dataCost)}</td>
+            <td class="num">${fmt(r.serviceFee)}</td><td class="num">${fmt(r.evalFee)}</td>
+            <td class="num muted">${fmt(r.middlemanFee||0)}</td><td class="num muted">${fmt(r.shareFee||0)}</td>
+            <td class="num">${fmt(r.salesCost)}</td><td class="num muted">${fmt(r.bizFee)}</td>
+            <td class="num">${fmt(r.repoCost)}</td><td class="num muted">${fmt(r.loanInterest)}</td>
+            <td class="num" style="color:#92400e">${r.siteFee?fmt(r.siteFee):'<span style="color:#94a3b8">—</span>'}</td>
             <td class="${profitClass(r.weipuProfit)}">${fmt(r.weipuProfit)}</td>
             <td class="num muted">${fmt(r.weipuyunProfit)}</td>
             <td class="${profitClass(r.huiheProfit)}">${fmt(r.huiheProfit)}</td>
             <td class="num muted">${fmt(r.jipaProfit)}</td>
-            <td class="num">${fmt(r.serviceFee)}</td><td class="num">${fmt(r.evalFee)}</td>
-            <td class="num">${fmt(r.inspCost)}</td><td class="num">${fmt(r.salesCost)}</td>
-            <td>${r.assessor}</td><td>${r.regionMgr}</td><td>${r.vp}</td><td>${r.dept}</td>
-            <td class="num muted">${fmt(r.bizFee)}</td><td class="num muted">${fmt(r.loanInterest)}</td>
-            <td style="font-size:11px">${r.inboundTime}</td><td>${r.inboundLoc}</td>
-            <td class="num">${fmt(r.pickupFee)}</td><td>${r.pickupPerson}</td><td>${r.pickupType}</td>
+            <td class="num muted">${fmt(r.grossProfit||0)}</td>
+            <td class="${profitClass(r.totalProfit)}">${fmt(r.totalProfit)}</td>
             <td class="num">${fmt(r.deliveryCost)}</td><td>${r.deliveryDept}</td>
             <td class="num muted">${fmt(r.airDeliveryCost)}</td><td>${r.airDeliveryDept}</td><td>${r.airDeliveryFollower}</td>
             <td class="num">${fmt(r.transferCost)}</td><td>${r.transferDept}</td>
-            <td>${r.inspector}</td><td class="num muted">${fmt(r.dataCost)}</td>
-            <td class="num" style="color:#92400e">${r.siteFee?fmt(r.siteFee):'<span style="color:#94a3b8">—</span>'}</td>
-            <td class="num">${fmt(r.repoCost)}</td>
             <td class="${profitClass(r.perfProfit)}" style="font-size:13px">${fmt(r.perfProfit)}</td>
             <td class="num muted">${r.perfSalary?fmt(r.perfSalary):'<span style="color:#94a3b8">人工填</span>'}</td>
             <td><div style="display:flex;gap:4px"><button class="act-btn" onclick="openDetail(${i})">详情</button></div></td>
