@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>经管报表系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root{--green:#16a34a;--green-light:#dcfce7;--green-mid:#22c55e;--red:#dc2626;--red-light:#fee2e2;--blue:#2563eb;--blue-light:#dbeafe;--sidebar-bg:#0f172a;--sidebar-hover:#1e293b;--bg:#f1f5f9;--card-bg:#fff;--border:#e2e8f0;--text-primary:#000;--text-secondary:#000;--text-muted:#000;--mono:'IBM Plex Mono',monospace;--sans:'Noto Sans SC',sans-serif}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:var(--sans);background:var(--bg);color:var(--text-primary);font-size:13px;height:100vh;overflow:hidden}
+        .layout{display:flex;height:100vh}
+        .sidebar{width:200px;background:var(--sidebar-bg);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+        .sidebar-brand{padding:18px 16px;border-bottom:1px solid #1e293b}
+        .sidebar-brand-name{font-size:13px;font-weight:700;color:#f8fafc}
+        .sidebar-brand-sub{font-size:11px;color:#64748b;margin-top:2px}
+        .sidebar-section{padding:16px 0 4px}
+        .sidebar-section-label{font-size:10px;font-weight:600;color:#475569;letter-spacing:.08em;text-transform:uppercase;padding:0 16px 8px}
+        .sidebar-item{display:flex;align-items:center;gap:8px;padding:9px 16px;color:#94a3b8;font-size:12.5px;cursor:pointer;border-left:3px solid transparent;transition:all .15s}
+        .sidebar-item:hover{background:var(--sidebar-hover);color:#e2e8f0}
+        .sidebar-item.active{background:rgba(22,163,74,.12);color:#4ade80;border-left-color:var(--green-mid)}
+        .sidebar-item .icon{width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+        .sidebar-footer{margin-top:auto;padding:12px 16px;border-top:1px solid #1e293b}
+        .user-info{display:flex;align-items:center;gap:8px}
+        .user-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#16a34a,#059669);display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:700}
+        .user-name{font-size:12px;color:#cbd5e1}.user-role{font-size:10px;color:#64748b}
+        .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+        .topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+        .topbar-left{display:flex;align-items:center;gap:16px}.topbar-title{font-size:15px;font-weight:700}
+        .topbar-breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted)}
+        .topbar-breadcrumb span{color:var(--text-secondary)}.topbar-breadcrumb .sep{color:var(--text-muted)}
+        .topbar-right{display:flex;align-items:center;gap:8px}
+        .topbar-btn{padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:#fff;font-size:12px;color:#000;cursor:pointer;font-family:var(--sans);transition:all .15s}
+        .topbar-btn:hover{background:var(--bg)}
+        .page{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:16px}
+        .tabs-wrap{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;flex:1;min-height:0}
+        .tabs-header{display:flex;border-bottom:1px solid var(--border);background:#f8fafc;flex-shrink:0;overflow-x:auto}
+        .tab-btn{padding:11px 18px;font-size:13px;font-weight:500;color:#000;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none;font-family:var(--sans);white-space:nowrap}
+        .tab-btn:hover{color:#000}.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue);background:#fff}
+        .tab-pane{display:none;flex:1;flex-direction:column;overflow:hidden}.tab-pane.active{display:flex}
+        .filter-bar{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#fff;flex-shrink:0}
+        .filter-bar label{font-size:12px;font-weight:600;color:var(--text-secondary);white-space:nowrap}
+        .filter-bar input,.filter-bar select{padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--text-primary);background:#fff;font-family:var(--sans);outline:none}
+        .filter-bar input:focus,.filter-bar select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+        .filter-bar .sep{font-size:11px;color:var(--text-muted)}
+        .btn{padding:7px 14px;border-radius:6px;border:none;font-size:12.5px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s;font-family:var(--sans)}
+        .btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:#1d4ed8}
+        .btn-export{background:var(--blue);color:#fff}.btn-export:hover{background:#1d4ed8}
+        .btn-yellow{background:#fef3c7;color:#000;border:1px solid #fde68a}.btn-yellow:hover{background:#fde68a}
+        .filter-note{font-size:11px;color:#000}
+        .table-outer{overflow:auto;flex:1}
+        table{border-collapse:collapse;white-space:nowrap;font-size:12px}
+        table th{position:sticky;top:0;z-index:10;background:#f8fafc;padding:8px 10px;text-align:center;font-weight:600;font-size:11px;color:#000;border:1px solid var(--border);white-space:nowrap}
+        .gh-total{background:#e0f2fe!important;color:#000}.gh-sg{background:#fef3c7!important;color:#000}.gh-wp{background:#dcfce7!important;color:#000}
+        table td{padding:8px 10px;border:1px solid #f1f5f9;color:var(--text-primary);vertical-align:middle;text-align:center;font-size:11.5px}
+        table tr:hover td{background:#f8fafc}
+        td.num{text-align:right;font-family:var(--mono)}
+        td.pos{color:#000;font-weight:600}td.neg{color:#000;font-weight:600}
+        td.rn{text-align:left;font-weight:600;position:sticky;left:0;z-index:5;background:#fff;min-width:100px}
+        table tr:hover td.rn{background:#f8fafc}
+        tr.row-total td{background:#f0f9ff!important;font-weight:700}tr.row-total td.rn{background:#f0f9ff!important}
+        .table-footer{padding:10px 14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text-muted);background:#f8fafc;flex-shrink:0}
+        .placeholder{display:flex;align-items:center;justify-content:center;flex:1;color:var(--text-muted);font-size:13px;padding:60px 20px}
+        ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+        .notes-wrap{padding:24px;overflow-y:auto;flex:1;font-size:13px;line-height:1.8;color:var(--text-primary)}
+        .notes-wrap h3{font-size:14px;font-weight:700;margin:18px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+        .notes-wrap h3:first-child{margin-top:0}
+        .notes-wrap ul{padding-left:20px;margin:4px 0 12px}
+        .notes-wrap li{margin-bottom:4px}
+        .notes-wrap .new-field{color:#dc2626;font-weight:700}
+        .notes-wrap .changed-field{background:#fef3c7;padding:1px 4px;border-radius:3px;font-weight:600}
+        .notes-wrap .case-box{background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin:8px 0 12px;font-size:12.5px}
+        th.col-new{background:#fee2e2!important;color:#000!important;cursor:pointer;position:relative}
+        th.col-changed{background:#fef3c7!important;color:#000!important;cursor:pointer;position:relative}
+        .col-tip{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:8px 12px;border-radius:6px;font-size:11px;white-space:nowrap;z-index:100;font-weight:400;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+        .col-tip::before{content:'';position:absolute;top:-5px;left:50%;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:5px solid #1e293b}
+        th.col-new:hover .col-tip,th.col-changed:hover .col-tip{display:block}
+    </style>
+</head>
+<body>
+<div class="layout">
+    <div class="sidebar">
+        <div class="sidebar-brand"><div class="sidebar-brand-name">📊 绩效报表</div><div class="sidebar-brand-sub">绩效考核报表系统</div></div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">报表中心</div>
+            <div class="sidebar-item active" onclick="setActive(this)"><span class="icon">📈</span> 经管报表</div>
+            <div class="sidebar-item" onclick="showCostDetailFromSidebar(this)"><span class="icon">📋</span> 费用明细</div>
+            <div class="sidebar-item" onclick="location.href='人资绩效考核表_第2步_完整界面设计.html'"><span class="icon">🚗</span> 车源绩效表</div>
+        </div>
+    </div>
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left"><div class="topbar-title">经管报表</div><div class="topbar-breadcrumb"><span>报表中心</span><span class="sep">›</span><span>经管报表</span></div></div>
+            <div class="topbar-right"><span style="font-size:12px;color:#000;margin-right:8px;">分管领导：韩立</span><button class="topbar-btn" onclick="logout()">退出</button></div>
+        </div>
+        <div class="page"><div class="tabs-wrap">
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchTab(this,'tabNotes')">关联需求点说明</button>
+                <button class="tab-btn" onclick="switchTab(this,'tabRegion')">成绩单-大区维度</button>
+                <button class="tab-btn" onclick="switchTab(this,'tabPurchase')">成绩单-收购维度</button>
+                <button class="tab-btn" onclick="switchTab(this,'tabConsign')">成绩单-委拍维度</button>
+                <button class="tab-btn" onclick="switchTab(this,'tabStore')">成绩单-门店维度</button>
+                <button class="tab-btn" onclick="switchTab(this,'tabRevenue')">车辆收益明细</button>
+                <button class="tab-btn" onclick="switchTab(this,'tabCost')">车辆费用明细</button>
+            </div>
+            <!-- 成绩单-大区维度 -->
+            <div class="tab-pane" id="tabRegion">
+                <div class="filter-bar">
+                    <label>统计周期：</label><input type="date" value="2026-03-01"><span class="sep">-</span><input type="date" value="2026-03-01">
+                    <label style="margin-left:12px;">大区：</label><select id="regionSel"><option>大区</option></select>
+                    <button class="btn btn-blue" onclick="doPreview()">数据预览</button>
+                    <button class="btn btn-export" onclick="doExport()">导出</button>
+                    <span class="filter-note">注：性能考虑，数据预览只提供前100条预览，具体数据请导出</span>
+                </div>
+                <div class="table-outer"><table id="regionTable"></table></div>
+                <div class="table-footer"><div style="color:#000;font-size:11px;">数据预览（前100条）</div><div id="regionCount"></div></div>
+            </div>
+            <!-- 其他tab -->
+            <div class="tab-pane" id="tabPurchase"><div class="filter-bar"><label>统计周期：</label><input type="date" value="2026-03-01"><span class="sep">-</span><input type="date" value="2026-03-01"><label style="margin-left:12px;">大区：</label><select><option>大区</option></select><button class="btn btn-blue" onclick="renderPurchaseTable()">数据预览</button><button class="btn btn-export" onclick="doExport()">导出</button><span class="filter-note">注：性能考虑，数据预览只提供前100条预览，具体数据请导出</span></div><div class="table-outer"><table id="purchaseTable"></table></div><div class="table-footer"><div style="color:#000;font-size:11px;">数据预览（前100条）</div><div id="purchaseCount"></div></div></div>
+            <div class="tab-pane" id="tabConsign"><div class="filter-bar"><label>统计周期：</label><input type="date" value="2026-03-01"><span class="sep">-</span><input type="date" value="2026-03-01"><label style="margin-left:12px;">大区：</label><select><option>大区</option></select><button class="btn btn-blue" onclick="renderConsignTable()">数据预览</button><button class="btn btn-export" onclick="doExport()">导出</button><span class="filter-note">注：性能考虑，数据预览只提供前100条预览，具体数据请导出</span></div><div class="table-outer"><table id="consignTable"></table></div><div class="table-footer"><div style="color:#000;font-size:11px;">数据预览（前100条）</div><div id="consignCount"></div></div></div>
+            <div class="tab-pane" id="tabStore"><div class="filter-bar"><label>统计周期：</label><input type="date" value="2026-03-01"><span class="sep">-</span><input type="date" value="2026-03-01"><label style="margin-left:12px;">大区：</label><select><option>大区</option></select><button class="btn btn-blue">数据预览</button><button class="btn btn-export">导出</button><span class="filter-note">注：性能考虑，数据预览只提供前100条预览，具体数据请导出</span></div><div class="placeholder">📋 成绩单-门店维度（待填充数据）</div></div>
+
+            <div class="tab-pane" id="tabRevenue"><div class="filter-bar"><label>统计周期：</label><input type="date" value="2026-03-01"><span class="sep">-</span><input type="date" value="2026-03-01"><label style="margin-left:12px;">大区：</label><select><option>大区</option></select><button class="btn btn-blue" onclick="renderRevenueTable()">数据预览</button><button class="btn btn-export" onclick="doExport()">导出</button><span class="filter-note">注：性能考虑，数据预览只提供前100条预览，具体数据请导出</span></div><div class="table-outer"><table id="revenueTable"></table></div><div class="table-footer"><div style="color:#000;font-size:11px;">数据预览（前100条）</div><div id="revenueCount"></div></div></div>
+            <div class="tab-pane" id="tabCost"><div class="filter-bar" style="justify-content:space-between"><div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap"><label>统计周期：</label><input type="date" value="2026-03-01"><span class="sep">-</span><input type="date" value="2026-03-01"><label style="margin-left:12px;">大区：</label><select><option>大区</option></select><button class="btn btn-blue" onclick="renderCostTable()">数据预览</button><button class="btn btn-export" onclick="doExport()">导出</button><button class="btn btn-yellow" onclick="showCostTemplate()">导出模板</button><span class="filter-note">注：性能考虑，数据预览只提供前100条预览，具体数据请导出</span></div><button class="btn btn-blue" onclick="showCostDetail()">费用明细</button></div><div class="table-outer"><table id="costTable"></table></div><div class="table-footer"><div style="color:#000;font-size:11px;">数据预览（前100条）</div><div id="costCount"></div></div></div>
+            <!-- 关联需求点说明 -->
+            <div class="tab-pane active" id="tabNotes">
+                <div class="notes-wrap">
+                    <h3>1. 可冲回项</h3>
+                    <ul>
+                        <li>垫款利息：售后退车时冲回，其他场景不冲回。</li>
+                    </ul>
+
+                    <h3>2. 经管报表 - 车辆费用明细表</h3>
+                    <p><strong>① 新增费用项展示</strong></p>
+                    <ul>
+                        <li>费用明细新增 <span class="new-field">「销售成本」</span>、<span class="new-field">「收购车成本」</span> 字段展示；</li>
+                        <li>计算规则见「车源绩效表」；</li>
+                        <li>总费用成本项：取值加上 <span class="new-field">「销售成本」</span>、<span class="new-field">「收购车成本」</span> 的金额；</li>
+                        <li>导出报表：增加 <span class="new-field">「销售成本」</span>、<span class="new-field">「收购车成本」</span> 字段处理。</li>
+                    </ul>
+                    <p><strong>② 业务合作服务费逻辑改动</strong></p>
+                    <ul>
+                        <li><span class="changed-field">业务合作服务费</span>：同VIN码仅收取一次，订单清分后收取；</li>
+                        <li>发生售后退车也不冲正；</li>
+                        <li>同车（同VIN）再次上拍后，不再收取业务合作费。</li>
+                    </ul>
+                    <div class="case-box">
+                        <strong>案例说明：</strong><br>
+                        车辆A（VIN: LXXX...）首次上拍成交 → 收取业务合作服务费 100元 → 发生售后退车 → 费用不冲正（仍为100元）→ 同车再次上拍成交 → 不再收取业务合作费（累计仍为100元）。
+                    </div>
+
+                    <h3>3. 经管报表 - 费用明细表</h3>
+                    <p><strong>① 新增费用项</strong></p>
+                    <ul>
+                        <li>新增 <span class="new-field">「销售成本」</span>、<span class="new-field">「收购车成本」</span> 展示；</li>
+                        <li>与订单清算挂钩，清算后立即计算成本费用项；</li>
+                        <li>支持对应费用流水展示及导出；</li>
+                        <li>新增字段位置：放到「维保出险」字段后面，「其他」字段前面。</li>
+                    </ul>
+                    <p><strong>② 费用成本调整</strong></p>
+                    <ul>
+                        <li>政企场地费：统一调整为 0，由人资人工核算；</li>
+                        <li>维保出险 - 车信盟（事故报告）：<span class="changed-field">28元/单 → 改为 26元/单</span>。</li>
+                    </ul>
+
+                    <h3 style="margin-top:24px;">图例说明</h3>
+                    <ul>
+                        <li><span class="new-field">红色字段</span> = 新增字段（开发需新增处理）</li>
+                        <li><span class="changed-field">黄色底色字段</span> = 逻辑变动字段（开发需关注含义变更）</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- 费用明细子页面 -->
+        <div id="costDetailPage" style="display:none;flex:1;flex-direction:column;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;min-height:0">
+            <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;background:#fff;flex-shrink:0">
+                <label style="font-size:12px;font-weight:600;color:#000;white-space:nowrap">款项发生时间：</label>
+                <input type="date" value="2026-03-11" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:var(--sans)">
+                <span style="font-size:11px;color:#000">-</span>
+                <input type="date" value="2026-03-31" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:var(--sans)">
+                <label style="font-size:12px;font-weight:600;color:#000;white-space:nowrap;margin-left:12px">车辆：</label>
+                <input type="text" placeholder="vid/车牌" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;width:140px;font-family:var(--sans)">
+                <button class="btn btn-blue">导入明细</button>
+                <button class="btn btn-blue">导出</button>
+            </div>
+            <div class="table-outer"><table id="costDetailTable"></table></div>
+            <div class="table-footer"><div style="color:#000;font-size:11px;">费用明细</div><div id="costDetailCount"></div></div>
+        </div>
+        </div>
+    </div>
+<!-- 导出模板弹窗 -->
+<div id="tplModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:999;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:12px;width:720px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);padding:0">
+    <div style="padding:16px 20px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:15px;font-weight:700">📋 费用明细 - 导出模板字段说明</span>
+      <button onclick="closeTplModal()" style="background:none;border:none;font-size:18px;cursor:pointer;color:#94a3b8;padding:4px">✕</button>
+    </div>
+    <div style="padding:20px">
+      <table style="width:100%;border-collapse:collapse;font-size:12.5px">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:8px 10px;background:#f8fafc;border:1px solid #e2e8f0;width:140px">费用款项</th>
+            <th style="text-align:left;padding:8px 10px;background:#f8fafc;border:1px solid #e2e8f0">计费规则</th>
+            <th style="text-align:left;padding:8px 10px;background:#f8fafc;border:1px solid #e2e8f0;width:60px">状态</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:8px 10px;border:1px solid #e2e8f0;font-weight:600">维保出险</td><td style="padding:8px 10px;border:1px solid #e2e8f0;white-space:pre-line;line-height:1.6">博车网（风险等级）：6元/单
+车信盟（事故报告）：<span style="color:#dc2626;font-weight:600">26元/单</span>（原28元，已调整）
+新元联创（电池报告）：25元/单
+柠檬查（事故报告）：21.9元/单
+柠檬查（维保报告）：16元/单</td><td style="padding:8px 10px;border:1px solid #e2e8f0"><span style="background:#fef3c7;padding:2px 6px;border-radius:3px;font-size:11px">已调整</span></td></tr>
+          <tr><td style="padding:8px 10px;border:1px solid #e2e8f0;font-weight:600">查验成本</td><td style="padding:8px 10px;border:1px solid #e2e8f0">固定 75元/次</td><td style="padding:8px 10px;border:1px solid #e2e8f0">-</td></tr>
+          <tr><td style="padding:8px 10px;border:1px solid #e2e8f0;font-weight:600">垫款利息</td><td style="padding:8px 10px;border:1px solid #e2e8f0">售后退车时冲回，其他场景不冲回</td><td style="padding:8px 10px;border:1px solid #e2e8f0">-</td></tr>
+          <tr><td style="padding:8px 10px;border:1px solid #e2e8f0;font-weight:600">交付过户</td><td style="padding:8px 10px;border:1px solid #e2e8f0;white-space:pre-line;line-height:1.6">空中交付：100元
+现场交付无过户：250元
+有过户费：600元</td><td style="padding:8px 10px;border:1px solid #e2e8f0">-</td></tr>
+          <tr><td style="padding:8px 10px;border:1px solid #e2e8f0;font-weight:600">政企场地费</td><td style="padding:8px 10px;border:1px solid #e2e8f0"><span style="color:#dc2626;font-weight:600">统一调整为0</span>，由人资人工核算</td><td style="padding:8px 10px;border:1px solid #e2e8f0"><span style="background:#fef3c7;padding:2px 6px;border-radius:3px;font-size:11px">已调整</span></td></tr>
+          <tr><td style="padding:8px 10px;border:1px solid #e2e8f0;font-weight:600;background:#fef3c7">业务合作服务费</td><td style="padding:8px 10px;border:1px solid #e2e8f0;white-space:pre-line;line-height:1.6">同VIN码仅收取一次，订单清分后收取
+售后退车不冲正；同车再次上拍不再收取
+（具体集团费率见导入模版）</td><td style="padding:8px 10px;border:1px solid #e2e8f0"><span style="background:#fef3c7;padding:2px 6px;border-radius:3px;font-size:11px">逻辑变动</span></td></tr>
+          <tr><td style="padding:8px 10px;border:1px solid #e2e8f0;font-weight:600;background:#fee2e2;color:#991b1b">销售成本</td><td style="padding:8px 10px;border:1px solid #e2e8f0">计算规则见「车源绩效表」；与订单清算挂钩，清算后立即计算</td><td style="padding:8px 10px;border:1px solid #e2e8f0"><span style="background:#fee2e2;color:#991b1b;padding:2px 6px;border-radius:3px;font-size:11px;font-weight:600">新增</span></td></tr>
+          <tr><td style="padding:8px 10px;border:1px solid #e2e8f0;font-weight:600;background:#fee2e2;color:#991b1b">收购车成本</td><td style="padding:8px 10px;border:1px solid #e2e8f0">计算规则见「车源绩效表」；与订单清算挂钩，清算后立即计算</td><td style="padding:8px 10px;border:1px solid #e2e8f0"><span style="background:#fee2e2;color:#991b1b;padding:2px 6px;border-radius:3px;font-size:11px;font-weight:600">新增</span></td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:16px;padding:12px;background:#f0f9ff;border-radius:8px;font-size:12px;color:#0369a1">
+        <strong>图例：</strong>
+        <span style="background:#fee2e2;color:#991b1b;padding:2px 8px;border-radius:3px;margin:0 8px;font-weight:600">红色</span> = 新增字段
+        <span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:3px;margin:0 8px;font-weight:600">黄色</span> = 逻辑变动
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const D=[
+{r:'广东-广州',tu:14,tud:14,tid:13,td:2,tir:'92.86%',tdr:'14.29%',tdrd:'14.29%',tw:'2100.00',twy:'0.00',th:'0.00',tj:'0.00',ta:'0.00',tg:'2100.00',tag:'1,050.00',ti:'1117.00',tp:'983.00',tap:'491.50',su:0,sud:0,sd:0,sdr:'',sdrd:'',sp:'0.00',sc:'0.00',spr:'0%',sw:'0.00',swy:'0.00',sh:'0.00',sj:'0.00',sa:'0.00',sg:'0.00',sag:'',si:'0.00',spp:'0.00',sap:'',wu:14,wud:14,wd:2,wdr:'14.29%',wdrd:'14.29%',ww:'2100.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'2100.00',wag:'1,050.00',wi:'1117.00',wpp:'983.00',wap:'491.50'},
+{r:'广东-佛山',tu:5,tud:5,tid:5,td:0,tir:'100.00%',tdr:'0.00%',tdrd:'0.00%',tw:'-2600.00',twy:'0.00',th:'0.00',tj:'0.00',ta:'0.00',tg:'-2600.00',tag:'',ti:'150.00',tp:'-2750.00',tap:'',su:0,sud:0,sd:0,sdr:'',sdrd:'',sp:'0.00',sc:'0.00',spr:'0%',sw:'0.00',swy:'0.00',sh:'0.00',sj:'0.00',sa:'0.00',sg:'0.00',sag:'',si:'0.00',spp:'0.00',sap:'',wu:5,wud:5,wd:0,wdr:'0.00%',wdrd:'0.00%',ww:'-2600.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'-2600.00',wag:'',wi:'150.00',wpp:'-2750.00',wap:''},
+{r:'广东-深圳',tu:4,tud:4,tid:4,td:1,tir:'100.00%',tdr:'25.00%',tdrd:'25.00%',tw:'1800.00',twy:'0.00',th:'0.00',tj:'0.00',ta:'0.00',tg:'1800.00',tag:'1,800.00',ti:'600.00',tp:'1200.00',tap:'1,200.00',su:0,sud:0,sd:0,sdr:'',sdrd:'',sp:'0.00',sc:'0.00',spr:'0%',sw:'0.00',swy:'0.00',sh:'0.00',sj:'0.00',sa:'0.00',sg:'0.00',sag:'',si:'0.00',spp:'0.00',sap:'',wu:4,wud:4,wd:1,wdr:'25.00%',wdrd:'25.00%',ww:'1800.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'1800.00',wag:'1,800.00',wi:'600.00',wpp:'1200.00',wap:'1,200.00'},
+{r:'广东-东莞',tu:8,tud:8,tid:7,td:2,tir:'87.50%',tdr:'25.00%',tdrd:'25.00%',tw:'1800.00',twy:'0.00',th:'0.00',tj:'0.00',ta:'0.00',tg:'1800.00',tag:'900.00',ti:'3264.00',tp:'-1464.00',tap:'-732.00',su:0,sud:0,sd:0,sdr:'',sdrd:'',sp:'0.00',sc:'0.00',spr:'0%',sw:'0.00',swy:'0.00',sh:'0.00',sj:'0.00',sa:'0.00',sg:'0.00',sag:'',si:'32.00',spp:'-32.00',sap:'',wu:8,wud:8,wd:2,wdr:'25.00%',wdrd:'25.00%',ww:'1800.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'1800.00',wag:'900.00',wi:'3232.00',wpp:'-1432.00',wap:'-716.00'},
+{r:'广东-惠州',tu:4,tud:4,tid:4,td:0,tir:'100.00%',tdr:'0.00%',tdrd:'0.00%',tw:'0.00',twy:'0.00',th:'0.00',tj:'0.00',ta:'0.00',tg:'0.00',tag:'',ti:'708.00',tp:'-708.00',tap:'',su:0,sud:0,sd:0,sdr:'',sdrd:'',sp:'0.00',sc:'0.00',spr:'0%',sw:'0.00',swy:'0.00',sh:'0.00',sj:'0.00',sa:'0.00',sg:'0.00',sag:'',si:'0.00',spp:'0.00',sap:'',wu:4,wud:4,wd:0,wdr:'0.00%',wdrd:'0.00%',ww:'0.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'0.00',wag:'',wi:'708.00',wpp:'-708.00',wap:''},
+{r:'广东-中珠',tu:3,tud:3,tid:3,td:0,tir:'100.00%',tdr:'0.00%',tdrd:'0.00%',tw:'0.00',twy:'0.00',th:'0.00',tj:'0.00',ta:'0.00',tg:'0.00',tag:'',ti:'150.00',tp:'-150.00',tap:'',su:0,sud:0,sd:0,sdr:'',sdrd:'',sp:'0.00',sc:'0.00',spr:'0%',sw:'0.00',swy:'0.00',sh:'0.00',sj:'0.00',sa:'0.00',sg:'0.00',sag:'',si:'0.00',spp:'0.00',sap:'',wu:3,wud:3,wd:0,wdr:'0.00%',wdrd:'0.00%',ww:'0.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'0.00',wag:'',wi:'150.00',wpp:'-150.00',wap:''},
+{r:'广东-粤东',tu:3,tud:3,tid:1,td:1,tir:'33.33%',tdr:'33.33%',tdrd:'33.33%',tw:'600.00',twy:'0.00',th:'0.00',tj:'0.00',ta:'0.00',tg:'600.00',tag:'600.00',ti:'100.00',tp:'500.00',tap:'500.00',su:0,sud:0,sd:0,sdr:'',sdrd:'',sp:'0.00',sc:'0.00',spr:'0%',sw:'0.00',swy:'0.00',sh:'0.00',sj:'0.00',sa:'0.00',sg:'0.00',sag:'',si:'0.00',spp:'0.00',sap:'',wu:3,wud:3,wd:1,wdr:'33.33%',wdrd:'33.33%',ww:'600.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'600.00',wag:'600.00',wi:'100.00',wpp:'500.00',wap:'500.00'},
+{r:'广东-粤西',tu:2,tud:2,tid:1,td:0,tir:'50.00%',tdr:'0.00%',tdrd:'0.00%',tw:'0.00',twy:'0.00',th:'0.00',tj:'0.00',ta:'0.00',tg:'0.00',tag:'',ti:'0.00',tp:'0.00',tap:'',su:0,sud:0,sd:0,sdr:'',sdrd:'',sp:'0.00',sc:'0.00',spr:'0%',sw:'0.00',swy:'0.00',sh:'0.00',sj:'0.00',sa:'0.00',sg:'0.00',sag:'',si:'0.00',spp:'0.00',sap:'',wu:2,wud:2,wd:0,wdr:'0.00%',wdrd:'0.00%',ww:'0.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'0.00',wag:'',wi:'0.00',wpp:'0.00',wap:''},
+{r:'广西-南宁',tu:2,tud:2,tid:2,td:0,tir:'100.00%',tdr:'0.00%',tdrd:'0.00%',tw:'0.00',twy:'0.00',th:'0.00',tj:'0.00',ta:'0.00',tg:'0.00',tag:'',ti:'300.00',tp:'-300.00',tap:'',su:0,sud:0,sd:0,sdr:'',sdrd:'',sp:'0.00',sc:'0.00',spr:'0%',sw:'0.00',swy:'0.00',sh:'0.00',sj:'0.00',sa:'0.00',sg:'0.00',sag:'',si:'0.00',spp:'0.00',sap:'',wu:2,wud:2,wd:0,wdr:'0.00%',wdrd:'0.00%',ww:'0.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'0.00',wag:'',wi:'300.00',wpp:'-300.00',wap:''},
+{r:'海南-海口',tu:1,tud:1,tid:0,td:1,tir:'0.00%',tdr:'100.00%',tdrd:'100.00%',tw:'300.00',twy:'0.00',th:'0.00',tj:'0.00',ta:'0.00',tg:'300.00',tag:'300.00',ti:'100.00',tp:'200.00',tap:'200.00',su:0,sud:0,sd:0,sdr:'',sdrd:'',sp:'0.00',sc:'0.00',spr:'0%',sw:'0.00',swy:'0.00',sh:'0.00',sj:'0.00',sa:'0.00',sg:'0.00',sag:'',si:'0.00',spp:'0.00',sap:'',wu:1,wud:1,wd:1,wdr:'100.00%',wdrd:'100.00%',ww:'300.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'300.00',wag:'300.00',wi:'100.00',wpp:'200.00',wap:'200.00'},
+{r:'四川-成都',tu:'',tud:'',tid:'',td:0,tir:'',tdr:'',tdrd:'',tw:'0.00',twy:'0.00',th:'0.00',tj:'0.00',ta:'0.00',tg:'0.00',tag:'',ti:'96.90',tp:'-96.90',tap:'',su:'',sud:'',sd:0,sdr:'',sdrd:'',sp:'',sc:'',spr:'0%',sw:'0.00',swy:'0.00',sh:'0.00',sj:'0.00',sa:'0.00',sg:'0.00',sag:'',si:'0.00',spp:'0.00',sap:'',wu:'',wud:'',wd:0,wdr:'',wdrd:'',ww:'0.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'0.00',wag:'',wi:'96.90',wpp:'-96.90',wap:''},
+{r:'湖北-武汉',tu:1,tud:1,tid:1,td:0,tir:'100.00%',tdr:'0.00%',tdrd:'0.00%',tw:'0.00',twy:'0.00',th:'0.00',tj:'0.00',ta:'0.00',tg:'0.00',tag:'',ti:'286.80',tp:'-286.80',tap:'',su:0,sud:0,sd:0,sdr:'',sdrd:'',sp:'0.00',sc:'0.00',spr:'0%',sw:'0.00',swy:'0.00',sh:'0.00',sj:'0.00',sa:'0.00',sg:'0.00',sag:'',si:'0.00',spp:'0.00',sap:'',wu:1,wud:1,wd:0,wdr:'0.00%',wdrd:'0.00%',ww:'0.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'0.00',wag:'',wi:'286.80',wpp:'-286.80',wap:''},
+{r:'湖南-长沙',tu:2,tud:2,tid:2,td:0,tir:'100.00%',tdr:'0.00%',tdrd:'0.00%',tw:'0.00',twy:'0.00',th:'0.00',tj:'0.00',ta:'0.00',tg:'0.00',tag:'',ti:'101.00',tp:'-101.00',tap:'',su:0,sud:0,sd:0,sdr:'',sdrd:'',sp:'0.00',sc:'0.00',spr:'0%',sw:'0.00',swy:'0.00',sh:'0.00',sj:'0.00',sa:'0.00',sg:'0.00',sag:'',si:'0.00',spp:'0.00',sap:'',wu:2,wud:2,wd:0,wdr:'0.00%',wdrd:'0.00%',ww:'0.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'0.00',wag:'',wi:'101.00',wpp:'-101.00',wap:''},
+{r:'山西-太原',tu:3,tud:3,tid:3,td:2,tir:'100.00%',tdr:'66.67%',tdrd:'66.67%',tw:'1700.00',twy:'0.00',th:'0.00',tj:'0.00',ta:'0.00',tg:'1700.00',tag:'850.00',ti:'301.00',tp:'1399.00',tap:'699.50',su:0,sud:0,sd:0,sdr:'',sdrd:'',sp:'0.00',sc:'0.00',spr:'0%',sw:'0.00',swy:'0.00',sh:'0.00',sj:'0.00',sa:'0.00',sg:'0.00',sag:'',si:'0.00',spp:'0.00',sap:'',wu:3,wud:3,wd:2,wdr:'66.67%',wdrd:'66.67%',ww:'1700.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'1700.00',wag:'850.00',wi:'301.00',wpp:'1399.00',wap:'699.50'},
+{r:'江苏-南京',tu:1,tud:1,tid:0,td:1,tir:'0.00%',tdr:'100.00%',tdrd:'100.00%',tw:'600.00',twy:'0.00',th:'0.00',tj:'0.00',ta:'0.00',tg:'600.00',tag:'600.00',ti:'100.00',tp:'500.00',tap:'500.00',su:0,sud:0,sd:0,sdr:'',sdrd:'',sp:'0.00',sc:'0.00',spr:'0%',sw:'0.00',swy:'0.00',sh:'0.00',sj:'0.00',sa:'0.00',sg:'0.00',sag:'',si:'0.00',spp:'0.00',sap:'',wu:1,wud:1,wd:1,wdr:'100.00%',wdrd:'100.00%',ww:'600.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'600.00',wag:'600.00',wi:'100.00',wpp:'500.00',wap:'500.00'},
+{r:'陕西-西安',tu:1,tud:1,tid:1,td:0,tir:'100.00%',tdr:'0.00%',tdrd:'0.00%',tw:'0.00',twy:'0.00',th:'0.00',tj:'0.00',ta:'0.00',tg:'0.00',tag:'',ti:'225.00',tp:'-225.00',tap:'',su:0,sud:0,sd:0,sdr:'',sdrd:'',sp:'0.00',sc:'0.00',spr:'0%',sw:'0.00',swy:'0.00',sh:'0.00',sj:'0.00',sa:'0.00',sg:'0.00',sag:'',si:'0.00',spp:'0.00',sap:'',wu:1,wud:1,wd:0,wdr:'0.00%',wdrd:'0.00%',ww:'0.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'0.00',wag:'',wi:'225.00',wpp:'-225.00',wap:''},
+{r:'置换一部',tu:21,tud:21,tid:10,td:8,tir:'47.62%',tdr:'38.10%',tdrd:'38.10%',tw:'21400.00',twy:'0.00',th:'17500.00',tj:'0.00',ta:'0.00',tg:'38900.00',tag:'4,862.50',ti:'6163.20',tp:'32736.80',tap:'4,092.10',su:14,sud:14,sd:8,sdr:'57.14%',sdrd:'57.14%',sp:'22300.00',sc:'168500.00',spr:'13.23%',sw:'21400.00',swy:'0.00',sh:'17500.00',sj:'0.00',sa:'0.00',sg:'38900.00',sag:'4,862.50',si:'5679.50',spp:'33220.50',sap:'4,152.56',wu:7,wud:7,wd:0,wdr:'0.00%',wdrd:'0.00%',ww:'0.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'0.00',wag:'',wi:'483.70',wpp:'-483.70',wap:''},
+{r:'置换三部',tu:8,tud:8,tid:5,td:1,tir:'62.50%',tdr:'12.50%',tdrd:'12.50%',tw:'1800.00',twy:'0.00',th:'0.00',tj:'0.00',ta:'0.00',tg:'1800.00',tag:'1,800.00',ti:'908.80',tp:'891.20',tap:'891.20',su:1,sud:1,sd:0,sdr:'0.00%',sdrd:'0.00%',sp:'0.00',sc:'0.00',spr:'0%',sw:'0.00',swy:'0.00',sh:'0.00',sj:'0.00',sa:'0.00',sg:'0.00',sag:'',si:'87.00',spp:'-87.00',sap:'',wu:7,wud:7,wd:1,wdr:'14.29%',wdrd:'14.29%',ww:'1800.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'1800.00',wag:'1,800.00',wi:'821.80',wpp:'978.20',wap:'978.20'},
+{r:'拓展政企',tu:'',tud:'',tid:'',td:0,tir:'',tdr:'',tdrd:'',tw:'0.00',twy:'0.00',th:'0.00',tj:'0.00',ta:'0.00',tg:'0.00',tag:'',ti:'0.00',tp:'0.00',tap:'',su:'',sud:'',sd:0,sdr:'',sdrd:'',sp:'',sc:'',spr:'0%',sw:'0.00',swy:'0.00',sh:'0.00',sj:'0.00',sa:'0.00',sg:'0.00',sag:'',si:'0.00',spp:'0.00',sap:'',wu:'',wud:'',wd:0,wdr:'',wdrd:'',ww:'0.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'0.00',wag:'',wi:'0.00',wpp:'0.00',wap:''},
+{r:'服务中心',tu:5,tud:5,tid:5,td:0,tir:'100.00%',tdr:'0.00%',tdrd:'0.00%',tw:'0.00',twy:'0.00',th:'0.00',tj:'0.00',ta:'0.00',tg:'0.00',tag:'',ti:'0.00',tp:'0.00',tap:'',su:0,sud:0,sd:0,sdr:'',sdrd:'',sp:'0.00',sc:'0.00',spr:'0%',sw:'0.00',swy:'0.00',sh:'0.00',sj:'0.00',sa:'0.00',sg:'0.00',sag:'',si:'0.00',spp:'0.00',sap:'',wu:5,wud:5,wd:0,wdr:'0.00%',wdrd:'0.00%',ww:'0.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'0.00',wag:'',wi:'0.00',wpp:'0.00',wap:''},
+{r:'交易中心',tu:2,tud:2,tid:2,td:0,tir:'100.00%',tdr:'0.00%',tdrd:'0.00%',tw:'0.00',twy:'0.00',th:'0.00',tj:'0.00',ta:'0.00',tg:'0.00',tag:'',ti:'0.00',tp:'0.00',tap:'',su:0,sud:0,sd:0,sdr:'',sdrd:'',sp:'0.00',sc:'0.00',spr:'0%',sw:'0.00',swy:'0.00',sh:'0.00',sj:'0.00',sa:'0.00',sg:'0.00',sag:'',si:'0.00',spp:'0.00',sap:'',wu:2,wud:2,wd:0,wdr:'0.00%',wdrd:'0.00%',ww:'0.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'0.00',wag:'',wi:'0.00',wpp:'0.00',wap:''},
+{r:'合计',tu:90,tud:90,tid:69,td:19,tir:'76.67%',tdr:'21.11%',tdrd:'21.11%',tw:'29500.00',twy:'0.00',th:'17500.00',tj:'0.00',ta:'0.00',tg:'47000.00',tag:'2,473.68',ti:'14671.70',tp:'32328.30',tap:'1,701.49',su:15,sud:15,sd:8,sdr:'53.33%',sdrd:'53.33%',sp:'22300.00',sc:'168500.00',spr:'13.23%',sw:'21400.00',swy:'0.00',sh:'17500.00',sj:'0.00',sa:'0.00',sg:'38900.00',sag:'4,862.50',si:'5798.50',spp:'33101.50',sap:'4,137.69',wu:75,wud:75,wd:11,wdr:'14.67%',wdrd:'14.67%',ww:'8100.00',wwy:'0.00',wh:'0.00',wj:'0.00',wa:'0.00',wg:'8100.00',wag:'736.36',wi:'8873.20',wpp:'-773.20',wap:'-70.29'}
+];
+
+const regionCols=[
+  {k:'tu',l:'上拍量'},{k:'tud',l:'上拍量(去重)'},{k:'tid',l:'查验台次（去重）'},{k:'td',l:'成交量'},{k:'tir',l:'查验比例'},{k:'tdr',l:'成交率'},{k:'tdrd',l:'成交率(去重)'},
+  {k:'tw',l:'唯普毛利（单位：元）'},{k:'twy',l:'唯普云毛利（单位：元）'},{k:'th',l:'汇和毛利（单位：元）'},{k:'tj',l:'机拍毛利（单位：元）'},{k:'ta',l:'毛利调整（单位：元）'},{k:'tg',l:'总毛利（单位：元）'},
+  {k:'tag',l:'台均总毛利（单位：元）'},{k:'ti',l:'内部结算（单位：元）'},{k:'tp',l:'考核毛利（单位：元）'},{k:'tap',l:'台均考核毛利'},
+  {k:'su',l:'上拍量'},{k:'sud',l:'上拍量(去重)'},{k:'sd',l:'成交量'},{k:'sdr',l:'成交率'},{k:'sdrd',l:'成交率(去重)'},
+  {k:'sp',l:'总溢价'},{k:'sc',l:'总合同价'},{k:'spr',l:'溢价率'},
+  {k:'sw',l:'唯普毛利（单位：元）'},{k:'swy',l:'唯普云毛利（单位：元）'},{k:'sh',l:'汇和毛利（单位：元）'},{k:'sj',l:'机拍毛利（单位：元）'},{k:'sa',l:'毛利调整（单位：元）'},{k:'sg',l:'总毛利（单位：元）'},
+  {k:'sag',l:'台均总毛利'},{k:'si',l:'内部结算（单位：元）'},{k:'spp',l:'考核毛利（单位：元）'},{k:'sap',l:'台均考核毛利'},
+  {k:'wu',l:'上拍量'},{k:'wud',l:'上拍量(去重)'},{k:'wd',l:'成交量'},{k:'wdr',l:'成交率'},{k:'wdrd',l:'成交率(去重)'},
+  {k:'ww',l:'唯普毛利（单位：元）'},{k:'wwy',l:'唯普云毛利（单位：元）'},{k:'wh',l:'汇和毛利（单位：元）'},{k:'wj',l:'机拍毛利（单位：元）'},{k:'wa',l:'毛利调整（单位：元）'},{k:'wg',l:'总毛利（单位：元）'},
+  {k:'wag',l:'台均总毛利'},{k:'wi',l:'内部结算（单位：元）'},{k:'wpp',l:'考核毛利（单位：元）'},{k:'wap',l:'台均考核毛利'}
+];
+
+const purchaseGroups=[{name:'收购合计',span:18},{name:'竞价大厅',span:18},{name:'报废专场',span:18},{name:'专场拍',span:18},{name:'好车直卖',span:18},{name:'比亚迪专场',span:18},{name:'共享拍',span:18},{name:'顺序拍',span:18},{name:'有保留价',span:18}];
+const purchaseCols=[{k:'c1',l:'上拍量'},{k:'c2',l:'上拍量(去重)'},{k:'c3',l:'成交量'},{k:'c4',l:'成交率'},{k:'c5',l:'成交率（去重）'},{k:'c6',l:'总溢价'},{k:'c7',l:'总合同价'},{k:'c8',l:'溢价率'},{k:'c9',l:'唯普毛利（单位：元）'},{k:'c10',l:'唯普云毛利（单位：元）'},{k:'c11',l:'汇和毛利（单位：元）'},{k:'c12',l:'机拍毛利（单位：元）'},{k:'c13',l:'毛利调整（单位：元）'},{k:'c14',l:'总毛利（单位：元）'},{k:'c15',l:'台均总毛利（单位：元）'},{k:'c16',l:'内部结算（单位：元）'},{k:'c17',l:'考核毛利（单位：元）'},{k:'c18',l:'台均考核毛利'},{k:'c19',l:'上拍量'},{k:'c20',l:'上拍量(去重)'},{k:'c21',l:'成交量'},{k:'c22',l:'成交率'},{k:'c23',l:'成交率（去重）'},{k:'c24',l:'总溢价'},{k:'c25',l:'总合同价'},{k:'c26',l:'溢价率'},{k:'c27',l:'唯普毛利（单位：元）'},{k:'c28',l:'唯普云毛利（单位：元）'},{k:'c29',l:'汇和毛利（单位：元）'},{k:'c30',l:'机拍毛利（单位：元）'},{k:'c31',l:'毛利调整（单位：元）'},{k:'c32',l:'总毛利（单位：元）'},{k:'c33',l:'台均总毛利（单位：元）'},{k:'c34',l:'内部结算（单位：元）'},{k:'c35',l:'考核毛利（单位：元）'},{k:'c36',l:'台均考核毛利'},{k:'c37',l:'上拍量'},{k:'c38',l:'上拍量(去重)'},{k:'c39',l:'成交量'},{k:'c40',l:'成交率'},{k:'c41',l:'成交率（去重）'},{k:'c42',l:'总溢价'},{k:'c43',l:'总合同价'},{k:'c44',l:'溢价率'},{k:'c45',l:'唯普毛利（单位：元）'},{k:'c46',l:'唯普云毛利（单位：元）'},{k:'c47',l:'汇和毛利（单位：元）'},{k:'c48',l:'机拍毛利（单位：元）'},{k:'c49',l:'毛利调整（单位：元）'},{k:'c50',l:'总毛利（单位：元）'},{k:'c51',l:'台均总毛利（单位：元）'},{k:'c52',l:'内部结算（单位：元）'},{k:'c53',l:'考核毛利（单位：元）'},{k:'c54',l:'台均考核毛利'},{k:'c55',l:'上拍量'},{k:'c56',l:'上拍量(去重)'},{k:'c57',l:'成交量'},{k:'c58',l:'成交率'},{k:'c59',l:'成交率（去重）'},{k:'c60',l:'总溢价'},{k:'c61',l:'总合同价'},{k:'c62',l:'溢价率'},{k:'c63',l:'唯普毛利（单位：元）'},{k:'c64',l:'唯普云毛利（单位：元）'},{k:'c65',l:'汇和毛利（单位：元）'},{k:'c66',l:'机拍毛利（单位：元）'},{k:'c67',l:'毛利调整（单位：元）'},{k:'c68',l:'总毛利（单位：元）'},{k:'c69',l:'台均总毛利（单位：元）'},{k:'c70',l:'内部结算（单位：元）'},{k:'c71',l:'考核毛利（单位：元）'},{k:'c72',l:'台均考核毛利'},{k:'c73',l:'上拍量'},{k:'c74',l:'上拍量(去重)'},{k:'c75',l:'成交量'},{k:'c76',l:'成交率'},{k:'c77',l:'成交率（去重）'},{k:'c78',l:'总溢价'},{k:'c79',l:'总合同价'},{k:'c80',l:'溢价率'},{k:'c81',l:'唯普毛利（单位：元）'},{k:'c82',l:'唯普云毛利（单位：元）'},{k:'c83',l:'汇和毛利（单位：元）'},{k:'c84',l:'机拍毛利（单位：元）'},{k:'c85',l:'毛利调整（单位：元）'},{k:'c86',l:'总毛利（单位：元）'},{k:'c87',l:'台均总毛利（单位：元）'},{k:'c88',l:'内部结算（单位：元）'},{k:'c89',l:'考核毛利（单位：元）'},{k:'c90',l:'台均考核毛利'},{k:'c91',l:'上拍量'},{k:'c92',l:'上拍量(去重)'},{k:'c93',l:'成交量'},{k:'c94',l:'成交率'},{k:'c95',l:'成交率（去重）'},{k:'c96',l:'总溢价'},{k:'c97',l:'总合同价'},{k:'c98',l:'溢价率'},{k:'c99',l:'唯普毛利（单位：元）'},{k:'c100',l:'唯普云毛利（单位：元）'},{k:'c101',l:'汇和毛利（单位：元）'},{k:'c102',l:'机拍毛利（单位：元）'},{k:'c103',l:'毛利调整（单位：元）'},{k:'c104',l:'总毛利（单位：元）'},{k:'c105',l:'台均总毛利（单位：元）'},{k:'c106',l:'内部结算（单位：元）'},{k:'c107',l:'考核毛利（单位：元）'},{k:'c108',l:'台均考核毛利'},{k:'c109',l:'上拍量'},{k:'c110',l:'上拍量(去重)'},{k:'c111',l:'成交量'},{k:'c112',l:'成交率'},{k:'c113',l:'成交率（去重）'},{k:'c114',l:'总溢价'},{k:'c115',l:'总合同价'},{k:'c116',l:'溢价率'},{k:'c117',l:'唯普毛利（单位：元）'},{k:'c118',l:'唯普云毛利（单位：元）'},{k:'c119',l:'汇和毛利（单位：元）'},{k:'c120',l:'机拍毛利（单位：元）'},{k:'c121',l:'毛利调整（单位：元）'},{k:'c122',l:'总毛利（单位：元）'},{k:'c123',l:'台均总毛利（单位：元）'},{k:'c124',l:'内部结算（单位：元）'},{k:'c125',l:'考核毛利（单位：元）'},{k:'c126',l:'台均考核毛利'},{k:'c127',l:'上拍量'},{k:'c128',l:'上拍量(去重)'},{k:'c129',l:'成交量'},{k:'c130',l:'成交率'},{k:'c131',l:'成交率（去重）'},{k:'c132',l:'总溢价'},{k:'c133',l:'总合同价'},{k:'c134',l:'溢价率'},{k:'c135',l:'唯普毛利（单位：元）'},{k:'c136',l:'唯普云毛利（单位：元）'},{k:'c137',l:'汇和毛利（单位：元）'},{k:'c138',l:'机拍毛利（单位：元）'},{k:'c139',l:'毛利调整（单位：元）'},{k:'c140',l:'总毛利（单位：元）'},{k:'c141',l:'台均总毛利（单位：元）'},{k:'c142',l:'内部结算（单位：元）'},{k:'c143',l:'考核毛利（单位：元）'},{k:'c144',l:'台均考核毛利'},{k:'c145',l:'上拍量'},{k:'c146',l:'上拍量(去重)'},{k:'c147',l:'成交量'},{k:'c148',l:'成交率'},{k:'c149',l:'成交率（去重）'},{k:'c150',l:'总溢价'},{k:'c151',l:'总合同价'},{k:'c152',l:'溢价率'},{k:'c153',l:'唯普毛利（单位：元）'},{k:'c154',l:'唯普云毛利（单位：元）'},{k:'c155',l:'汇和毛利（单位：元）'},{k:'c156',l:'机拍毛利（单位：元）'},{k:'c157',l:'毛利调整（单位：元）'},{k:'c158',l:'总毛利（单位：元）'},{k:'c159',l:'台均总毛利（单位：元）'},{k:'c160',l:'内部结算（单位：元）'},{k:'c161',l:'考核毛利（单位：元）'},{k:'c162',l:'台均考核毛利'}];
+const purchaseData=[
+{r:'广东-东莞',c1:'',c2:'',c3:0,c4:'',c5:'',c6:'',c7:'',c8:'',c9:'0.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'0.00',c15:'',c16:'32.00',c17:'-32.00',c18:'',c19:'',c20:'',c21:0,c22:'',c23:'',c24:'',c25:'',c26:'',c27:'0.00',c28:'0.00',c29:'0.00',c30:'0.00',c31:'0.00',c32:'0.00',c33:'',c34:'0.00',c35:'0.00',c36:'',c37:'',c38:'',c39:0,c40:'',c41:'',c42:'',c43:'',c44:'',c45:'0.00',c46:'0.00',c47:'0.00',c48:'0.00',c49:'0.00',c50:'0.00',c51:'',c52:'0.00',c53:'0.00',c54:'',c55:'',c56:'',c57:0,c58:'',c59:'',c60:'',c61:'',c62:'',c63:'0.00',c64:'0.00',c65:'0.00',c66:'0.00',c67:'0.00',c68:'0.00',c69:'',c70:'0.00',c71:'0.00',c72:'',c73:'',c74:'',c75:0,c76:'',c77:'',c78:'',c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:'',c92:'',c93:0,c94:'',c95:'',c96:'',c97:'',c98:'',c99:'0.00',c100:'0.00',c101:'0.00',c102:'0.00',c103:'0.00',c104:'0.00',c105:'',c106:'0.00',c107:'0.00',c108:'',c109:'',c110:'',c111:0,c112:'',c113:'',c114:'',c115:'',c116:'',c117:'0.00',c118:'0.00',c119:'0.00',c120:'0.00',c121:'0.00',c122:'0.00',c123:'',c124:'0.00',c125:'0.00',c126:'',c127:'',c128:'',c129:0,c130:'',c131:'',c132:'',c133:'',c134:'',c135:'0.00',c136:'0.00',c137:'0.00',c138:'0.00',c139:'0.00',c140:'0.00',c141:'',c142:'0.00',c143:'0.00',c144:'',c145:'',c146:'',c147:0,c148:'',c149:'',c150:'',c151:'',c152:'',c153:'0.00',c154:'0.00',c155:'0.00',c156:'0.00',c157:'0.00',c158:'0.00',c159:'',c160:'0.00',c161:'0.00',c162:''},
+{r:'置换一部',c1:14,c2:14,c3:8,c4:'57.14%',c5:'57.14%',c6:'22300.00',c7:'168500.00',c8:'13.23%',c9:'21400.00',c10:'0.00',c11:'17500.00',c12:'0.00',c13:'0.00',c14:'38900.00',c15:'4,862.50',c16:'5679.50',c17:'33220.50',c18:'4,152.56',c19:14,c20:14,c21:8,c22:'57.14%',c23:'57.14%',c24:'22300.00',c25:'168500.00',c26:'13.23%',c27:'21400.00',c28:'0.00',c29:'17500.00',c30:'0.00',c31:'0.00',c32:'38900.00',c33:'4,862.50',c34:'3000.00',c35:'35900.00',c36:'4,487.50',c37:0,c38:0,c39:0,c40:'',c41:'',c42:'0.00',c43:'0.00',c44:'',c45:'0.00',c46:'0.00',c47:'0.00',c48:'0.00',c49:'0.00',c50:'0.00',c51:'',c52:'0.00',c53:'0.00',c54:'',c55:0,c56:0,c57:0,c58:'',c59:'',c60:'0.00',c61:'0.00',c62:'',c63:'0.00',c64:'0.00',c65:'0.00',c66:'0.00',c67:'0.00',c68:'0.00',c69:'',c70:'0.00',c71:'0.00',c72:'',c73:0,c74:0,c75:0,c76:'',c77:'',c78:'0.00',c79:'0.00',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'',c99:'0.00',c100:'0.00',c101:'0.00',c102:'0.00',c103:'0.00',c104:'0.00',c105:'',c106:'0.00',c107:'0.00',c108:'',c109:0,c110:0,c111:0,c112:'',c113:'',c114:'0.00',c115:'0.00',c116:'',c117:'0.00',c118:'0.00',c119:'0.00',c120:'0.00',c121:'0.00',c122:'0.00',c123:'',c124:'0.00',c125:'0.00',c126:'',c127:0,c128:0,c129:0,c130:'',c131:'',c132:'0.00',c133:'0.00',c134:'',c135:'0.00',c136:'0.00',c137:'0.00',c138:'0.00',c139:'0.00',c140:'0.00',c141:'',c142:'0.00',c143:'0.00',c144:'',c145:0,c146:0,c147:0,c148:'',c149:'',c150:'0.00',c151:'0.00',c152:'',c153:'0.00',c154:'0.00',c155:'0.00',c156:'0.00',c157:'0.00',c158:'0.00',c159:'',c160:'0.00',c161:'0.00',c162:''},
+{r:'置换三部',c1:1,c2:1,c3:0,c4:'0.00%',c5:'0.00%',c6:'0.00',c7:'0.00',c8:'',c9:'0.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'0.00',c15:'',c16:'87.00',c17:'-87.00',c18:'',c19:1,c20:1,c21:0,c22:'0.00%',c23:'0.00%',c24:'0.00',c25:'0.00',c26:'',c27:'0.00',c28:'0.00',c29:'0.00',c30:'0.00',c31:'0.00',c32:'0.00',c33:'',c34:'0.00',c35:'0.00',c36:'',c37:0,c38:0,c39:0,c40:'',c41:'',c42:'0.00',c43:'0.00',c44:'',c45:'0.00',c46:'0.00',c47:'0.00',c48:'0.00',c49:'0.00',c50:'0.00',c51:'',c52:'0.00',c53:'0.00',c54:'',c55:0,c56:0,c57:0,c58:'',c59:'',c60:'0.00',c61:'0.00',c62:'',c63:'0.00',c64:'0.00',c65:'0.00',c66:'0.00',c67:'0.00',c68:'0.00',c69:'',c70:'0.00',c71:'0.00',c72:'',c73:0,c74:0,c75:0,c76:'',c77:'',c78:'0.00',c79:'0.00',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'',c99:'0.00',c100:'0.00',c101:'0.00',c102:'0.00',c103:'0.00',c104:'0.00',c105:'',c106:'0.00',c107:'0.00',c108:'',c109:0,c110:0,c111:0,c112:'',c113:'',c114:'0.00',c115:'0.00',c116:'',c117:'0.00',c118:'0.00',c119:'0.00',c120:'0.00',c121:'0.00',c122:'0.00',c123:'',c124:'0.00',c125:'0.00',c126:'',c127:0,c128:0,c129:0,c130:'',c131:'',c132:'0.00',c133:'0.00',c134:'',c135:'0.00',c136:'0.00',c137:'0.00',c138:'0.00',c139:'0.00',c140:'0.00',c141:'',c142:'0.00',c143:'0.00',c144:'',c145:0,c146:0,c147:0,c148:'',c149:'',c150:'0.00',c151:'0.00',c152:'',c153:'0.00',c154:'0.00',c155:'0.00',c156:'0.00',c157:'0.00',c158:'0.00',c159:'',c160:'0.00',c161:'0.00',c162:''},
+{r:'合计',c1:15,c2:15,c3:8,c4:'53.33%',c5:'53.33%',c6:'22300.00',c7:'168500.00',c8:'13.23%',c9:'21400.00',c10:'0.00',c11:'17500.00',c12:'0.00',c13:'0.00',c14:'38900.00',c15:'4,862.50',c16:'5798.50',c17:'33101.50',c18:'4,137.69',c19:15,c20:15,c21:8,c22:'53.33%',c23:'53.33%',c24:'22300.00',c25:'168500.00',c26:'13.23%',c27:'21400.00',c28:'0.00',c29:'17500.00',c30:'0.00',c31:'0.00',c32:'38900.00',c33:'4,862.50',c34:'3000.00',c35:'35900.00',c36:'4,487.50',c37:0,c38:0,c39:0,c40:'',c41:'',c42:'0.00',c43:'0.00',c44:'',c45:'0.00',c46:'0.00',c47:'0.00',c48:'0.00',c49:'0.00',c50:'0.00',c51:'',c52:'0.00',c53:'0.00',c54:'',c55:0,c56:0,c57:0,c58:'',c59:'',c60:'0.00',c61:'0.00',c62:'',c63:'0.00',c64:'0.00',c65:'0.00',c66:'0.00',c67:'0.00',c68:'0.00',c69:'',c70:'0.00',c71:'0.00',c72:'',c73:0,c74:0,c75:0,c76:'',c77:'',c78:'0.00',c79:'0.00',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'',c99:'0.00',c100:'0.00',c101:'0.00',c102:'0.00',c103:'0.00',c104:'0.00',c105:'',c106:'0.00',c107:'0.00',c108:'',c109:0,c110:0,c111:0,c112:'',c113:'',c114:'0.00',c115:'0.00',c116:'',c117:'0.00',c118:'0.00',c119:'0.00',c120:'0.00',c121:'0.00',c122:'0.00',c123:'',c124:'0.00',c125:'0.00',c126:'',c127:0,c128:0,c129:0,c130:'',c131:'',c132:'0.00',c133:'0.00',c134:'',c135:'0.00',c136:'0.00',c137:'0.00',c138:'0.00',c139:'0.00',c140:'0.00',c141:'',c142:'0.00',c143:'0.00',c144:'',c145:0,c146:0,c147:0,c148:'',c149:'',c150:'0.00',c151:'0.00',c152:'',c153:'0.00',c154:'0.00',c155:'0.00',c156:'0.00',c157:'0.00',c158:'0.00',c159:'',c160:'0.00',c161:'0.00',c162:''}
+];
+
+const consignGroups=[{name:'委拍合计',span:15},{name:'竞价大厅',span:15},{name:'报废专场',span:15},{name:'专场拍',span:15},{name:'好车直卖',span:15},{name:'比亚迪专场',span:15},{name:'共享拍',span:15},{name:'顺序拍',span:15},{name:'有保留价',span:15}];
+const consignCols=[{k:'c1',l:'上拍量'},{k:'c2',l:'上拍量(去重)'},{k:'c3',l:'成交量'},{k:'c4',l:'成交率'},{k:'c5',l:'成交率（去重）'},{k:'c6',l:'唯普毛利（单位：元）'},{k:'c7',l:'唯普云毛利（单位：元）'},{k:'c8',l:'汇和毛利（单位：元）'},{k:'c9',l:'机拍毛利（单位：元）'},{k:'c10',l:'毛利调整（单位：元）'},{k:'c11',l:'总毛利（单位：元）'},{k:'c12',l:'台均总毛利（单位：元）'},{k:'c13',l:'内部结算（单位：元）'},{k:'c14',l:'考核毛利（单位：元）'},{k:'c15',l:'台均考核毛利'},{k:'c16',l:'上拍量'},{k:'c17',l:'上拍量(去重)'},{k:'c18',l:'成交量'},{k:'c19',l:'成交率'},{k:'c20',l:'成交率（去重）'},{k:'c21',l:'唯普毛利（单位：元）'},{k:'c22',l:'唯普云毛利（单位：元）'},{k:'c23',l:'汇和毛利（单位：元）'},{k:'c24',l:'机拍毛利（单位：元）'},{k:'c25',l:'毛利调整（单位：元）'},{k:'c26',l:'总毛利（单位：元）'},{k:'c27',l:'台均总毛利（单位：元）'},{k:'c28',l:'内部结算（单位：元）'},{k:'c29',l:'考核毛利（单位：元）'},{k:'c30',l:'台均考核毛利'},{k:'c31',l:'上拍量'},{k:'c32',l:'上拍量(去重)'},{k:'c33',l:'成交量'},{k:'c34',l:'成交率'},{k:'c35',l:'成交率（去重）'},{k:'c36',l:'唯普毛利（单位：元）'},{k:'c37',l:'唯普云毛利（单位：元）'},{k:'c38',l:'汇和毛利（单位：元）'},{k:'c39',l:'机拍毛利（单位：元）'},{k:'c40',l:'毛利调整（单位：元）'},{k:'c41',l:'总毛利（单位：元）'},{k:'c42',l:'台均总毛利（单位：元）'},{k:'c43',l:'内部结算（单位：元）'},{k:'c44',l:'考核毛利（单位：元）'},{k:'c45',l:'台均考核毛利'},{k:'c46',l:'上拍量'},{k:'c47',l:'上拍量(去重)'},{k:'c48',l:'成交量'},{k:'c49',l:'成交率'},{k:'c50',l:'成交率（去重）'},{k:'c51',l:'唯普毛利（单位：元）'},{k:'c52',l:'唯普云毛利（单位：元）'},{k:'c53',l:'汇和毛利（单位：元）'},{k:'c54',l:'机拍毛利（单位：元）'},{k:'c55',l:'毛利调整（单位：元）'},{k:'c56',l:'总毛利（单位：元）'},{k:'c57',l:'台均总毛利（单位：元）'},{k:'c58',l:'内部结算（单位：元）'},{k:'c59',l:'考核毛利（单位：元）'},{k:'c60',l:'台均考核毛利'},{k:'c61',l:'上拍量'},{k:'c62',l:'上拍量(去重)'},{k:'c63',l:'成交量'},{k:'c64',l:'成交率'},{k:'c65',l:'成交率（去重）'},{k:'c66',l:'唯普毛利（单位：元）'},{k:'c67',l:'唯普云毛利（单位：元）'},{k:'c68',l:'汇和毛利（单位：元）'},{k:'c69',l:'机拍毛利（单位：元）'},{k:'c70',l:'毛利调整（单位：元）'},{k:'c71',l:'总毛利（单位：元）'},{k:'c72',l:'台均总毛利（单位：元）'},{k:'c73',l:'内部结算（单位：元）'},{k:'c74',l:'考核毛利（单位：元）'},{k:'c75',l:'台均考核毛利'},{k:'c76',l:'上拍量'},{k:'c77',l:'上拍量(去重)'},{k:'c78',l:'成交量'},{k:'c79',l:'成交率'},{k:'c80',l:'成交率（去重）'},{k:'c81',l:'唯普毛利（单位：元）'},{k:'c82',l:'唯普云毛利（单位：元）'},{k:'c83',l:'汇和毛利（单位：元）'},{k:'c84',l:'机拍毛利（单位：元）'},{k:'c85',l:'毛利调整（单位：元）'},{k:'c86',l:'总毛利（单位：元）'},{k:'c87',l:'台均总毛利（单位：元）'},{k:'c88',l:'内部结算（单位：元）'},{k:'c89',l:'考核毛利（单位：元）'},{k:'c90',l:'台均考核毛利'},{k:'c91',l:'上拍量'},{k:'c92',l:'上拍量(去重)'},{k:'c93',l:'成交量'},{k:'c94',l:'成交率'},{k:'c95',l:'成交率（去重）'},{k:'c96',l:'唯普毛利（单位：元）'},{k:'c97',l:'唯普云毛利（单位：元）'},{k:'c98',l:'汇和毛利（单位：元）'},{k:'c99',l:'机拍毛利（单位：元）'},{k:'c100',l:'毛利调整（单位：元）'},{k:'c101',l:'总毛利（单位：元）'},{k:'c102',l:'台均总毛利（单位：元）'},{k:'c103',l:'内部结算（单位：元）'},{k:'c104',l:'考核毛利（单位：元）'},{k:'c105',l:'台均考核毛利'},{k:'c106',l:'上拍量'},{k:'c107',l:'上拍量(去重)'},{k:'c108',l:'成交量'},{k:'c109',l:'成交率'},{k:'c110',l:'成交率（去重）'},{k:'c111',l:'唯普毛利（单位：元）'},{k:'c112',l:'唯普云毛利（单位：元）'},{k:'c113',l:'汇和毛利（单位：元）'},{k:'c114',l:'机拍毛利（单位：元）'},{k:'c115',l:'毛利调整（单位：元）'},{k:'c116',l:'总毛利（单位：元）'},{k:'c117',l:'台均总毛利（单位：元）'},{k:'c118',l:'内部结算（单位：元）'},{k:'c119',l:'考核毛利（单位：元）'},{k:'c120',l:'台均考核毛利'},{k:'c121',l:'上拍量'},{k:'c122',l:'上拍量(去重)'},{k:'c123',l:'成交量'},{k:'c124',l:'成交率'},{k:'c125',l:'成交率（去重）'},{k:'c126',l:'唯普毛利（单位：元）'},{k:'c127',l:'唯普云毛利（单位：元）'},{k:'c128',l:'汇和毛利（单位：元）'},{k:'c129',l:'机拍毛利（单位：元）'},{k:'c130',l:'毛利调整（单位：元）'},{k:'c131',l:'总毛利（单位：元）'},{k:'c132',l:'台均总毛利（单位：元）'},{k:'c133',l:'内部结算（单位：元）'},{k:'c134',l:'考核毛利（单位：元）'},{k:'c135',l:'台均考核毛利'}];
+const consignData=[
+{r:'广东-广州',c1:14,c2:14,c3:2,c4:'14.29%',c5:'14.29%',c6:'2100.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'2100.00',c12:'1,050.00',c13:'1117.00',c14:'983.00',c15:'491.50',c16:13,c17:13,c18:2,c19:'15.38%',c20:'15.38%',c21:'2100.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'2100.00',c27:'1,050.00',c28:'100.00',c29:'2000.00',c30:'1,000.00',c31:1,c32:1,c33:0,c34:'0.00%',c35:'0.00%',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:0,c122:0,c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
+{r:'广东-佛山',c1:5,c2:5,c3:0,c4:'0.00%',c5:'0.00%',c6:'-2600.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'-2600.00',c12:'',c13:'150.00',c14:'-2750.00',c15:'',c16:3,c17:3,c18:0,c19:'0.00%',c20:'0.00%',c21:'0.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'0.00',c27:'',c28:'0.00',c29:'0.00',c30:'',c31:0,c32:0,c33:0,c34:'',c35:'',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:2,c122:2,c123:0,c124:'0.00%',c125:'0.00%',c126:'-2600.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'-2600.00',c132:'',c133:'0.00',c134:'-2600.00',c135:''},
+{r:'广东-深圳',c1:4,c2:4,c3:1,c4:'25.00%',c5:'25.00%',c6:'1800.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'1800.00',c12:'1,800.00',c13:'600.00',c14:'1200.00',c15:'1,200.00',c16:4,c17:4,c18:1,c19:'25.00%',c20:'25.00%',c21:'1800.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'1800.00',c27:'1,800.00',c28:'0.00',c29:'1800.00',c30:'1,800.00',c31:0,c32:0,c33:0,c34:'',c35:'',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:0,c122:0,c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
+{r:'广东-东莞',c1:8,c2:8,c3:2,c4:'25.00%',c5:'25.00%',c6:'1800.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'1800.00',c12:'900.00',c13:'3232.00',c14:'-1432.00',c15:'-716.00',c16:7,c17:7,c18:1,c19:'14.29%',c20:'14.29%',c21:'800.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'800.00',c27:'800.00',c28:'0.00',c29:'800.00',c30:'800.00',c31:1,c32:1,c33:1,c34:'100.00%',c35:'100.00%',c36:'1000.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'1000.00',c42:'1,000.00',c43:'3100.00',c44:'-2100.00',c45:'-2,100.00',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:0,c122:0,c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
+{r:'广东-惠州',c1:4,c2:4,c3:0,c4:'0.00%',c5:'0.00%',c6:'0.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'0.00',c12:'',c13:'708.00',c14:'-708.00',c15:'',c16:4,c17:4,c18:0,c19:'0.00%',c20:'0.00%',c21:'0.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'0.00',c27:'',c28:'75.00',c29:'-75.00',c30:'',c31:0,c32:0,c33:0,c34:'',c35:'',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:0,c122:0,c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
+{r:'广东-中珠',c1:3,c2:3,c3:0,c4:'0.00%',c5:'0.00%',c6:'0.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'0.00',c12:'',c13:'150.00',c14:'-150.00',c15:'',c16:3,c17:3,c18:0,c19:'0.00%',c20:'0.00%',c21:'0.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'0.00',c27:'',c28:'75.00',c29:'-75.00',c30:'',c31:0,c32:0,c33:0,c34:'',c35:'',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:0,c122:0,c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
+{r:'广东-粤东',c1:3,c2:3,c3:1,c4:'33.33%',c5:'33.33%',c6:'600.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'600.00',c12:'600.00',c13:'100.00',c14:'500.00',c15:'500.00',c16:3,c17:3,c18:1,c19:'33.33%',c20:'33.33%',c21:'600.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'600.00',c27:'600.00',c28:'100.00',c29:'500.00',c30:'500.00',c31:0,c32:0,c33:0,c34:'',c35:'',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:0,c122:0,c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
+{r:'广东-粤西',c1:2,c2:2,c3:0,c4:'0.00%',c5:'0.00%',c6:'0.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'0.00',c12:'',c13:'0.00',c14:'0.00',c15:'',c16:1,c17:1,c18:0,c19:'0.00%',c20:'0.00%',c21:'0.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'0.00',c27:'',c28:'0.00',c29:'0.00',c30:'',c31:1,c32:1,c33:0,c34:'0.00%',c35:'0.00%',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:0,c122:0,c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
+{r:'广西-南宁',c1:2,c2:2,c3:0,c4:'0.00%',c5:'0.00%',c6:'0.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'0.00',c12:'',c13:'300.00',c14:'-300.00',c15:'',c16:2,c17:2,c18:0,c19:'0.00%',c20:'0.00%',c21:'0.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'0.00',c27:'',c28:'75.00',c29:'-75.00',c30:'',c31:0,c32:0,c33:0,c34:'',c35:'',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:0,c122:0,c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
+{r:'海南-海口',c1:1,c2:1,c3:1,c4:'100.00%',c5:'100.00%',c6:'300.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'300.00',c12:'300.00',c13:'100.00',c14:'200.00',c15:'200.00',c16:0,c17:0,c18:0,c19:'',c20:'',c21:'0.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'0.00',c27:'',c28:'0.00',c29:'0.00',c30:'',c31:0,c32:0,c33:0,c34:'',c35:'',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:1,c92:1,c93:1,c94:'100.00%',c95:'100.00%',c96:'300.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'300.00',c102:'300.00',c103:'0.00',c104:'300.00',c105:'300.00',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:0,c122:0,c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
+{r:'四川-成都',c1:'',c2:'',c3:0,c4:'',c5:'',c6:'0.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'0.00',c12:'',c13:'96.90',c14:'-96.90',c15:'',c16:'',c17:'',c18:0,c19:'',c20:'',c21:'0.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'0.00',c27:'',c28:'0.00',c29:'0.00',c30:'',c31:'',c32:'',c33:0,c34:'',c35:'',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:'',c47:'',c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:'',c62:'',c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:'',c77:'',c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:'',c92:'',c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:'',c107:'',c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:'',c122:'',c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
+{r:'湖北-武汉',c1:1,c2:1,c3:0,c4:'0.00%',c5:'0.00%',c6:'0.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'0.00',c12:'',c13:'286.80',c14:'-286.80',c15:'',c16:1,c17:1,c18:0,c19:'0.00%',c20:'0.00%',c21:'0.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'0.00',c27:'',c28:'0.00',c29:'0.00',c30:'',c31:0,c32:0,c33:0,c34:'',c35:'',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:0,c122:0,c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
+{r:'湖南-长沙',c1:2,c2:2,c3:0,c4:'0.00%',c5:'0.00%',c6:'0.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'0.00',c12:'',c13:'101.00',c14:'-101.00',c15:'',c16:2,c17:2,c18:0,c19:'0.00%',c20:'0.00%',c21:'0.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'0.00',c27:'',c28:'0.00',c29:'0.00',c30:'',c31:0,c32:0,c33:0,c34:'',c35:'',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:0,c122:0,c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
+{r:'山西-太原',c1:3,c2:3,c3:2,c4:'66.67%',c5:'66.67%',c6:'1700.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'1700.00',c12:'850.00',c13:'301.00',c14:'1399.00',c15:'699.50',c16:3,c17:3,c18:2,c19:'66.67%',c20:'66.67%',c21:'1700.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'1700.00',c27:'850.00',c28:'200.00',c29:'1500.00',c30:'750.00',c31:0,c32:0,c33:0,c34:'',c35:'',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:0,c122:0,c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
+{r:'江苏-南京',c1:1,c2:1,c3:1,c4:'100.00%',c5:'100.00%',c6:'600.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'600.00',c12:'600.00',c13:'100.00',c14:'500.00',c15:'500.00',c16:1,c17:1,c18:1,c19:'100.00%',c20:'100.00%',c21:'600.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'600.00',c27:'600.00',c28:'0.00',c29:'600.00',c30:'600.00',c31:0,c32:0,c33:0,c34:'',c35:'',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:0,c122:0,c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
+{r:'陕西-西安',c1:1,c2:1,c3:0,c4:'0.00%',c5:'0.00%',c6:'0.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'0.00',c12:'',c13:'225.00',c14:'-225.00',c15:'',c16:1,c17:1,c18:0,c19:'0.00%',c20:'0.00%',c21:'0.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'0.00',c27:'',c28:'0.00',c29:'0.00',c30:'',c31:0,c32:0,c33:0,c34:'',c35:'',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:0,c122:0,c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
+{r:'置换一部',c1:7,c2:7,c3:0,c4:'0.00%',c5:'0.00%',c6:'0.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'0.00',c12:'',c13:'483.70',c14:'-483.70',c15:'',c16:7,c17:7,c18:0,c19:'0.00%',c20:'0.00%',c21:'0.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'0.00',c27:'',c28:'0.00',c29:'0.00',c30:'',c31:0,c32:0,c33:0,c34:'',c35:'',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:0,c122:0,c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
+{r:'置换三部',c1:7,c2:7,c3:1,c4:'14.29%',c5:'14.29%',c6:'1800.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'1800.00',c12:'1,800.00',c13:'821.80',c14:'978.20',c15:'978.20',c16:7,c17:7,c18:1,c19:'14.29%',c20:'14.29%',c21:'1800.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'1800.00',c27:'1,800.00',c28:'0.00',c29:'1800.00',c30:'1,800.00',c31:0,c32:0,c33:0,c34:'',c35:'',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:0,c122:0,c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
+{r:'拓展政企',c1:'',c2:'',c3:0,c4:'',c5:'',c6:'0.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'0.00',c12:'',c13:'0.00',c14:'0.00',c15:'',c16:'',c17:'',c18:0,c19:'',c20:'',c21:'0.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'0.00',c27:'',c28:'0.00',c29:'0.00',c30:'',c31:'',c32:'',c33:0,c34:'',c35:'',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:'',c47:'',c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:'',c62:'',c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:'',c77:'',c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:'',c92:'',c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:'',c107:'',c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:'',c122:'',c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
+{r:'服务中心',c1:5,c2:5,c3:0,c4:'0.00%',c5:'0.00%',c6:'0.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'0.00',c12:'',c13:'0.00',c14:'0.00',c15:'',c16:5,c17:5,c18:0,c19:'0.00%',c20:'0.00%',c21:'0.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'0.00',c27:'',c28:'0.00',c29:'0.00',c30:'',c31:0,c32:0,c33:0,c34:'',c35:'',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:0,c122:0,c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
+{r:'交易中心',c1:2,c2:2,c3:0,c4:'0.00%',c5:'0.00%',c6:'0.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'0.00',c12:'',c13:'0.00',c14:'0.00',c15:'',c16:2,c17:2,c18:0,c19:'0.00%',c20:'0.00%',c21:'0.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'0.00',c27:'',c28:'0.00',c29:'0.00',c30:'',c31:0,c32:0,c33:0,c34:'',c35:'',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:0,c122:0,c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
+{r:'合计',c1:75,c2:75,c3:11,c4:'14.67%',c5:'14.67%',c6:'8100.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'8100.00',c12:'736.36',c13:'8873.20',c14:'-773.20',c15:'-70.29',c16:69,c17:69,c18:9,c19:'13.04%',c20:'13.04%',c21:'9400.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'9400.00',c27:'1,044.44',c28:'625.00',c29:'8775.00',c30:'975.00',c31:3,c32:3,c33:1,c34:'33.33%',c35:'33.33%',c36:'1000.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'1000.00',c42:'1,000.00',c43:'3100.00',c44:'-2100.00',c45:'-2,100.00',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:1,c92:1,c93:1,c94:'100.00%',c95:'100.00%',c96:'300.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'300.00',c102:'300.00',c103:'0.00',c104:'300.00',c105:'300.00',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:2,c122:2,c123:0,c124:'0.00%',c125:'0.00%',c126:'-2600.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'-2600.00',c132:'',c133:'0.00',c134:'-2600.00',c135:''}
+];
+
+const revenueCols=[{k:'c0',l:'vid'},{k:'c1',l:'大区'},{k:'c2',l:'小区'},{k:'c3',l:'门店全称'},{k:'c4',l:'订单号'},{k:'c5',l:'日期'},{k:'c6',l:'来源'},{k:'c7',l:'车牌'},{k:'c8',l:'VIN'},{k:'c9',l:'唯普毛利（单位：元）'},{k:'c10',l:'唯普云毛利单位：元）'},{k:'c11',l:'汇和毛利（单位：元）'},{k:'c12',l:'机拍毛利单位：元）'},{k:'c13',l:'毛利调整（单位：元）'},{k:'c14',l:'总毛利（单位：元）'}];
+const revenueData=[
+{c0:1707298502,c1:'1-广东-佛山',c2:'广东-佛山',c3:'佛山市顺德区世维汽车销售服务有限公司',c4:449813,c5:'2026-03-01 10:11:00',c6:'订单仲裁',c7:'粤EX781G',c8:'LVHFC1662K6171165',c9:'-2600.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'-2600.00'},
+{c0:1707302219,c1:'2-广东-东莞',c2:'广东-东莞',c3:'东莞市万佳友汽车贸易有限公司',c4:450163,c5:'2026-03-01 11:41:05',c6:'订单成交',c7:'粤S5UG78',c8:'LNBMDBAF6HU030602',c9:'800.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'800.00'},
+{c0:1707302342,c1:'1-广东-广州',c2:'广东-广州',c3:'广州众昊城汽车销售服务有限公司-比亚迪',c4:450186,c5:'2026-03-01 13:48:32',c6:'订单成交',c7:'粤A1G0J8',c8:'LVGC616Z3RG339067',c9:'1300.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'1300.00'},
+{c0:1707302072,c1:'3-山西-太原',c2:'山西-太原',c3:'太原市盛世开元汽车销售有限公司-比亚迪',c4:450204,c5:'2026-03-01 14:25:09',c6:'订单成交',c7:'晋AB368G',c8:'LVHFR1821G6006353',c9:'900.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'900.00'},
+{c0:1707302431,c1:'3-山西-太原',c2:'山西-太原',c3:'太原市盛世开元汽车销售有限公司综改区分公司-比亚迪',c4:450190,c5:'2026-03-01 14:25:33',c6:'订单成交',c7:'晋A321MA',c8:'LB37724S8JX109743',c9:'800.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'800.00'},
+{c0:1707301919,c1:'2-海南-海口',c2:'海南-海口',c3:'海南丰亚汽车销售服务有限公司-GXP',c4:450137,c5:'2026-03-01 14:35:35',c6:'订单成交',c7:'琼A8Y631',c8:'LZWADAGB3GB728123',c9:'300.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'300.00'},
+{c0:1707301709,c1:'1-广东-广州',c2:'广东-广州',c3:'广州金宝昊城汽车销售服务有限公司-比亚迪',c4:450212,c5:'2026-03-01 14:35:52',c6:'订单成交',c7:'粤AA01617',c8:'HWM133032MW173917',c9:'800.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'800.00'},
+{c0:1707301521,c1:'2-广东-深圳',c2:'广东-深圳',c3:'深圳市东顺汽车销售服务有限责任公司-比亚迪',c4:450151,c5:'2026-03-01 14:37:20',c6:'订单成交',c7:'粤BH48711',c8:'LC0C74C4XS0510007',c9:'1800.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'1800.00'},
+{c0:1707297153,c1:'置换一部',c2:'广东-佛山',c3:'佛山广物君豪汽车贸易有限公司',c4:450206,c5:'2026-03-01 14:40:58',c6:'订单成交',c7:'粤K7S653',c8:'LZWADAGAXGG603999',c9:'0.00',c10:'0.00',c11:'1800.00',c12:'0.00',c13:'0.00',c14:'1800.00'},
+{c0:1707297153,c1:'置换一部',c2:'广东-佛山',c3:'佛山广物君豪汽车贸易有限公司',c4:450206,c5:'2026-03-01 14:40:58',c6:'订单成交',c7:'粤K7S653',c8:'LZWADAGAXGG603999',c9:'2300.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'2300.00'},
+{c0:1707297153,c1:'置换一部',c2:'广东-佛山',c3:'佛山广物君豪汽车贸易有限公司',c4:450206,c5:'2026-03-01 14:40:58',c6:'订单成交',c7:'粤K7S653',c8:'LZWADAGAXGG603999',c9:'600.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'600.00'},
+{c0:1707297153,c1:'置换一部',c2:'广东-佛山',c3:'佛山广物君豪汽车贸易有限公司',c4:450206,c5:'2026-03-01 14:40:58',c6:'订单成交',c7:'粤K7S653',c8:'LZWADAGAXGG603999',c9:'0.00',c10:'0.00',c11:'-600.00',c12:'0.00',c13:'0.00',c14:'-600.00'},
+{c0:1707290172,c1:'置换一部',c2:'粤东区域',c3:'汕尾广物汽车销售服务有限公司',c4:450180,c5:'2026-03-01 15:02:20',c6:'订单成交',c7:'粤NFN893',c8:'LGBH52E04NY133869',c9:'0.00',c10:'0.00',c11:'200.00',c12:'0.00',c13:'0.00',c14:'200.00'},
+{c0:1707290172,c1:'置换一部',c2:'粤东区域',c3:'汕尾广物汽车销售服务有限公司',c4:450180,c5:'2026-03-01 15:02:20',c6:'订单成交',c7:'粤NFN893',c8:'LGBH52E04NY133869',c9:'1300.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'1300.00'},
+{c0:1707290172,c1:'置换一部',c2:'粤东区域',c3:'汕尾广物汽车销售服务有限公司',c4:450180,c5:'2026-03-01 15:02:20',c6:'订单成交',c7:'粤NFN893',c8:'LGBH52E04NY133869',c9:'600.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'600.00'},
+{c0:1707290172,c1:'置换一部',c2:'粤东区域',c3:'汕尾广物汽车销售服务有限公司',c4:450180,c5:'2026-03-01 15:02:20',c6:'订单成交',c7:'粤NFN893',c8:'LGBH52E04NY133869',c9:'0.00',c10:'0.00',c11:'-600.00',c12:'0.00',c13:'0.00',c14:'-600.00'},
+{c0:1707301723,c1:'置换一部',c2:'外省区域A',c3:'贵州广物盈凯汽车销售服务有限公司',c4:450217,c5:'2026-03-01 15:58:04',c6:'订单成交',c7:'贵GW8894',c8:'LSGGH55L5GS085573',c9:'0.00',c10:'0.00',c11:'11600.00',c12:'0.00',c13:'0.00',c14:'11600.00'},
+{c0:1707301723,c1:'置换一部',c2:'外省区域A',c3:'贵州广物盈凯汽车销售服务有限公司',c4:450217,c5:'2026-03-01 15:58:04',c6:'订单成交',c7:'贵GW8894',c8:'LSGGH55L5GS085573',c9:'2300.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'2300.00'},
+{c0:1707301723,c1:'置换一部',c2:'外省区域A',c3:'贵州广物盈凯汽车销售服务有限公司',c4:450217,c5:'2026-03-01 15:58:04',c6:'订单成交',c7:'贵GW8894',c8:'LSGGH55L5GS085573',c9:'600.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'600.00'},
+{c0:1707301723,c1:'置换一部',c2:'外省区域A',c3:'贵州广物盈凯汽车销售服务有限公司',c4:450217,c5:'2026-03-01 15:58:04',c6:'订单成交',c7:'贵GW8894',c8:'LSGGH55L5GS085573',c9:'0.00',c10:'0.00',c11:'-600.00',c12:'0.00',c13:'0.00',c14:'-600.00'},
+{c0:1707299339,c1:'置换一部',c2:'广东-广州',c3:'广东广物东本汽车贸易有限公司',c4:450194,c5:'2026-03-01 16:17:42',c6:'订单成交',c7:'粤WDS703',c8:'LHGGJ565XE8008424',c9:'1300.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'1300.00'},
+{c0:1707299339,c1:'置换一部',c2:'广东-广州',c3:'广东广物东本汽车贸易有限公司',c4:450194,c5:'2026-03-01 16:17:42',c6:'订单成交',c7:'粤WDS703',c8:'LHGGJ565XE8008424',c9:'0.00',c10:'0.00',c11:'-1400.00',c12:'0.00',c13:'0.00',c14:'-1400.00'},
+{c0:1707299339,c1:'置换一部',c2:'广东-广州',c3:'广东广物东本汽车贸易有限公司',c4:450194,c5:'2026-03-01 16:17:42',c6:'订单成交',c7:'粤WDS703',c8:'LHGGJ565XE8008424',c9:'600.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'600.00'},
+{c0:1707299339,c1:'置换一部',c2:'广东-广州',c3:'广东广物东本汽车贸易有限公司',c4:450194,c5:'2026-03-01 16:17:42',c6:'订单成交',c7:'粤WDS703',c8:'LHGGJ565XE8008424',c9:'0.00',c10:'0.00',c11:'-600.00',c12:'0.00',c13:'0.00',c14:'-600.00'},
+{c0:1706872951,c1:'置换三部',c2:'外省区域（合资）A',c3:'广西广物华鸿汽车销售服务有限公司',c4:450184,c5:'2026-03-01 16:36:04',c6:'订单成交',c7:'桂CF03000',c8:'LM8F7E99XRA064869',c9:'1800.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'1800.00'},
+{c0:1707302369,c1:'置换一部',c2:'外省区域A',c3:'贵州广物盈凯汽车销售服务有限公司',c4:450177,c5:'2026-03-01 16:42:14',c6:'订单成交',c7:'贵A7G53E',c8:'LSGBC5344GG173036',c9:'0.00',c10:'0.00',c11:'200.00',c12:'0.00',c13:'0.00',c14:'200.00'},
+{c0:1707302369,c1:'置换一部',c2:'外省区域A',c3:'贵州广物盈凯汽车销售服务有限公司',c4:450177,c5:'2026-03-01 16:42:14',c6:'订单成交',c7:'贵A7G53E',c8:'LSGBC5344GG173036',c9:'2300.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'2300.00'},
+{c0:1707302369,c1:'置换一部',c2:'外省区域A',c3:'贵州广物盈凯汽车销售服务有限公司',c4:450177,c5:'2026-03-01 16:42:14',c6:'订单成交',c7:'贵A7G53E',c8:'LSGBC5344GG173036',c9:'600.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'600.00'},
+{c0:1707302369,c1:'置换一部',c2:'外省区域A',c3:'贵州广物盈凯汽车销售服务有限公司',c4:450177,c5:'2026-03-01 16:42:14',c6:'订单成交',c7:'贵A7G53E',c8:'LSGBC5344GG173036',c9:'0.00',c10:'0.00',c11:'-600.00',c12:'0.00',c13:'0.00',c14:'-600.00'},
+{c0:1707300551,c1:'置换一部',c2:'外省区域A',c3:'贵州广物盈凯汽车销售服务有限公司',c4:450179,c5:'2026-03-01 16:49:53',c6:'订单成交',c7:'贵HHY755',c8:'LVXDAJBA7GS073288',c9:'0.00',c10:'0.00',c11:'3000.00',c12:'0.00',c13:'0.00',c14:'3000.00'},
+{c0:1707300551,c1:'置换一部',c2:'外省区域A',c3:'贵州广物盈凯汽车销售服务有限公司',c4:450179,c5:'2026-03-01 16:49:53',c6:'订单成交',c7:'贵HHY755',c8:'LVXDAJBA7GS073288',c9:'2300.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'2300.00'},
+{c0:1707300551,c1:'置换一部',c2:'外省区域A',c3:'贵州广物盈凯汽车销售服务有限公司',c4:450179,c5:'2026-03-01 16:49:53',c6:'订单成交',c7:'贵HHY755',c8:'LVXDAJBA7GS073288',c9:'600.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'600.00'},
+{c0:1707300551,c1:'置换一部',c2:'外省区域A',c3:'贵州广物盈凯汽车销售服务有限公司',c4:450179,c5:'2026-03-01 16:49:53',c6:'订单成交',c7:'贵HHY755',c8:'LVXDAJBA7GS073288',c9:'0.00',c10:'0.00',c11:'-600.00',c12:'0.00',c13:'0.00',c14:'-600.00'},
+{c0:1707300371,c1:'置换一部',c2:'粤东区域',c3:'汕尾广物东本汽车销售服务有限公司',c4:450189,c5:'2026-03-01 19:25:44',c6:'订单成交',c7:'粤NGN971',c8:'LVHFC1664H6047620',c9:'0.00',c10:'0.00',c11:'2200.00',c12:'0.00',c13:'0.00',c14:'2200.00'},
+{c0:1707300371,c1:'置换一部',c2:'粤东区域',c3:'汕尾广物东本汽车销售服务有限公司',c4:450189,c5:'2026-03-01 19:25:44',c6:'订单成交',c7:'粤NGN971',c8:'LVHFC1664H6047620',c9:'2300.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'2300.00'},
+{c0:1707300371,c1:'置换一部',c2:'粤东区域',c3:'汕尾广物东本汽车销售服务有限公司',c4:450189,c5:'2026-03-01 19:25:44',c6:'订单成交',c7:'粤NGN971',c8:'LVHFC1664H6047620',c9:'600.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'600.00'},
+{c0:1707300371,c1:'置换一部',c2:'粤东区域',c3:'汕尾广物东本汽车销售服务有限公司',c4:450189,c5:'2026-03-01 19:25:44',c6:'订单成交',c7:'粤NGN971',c8:'LVHFC1664H6047620',c9:'0.00',c10:'0.00',c11:'-600.00',c12:'0.00',c13:'0.00',c14:'-600.00'},
+{c0:1707303065,c1:'2-广东-粤东',c2:'广东-揭阳A',c3:'揭阳市榕城区途乐二手车咨询服务部',c4:450216,c5:'2026-03-01 19:26:04',c6:'订单成交',c7:'粤D29R61',c8:'LFMBEC4D2C0108209',c9:'600.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'600.00'},
+{c0:1707295621,c1:'置换一部',c2:'广东-佛山',c3:'佛山广物君豪汽车贸易有限公司',c4:450200,c5:'2026-03-01 21:46:47',c6:'订单成交',c7:'粤Y665W8',c8:'L6T7742Z2GN450728',c9:'0.00',c10:'0.00',c11:'4700.00',c12:'0.00',c13:'0.00',c14:'4700.00'},
+{c0:1707295621,c1:'置换一部',c2:'广东-佛山',c3:'佛山广物君豪汽车贸易有限公司',c4:450200,c5:'2026-03-01 21:46:47',c6:'订单成交',c7:'粤Y665W8',c8:'L6T7742Z2GN450728',c9:'2500.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'2500.00'},
+{c0:1707295621,c1:'置换一部',c2:'广东-佛山',c3:'佛山广物君豪汽车贸易有限公司',c4:450200,c5:'2026-03-01 21:46:47',c6:'订单成交',c7:'粤Y665W8',c8:'L6T7742Z2GN450728',c9:'600.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'600.00'},
+{c0:1707295621,c1:'置换一部',c2:'广东-佛山',c3:'佛山广物君豪汽车贸易有限公司',c4:450200,c5:'2026-03-01 21:46:47',c6:'订单成交',c7:'粤Y665W8',c8:'L6T7742Z2GN450728',c9:'0.00',c10:'0.00',c11:'-600.00',c12:'0.00',c13:'0.00',c14:'-600.00'},
+{c0:1707299997,c1:'2-广东-东莞',c2:'广东-东莞',c3:'理想汽车广东交付中心',c4:450161,c5:'2026-03-01 22:02:20',c6:'订单成交',c7:'粤S70203',c8:'LZWACAGA5B2156460',c9:'1000.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'1000.00'},
+{c0:1707302294,c1:'3-江苏-南京',c2:'江苏-张家港',c3:'张家港市联发汽车贸易有限公司',c4:450178,c5:'2026-03-01 22:25:53',c6:'订单成交',c7:'苏UHJ298',c8:'L6T7824S7GN227568',c9:'600.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'600.00'}
+];
+
+const costCols=[{k:'c0',l:'vid'},{k:'c1',l:'车牌'},{k:'c2',l:'VIN'},{k:'c3',l:'所属集团'},{k:'c4',l:'所属大区'},{k:'c5',l:'所属小区'},{k:'c6',l:'门店全称'},{k:'c7',l:'总店'},{k:'c8',l:'委拍/收购'},{k:'c9',l:'查验次数'},{k:'c10',l:'查验成本(单位：元)'},{k:'c11',l:'垫款利息(单位：元)'},{k:'c12',l:'交付类型'},{k:'c13',l:'是否过户'},{k:'c14',l:'交付过户成本(单位：元)'},{k:'c15',l:'政企场地费'},{k:'c16',l:'业务合作服务费(单位：元)',cls:'changed',tip:'逻辑变动：同VIN码仅收取一次，清分后收取；售后退车不冲正；同车再次上拍不再收取'},{k:'c17',l:'维保出险(单位：元)'},{k:'cn1',l:'销售成本(单位：元)',cls:'new',tip:'新增字段：计算规则见车源绩效表'},{k:'cn2',l:'收购车成本(单位：元)',cls:'new',tip:'新增字段：计算规则见车源绩效表'},{k:'c18',l:'其他(单位：元)'},{k:'c19',l:'总费用成本(单位：元)',tip:'取值已加上销售成本、收购车成本金额'},{k:'c20',l:'成交时间（最近一次）'},{k:'c21',l:'清算时间（最近一次）'},{k:'c22',l:'拍卖方式（最近一次）'},{k:'c23',l:'毛利调整\n调账(单位：元)'}];
+const costData=[
+{c0:1707280639,c1:'粤AA82670',c2:'LNAA3AA17M5474598',c3:'昊城汽车',c4:'1-广东-广州',c5:'广东-广州',c6:'HC广州骏昊城',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'21.90',c18:'0.00',c19:'21.90',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707283717,c1:'粤A6N5J6',c2:'1FM5K8FH9HGD69370',c3:'其他集团门店',c4:'1-广东-广州',c5:'广东-广州',c6:'广州市华驰福威汽车销售服务有限公司-收购',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'24.00',c18:'0.00',c19:'24.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707301781,c1:'粤AJ76Q8',c2:'LFV3B20V3N3462453',c3:'昊城汽车',c4:'1-广东-广州',c5:'广东-广州',c6:'HC广州佑昊城',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'21.90',c18:'0.00',c19:'21.90',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707301878,c1:'粤E9D6T8',c2:'LFV3A24K8P3098343',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东君奥汽车贸易有限公司',c7:'',c8:'',c9:1,c10:'75.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'21.90',c18:'0.00',c19:'96.90',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303096,c1:'粤A06U7D',c2:'LFV1A1BU9S4508852',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东物通凯骏汽车有限公司',c7:'一汽大众',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303100,c1:'粤S2YH88',c2:'LZWADAGA6HG015633',c3:'广物汽贸',c4:'置换一部',c5:'广东-东莞',c6:'东莞市广物东捷汽车销售服务有限公司东城分公司',c7:'东莞东捷',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'32.00',c18:'0.00',c19:'32.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303102,c1:'粤A38J48',c2:'JTEBL29J365063060',c3:'广物汽贸',c4:'置换三部',c5:'广东-佛山（合资）',c6:'佛山市南海区广物宜达汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303108,c1:'粤A8UH29',c2:'LHGRC3811K8031037',c3:'广物汽贸',c4:'置换三部',c5:'广东-广州（合资）',c6:'广东兴锐汽车销售有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'27.90',c18:'0.00',c19:'27.90',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303110,c1:'粤ADV9031',c2:'LNAA3AA13M5449424',c3:'广物汽贸',c4:'置换三部',c5:'广东-广州（合资）',c6:'广州新捷新能源汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303116,c1:'桂AM055W',c2:'LGBT22E05JY023409',c3:'广物汽贸',c4:'置换三部',c5:'广东-广州（合资）',c6:'广东兴锐汽车销售有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303130,c1:'粤AR16Y8',c2:'LVSHJCAL3HE470082',c3:'其他集团门店',c4:'1-广东-广州',c5:'广东-广州',c6:'广州市华驰福威汽车销售服务有限公司-收购',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303134,c1:'粤ABZ8653',c2:'LFVVB9E73M5109502',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东物通凯骏汽车有限公司',c7:'一汽大众',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303136,c1:'粤A58VQ7',c2:'LSVNL60C9NN071232',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东广物华旭汽车贸易有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'21.90',c18:'0.00',c19:'21.90',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303137,c1:'粤AT12G1',c2:'LFV2B2GA7K5739605',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东粤奥汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303141,c1:'粤SZ8C95',c2:'LZWADAGA5F7178853',c3:'广物汽贸',c4:'置换一部',c5:'广东-东莞',c6:'东莞市广物东捷汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303143,c1:'粤A2T8K0',c2:'LSVUC60Z6HN039410',c3:'广物汽贸',c4:'置换三部',c5:'广东-广州（合资）',c6:'广州新捷新能源汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303146,c1:'粤SK2300',c2:'LSGER5353NW091502',c3:'广物汽贸',c4:'置换三部',c5:'广东-东莞（合资）',c6:'东莞市捷达通贸易有限公司',c7:'一汽大众',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303147,c1:'粤XFU599',c2:'LSVCH6A4XDN145675',c3:'广物汽贸',c4:'置换一部',c5:'广东-佛山',c6:'佛山市广物众凯汽车销售服务有限公司',c7:'上汽大众',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303148,c1:'粤A104SY',c2:'LHGCR2666E8029706',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广州广物德远汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303150,c1:'粤AC265U',c2:'LGBF5AE09ER070683',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东广物华旭汽车贸易有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303152,c1:'粤A071NJ',c2:'LYVUE10D0LB418951',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广州广物德远汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303155,c1:'粤SE0G87',c2:'LZWADAGA9F4116048',c3:'广物汽贸',c4:'置换一部',c5:'广东-东莞',c6:'东莞市广物东捷汽车销售服务有限公司虎门分公司',c7:'东莞东捷',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303166,c1:'粤A1B9S1',c2:'LGBM4AE49HS007044',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东广物上联汽车销售服务有限公司',c7:'上汽大众',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303169,c1:'粤J3YE38',c2:'LSGJB84J2EY094802',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东广物上联汽车销售服务有限公司',c7:'上汽大众',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303171,c1:'粤FMR088',c2:'LB37742Z7JA046844',c3:'广物汽贸',c4:'置换三部',c5:'广东-佛山（合资）',c6:'佛山市南海区广物宜达汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303172,c1:'湘EFE827',c2:'LS5A3DBE8DA208281',c3:'广物汽贸',c4:'置换一部',c5:'粤东区域',c6:'汕头市广物昱达汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303177,c1:'粤YA239L',c2:'LVZA53P97HC031157',c3:'广物汽贸',c4:'置换一部',c5:'广东-佛山',c6:'佛山广物宝骏汽车销售服务有限公司南海分公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303184,c1:'粤A26H07',c2:'LSGXC8350MV138369',c3:'昊城汽车',c4:'1-广东-广州',c5:'广东-广州',c6:'HC广州新昊城',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'21.90',c18:'0.00',c19:'21.90',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303188,c1:'粤J2605G',c2:'LZWADAGA0HE209537',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东五菱汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303189,c1:'粤A7D31F',c2:'LHGTG3874J8023141',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东广物华旭汽车贸易有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303190,c1:'粤E001YR',c2:'LFV3A28W4R3624015',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东粤奥汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303191,c1:'粤TS735N',c2:'LVHFB2623F5011362',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广州市广物南奥汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303193,c1:'粤SE3938',c2:'LMGJU1G85P1061904',c3:'昊城汽车',c4:'1-广东-广州',c5:'广东-广州',c6:'HC广州铨昊城',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'21.90',c18:'0.00',c19:'21.90',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303195,c1:'粤EM16Z3',c2:'WAUGFEF58PA064835',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东粤奥汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303196,c1:'粤Y546Y0',c2:'LCN64EE46G0054601',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东粤奥汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303198,c1:'鄂JC3N19',c2:'LFV2A2151J3589242',c3:'广物汽贸',c4:'置换三部',c5:'广东-东莞（合资）',c6:'东莞市捷达通贸易有限公司',c7:'一汽大众',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303199,c1:'粤A0Y6R6',c2:'LBVKY510XLSX17833',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东君奥汽车贸易有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303213,c1:'粤ENG033',c2:'LVSHFFALXJS725403',c3:'广物汽贸',c4:'置换一部',c5:'广东-佛山',c6:'佛山市广物粤安汽车销售服务有限公司（深蓝）',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303214,c1:'粤S5E34E',c2:'JTHB31B10K2007693',c3:'理想汽车',c4:'2-广东-东莞',c5:'广东-东莞',c6:'理想汽车广东交付中心',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'32.00',c18:'0.00',c19:'32.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303227,c1:'桂RTY617',c2:'LSGKE5414KW220336',c3:'广物汽贸',c4:'置换一部',c5:'广东-佛山',c6:'佛山市广物君乐汽车销售服务有限公司',c7:'一汽大众',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'32.00',c18:'0.00',c19:'32.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303230,c1:'粤T6155M',c2:'LSGXE83L7JD305952',c3:'广物汽贸',c4:'置换一部',c5:'粤西区域',c6:'中山市广物兴奥汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303233,c1:'川HCV500',c2:'LFV2A21K0H4263880',c3:'比亚迪',c4:'2-四川-成都',c5:'四川-成都',c6:'成都市盛世新景汽车销售有限公司锦江大道分公司-比亚迪',c7:'比亚迪',c8:'',c9:1,c10:'75.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'21.90',c18:'0.00',c19:'96.90',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303236,c1:'粤A303ZV',c2:'LFV3B2FY2M3371593',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东君奥汽车贸易有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'47.90',c18:'0.00',c19:'47.90',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303241,c1:'粤AQ79P0',c2:'LFV2A28Y4R6505845',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东粤奥汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303243,c1:'粤QHH655',c2:'LFV3A23C8C3103139',c3:'广物汽贸',c4:'置换一部',c5:'粤西区域',c6:'阳江市广物君奥汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303244,c1:'粤AGV2376',c2:'HLX32B146R1491888',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东粤奥汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303249,c1:'粤D67860',c2:'LVGBE42K3AG561640',c3:'广物汽贸',c4:'置换一部',c5:'粤东区域',c6:'汕头市广物昱达汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303251,c1:'粤EP48F5',c2:'LSGER5353PW046918',c3:'广物汽贸',c4:'置换三部',c5:'广东-广州（合资）',c6:'广东兴锐汽车销售有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303254,c1:'粤EC6A65',c2:'LFV2A2BS8J4743749',c3:'广物汽贸',c4:'置换三部',c5:'广东-佛山（合资）',c6:'佛山市南海区广物宜达汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303257,c1:'粤ENH082',c2:'LFV3A28W8K3857501',c3:'广物汽贸',c4:'置换一部',c5:'广东-佛山A',c6:'佛山市广物君奥汽车贸易有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303261,c1:'粤AL78E3',c2:'LFV3B2FY6L3389089',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东君奥汽车贸易有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'21.90',c18:'0.00',c19:'21.90',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303269,c1:'琼BXH356',c2:'LC0CG4CF6H0042593',c3:'广物汽贸',c4:'置换三部',c5:'广东-佛山（合资）',c6:'佛山市南海区广物宜达汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303274,c1:'粤S7352R',c2:'LZWADAGA5EB878416',c3:'广物汽贸',c4:'置换一部',c5:'广东-东莞',c6:'东莞市广物东捷汽车销售服务有限公司虎门分公司',c7:'东莞东捷',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303279,c1:'粤A9F6Y8',c2:'LMGAC1G88H1210603',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广州广物盈凯汽车销售有限公司',c7:'通用',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303283,c1:'桂RGC217',c2:'LVHRU184XL5054026',c3:'广物汽贸',c4:'置换三部',c5:'广东-佛山（合资）',c6:'佛山市南海区广物宜达汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303285,c1:'鲁B51WT1',c2:'LVGBP87E1JG131710',c3:'昊城汽车',c4:'1-广东-广州',c5:'广东-广州',c6:'HC广州新昊城',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'21.90',c18:'0.00',c19:'21.90',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303287,c1:'粤EA878R',c2:'LFV3A28W4J3771729',c3:'广物汽贸',c4:'置换一部',c5:'广东-佛山A',c6:'佛山市广物君奥汽车贸易有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303292,c1:'粤E1EW16',c2:'LSVCH6A44DN043790',c3:'广物汽贸',c4:'置换一部',c5:'广东-佛山A',c6:'佛山市广物君奥汽车贸易有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303296,c1:'粤YPZ570',c2:'LVSHCAAL1HR047251',c3:'广物汽贸',c4:'置换一部',c5:'广东-佛山',c6:'佛山市广物众凯汽车销售服务有限公司',c7:'上汽大众',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303298,c1:'粤A97U9W',c2:'LVHRU5863J5074317',c3:'广物汽贸',c4:'置换三部',c5:'广东-广州（合资）',c6:'广东兴锐汽车销售有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'27.90',c18:'0.00',c19:'27.90',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303299,c1:'粤AR80R8',c2:'LVGBM74K8JG048871',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广州市广物南奥汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303305,c1:'晋A99H04',c2:'LSVND6182DN051703',c3:'广物汽贸',c4:'置换一部',c5:'广东-佛山A',c6:'佛山市广物君奥汽车贸易有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303311,c1:'粤TQ719R',c2:'LFV2B28V3H5003366',c3:'广物汽贸',c4:'置换三部',c5:'粤西区域（合资零售）',c6:'中山市广物君奥汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'32.00',c18:'0.00',c19:'32.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303313,c1:'粤AU181U',c2:'LGBT22E08JY042424',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东广物鸿福汽车销售服务有限公司',c7:'一汽红旗',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303327,c1:'粤L6271P',c2:'LFV3B2FYXK3607324',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东君奥汽车贸易有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303328,c1:'桂DXL070',c2:'LGBF5AE00ER091647',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东五菱汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303331,c1:'粤GLN160',c2:'LVSHFFAL2HF634192',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东广物福恒汽车贸易有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303332,c1:'粤BAG7316',c2:'LR83STGT7PB005952',c3:'广物汽贸',c4:'置换一部',c5:'广东-深圳',c6:'深圳市广物骏腾汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303334,c1:'粤A6HV54',c2:'LBEMDAFC1FZ546000',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东物通凯骏汽车有限公司',c7:'一汽大众',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303343,c1:'粤AM8563',c2:'LHGGK5853G2020639',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广州市广物南奥汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303348,c1:'粤E7196C',c2:'WVWCS57N6JV013328',c3:'广物汽贸',c4:'置换一部',c5:'广东-佛山A',c6:'佛山市广物君奥汽车贸易有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303353,c1:'粤RTG212',c2:'LSVUD65N7B2726942',c3:'广物汽贸',c4:'置换一部',c5:'粤东区域',c6:'清远市广物众盛汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303354,c1:'粤Y27V80',c2:'LSVNX2180E2197911',c3:'广物汽贸',c4:'置换一部',c5:'广东-佛山A',c6:'佛山市广物君奥汽车贸易有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303358,c1:'粤A3RY86',c2:'LFB1E6674LJE36306',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东广物鸿福汽车销售服务有限公司',c7:'一汽红旗',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303359,c1:'粤E9273P',c2:'LGBH52E03JY631779',c3:'广物汽贸',c4:'置换三部',c5:'广东-佛山（合资）',c6:'佛山市南海区广物宜达汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303362,c1:'粤TXB563',c2:'WDCDA6CB3EA433399',c3:'广物汽贸',c4:'置换三部',c5:'粤西区域（合资零售）',c6:'中山市广物君奥汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'32.00',c18:'0.00',c19:'32.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303369,c1:'粤A8JS72',c2:'LGBM4DE43ES041624',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东恒远汽车贸易有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303375,c1:'粤E806TZ',c2:'LVGBT74K1LG054727',c3:'广物汽贸',c4:'置换三部',c5:'广东-佛山（合资）',c6:'佛山市南海区广物宜达汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303376,c1:'粤EK96G9',c2:'LFV3A28W9K3843929',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东君奥汽车贸易有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303377,c1:'粤V771T1',c2:'L6T7854Z1NZ345202',c3:'广物汽贸',c4:'置换一部',c5:'广东-佛山A',c6:'佛山市广物君奥汽车贸易有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303379,c1:'粤AAN5280',c2:'LMVHFEFZ5KA660605',c3:'广物汽贸',c4:'置换三部',c5:'广东-广州（合资）',c6:'广州新捷新能源汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303382,c1:'粤A5S698',c2:'LJDJAA14XB0068364',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东粤现汽车销售有限公司（盈凯番禺）',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303387,c1:'粤Y884H8',c2:'LE4ZG8DBXML654743',c3:'广物汽贸',c4:'置换三部',c5:'广东-佛山（合资）',c6:'佛山市南海区广物宜达汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303403,c1:'粤SD9B95',c2:'LSCAB53R8EG210324',c3:'广物汽贸',c4:'置换一部',c5:'广东-东莞',c6:'东莞市广物东捷汽车销售服务有限公司虎门分公司',c7:'东莞东捷',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303411,c1:'粤A7D76A',c2:'LS4ASE2EXRD092858',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东广物骏达汽车贸易有限公司（长安）',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303413,c1:'粤T3712X',c2:'LFV3B28R0E3033729',c3:'广物汽贸',c4:'置换一部',c5:'粤西区域',c6:'中山市广物兴奥汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'32.00',c18:'0.00',c19:'32.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303414,c1:'粤A7Q67X',c2:'LFPM5ACPXK1E49235',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东粤奥汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303421,c1:'粤A9S6H2',c2:'YV1MV4859F2198112',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东广物东本汽车贸易有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303426,c1:'粤ABW1576',c2:'LRWYGCEL6PC044657',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东物资君豪汽车贸易有限公司',c7:'通用',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'27.90',c18:'0.00',c19:'27.90',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303436,c1:'粤GRW985',c2:'LZWADAGA8JE170430',c3:'广物汽贸',c4:'置换三部',c5:'广东-佛山（合资）',c6:'佛山市南海区广物宜达汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303439,c1:'陕AX2A67',c2:'LVSFCAAE5FF219921',c3:'比亚迪',c4:'3-陕西-西安',c5:'陕西-西安',c6:'西安新景腾飞汽车销售有限责任公司-比亚迪',c7:'比亚迪',c8:'',c9:1,c10:'75.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'0.00',c18:'0.00',c19:'75.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303453,c1:'粤AU2268',c2:'LFMAP22C1D0486663',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广州广物君迪汽车贸易有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303466,c1:'粤EU709D',c2:'LZWADAGA0MG120887',c3:'广物汽贸',c4:'置换一部',c5:'广东-佛山',c6:'佛山市广物粤安汽车销售服务有限公司（深蓝）',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303469,c1:'粤LA2J19',c2:'LVHFE1654N6012878',c3:'广物汽贸',c4:'置换一部',c5:'广东-佛山',c6:'佛山市广物盈凯汽车销售服务有限公司',c7:'通用',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303470,c1:'贵CKK620',c2:'LFV2A2BS9E4619754',c3:'广物汽贸',c4:'置换一部',c5:'外省区域A',c6:'贵州省遵义市君本汽车贸易有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303472,c1:'粤EG3Y98',c2:'LL67GAF01LB305101',c3:'广物汽贸',c4:'置换三部',c5:'广东-佛山（合资）',c6:'佛山市南海区广物宜达汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303476,c1:'粤A2JW14',c2:'LBVHZ3108JMN47985',c3:'广物汽贸',c4:'置换一部',c5:'广东-佛山',c6:'佛山广物汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303497,c1:'粤TMK225',c2:'LFV2A28YXM6653846',c3:'广物汽贸',c4:'置换一部',c5:'广东-广州',c6:'广东粤奥汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303503,c1:'粤A8T23B',c2:'LMGKT1L53L1048243',c3:'广物汽贸',c4:'置换三部',c5:'广东-广州（合资）',c6:'广州新捷新能源汽车销售服务有限公司',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303504,c1:'粤A1C6B9',c2:'LVHFR1826J6002855',c3:'昊城汽车',c4:'1-广东-广州',c5:'广东-广州',c6:'HC广州祥昊城',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'21.90',c18:'0.00',c19:'21.90',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303514,c1:'粤AC39460',c2:'LC0DE6CB1G1002269',c3:'昊城汽车',c4:'1-广东-广州',c5:'广东-广州',c6:'HC广州祥昊城',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'21.90',c18:'0.00',c19:'21.90',c20:'',c21:'',c22:'',c23:'0.00'},
+{c0:1707303515,c1:'粤S72E91',c2:'WBA7T0109MCF65307',c3:'广物汽贸',c4:'置换一部',c5:'广东-东莞',c6:'东莞市广物东捷汽车销售服务有限公司虎门分公司',c7:'东莞东捷',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'6.00',c18:'0.00',c19:'6.00',c20:'',c21:'',c22:'',c23:'0.00'}
+];
+
+
+// Generic grouped table renderer (for 收购/委拍)
+function renderGroupedTable(tableId, countId, groups, cols, data, firstColLabel){
+  const t=document.getElementById(tableId);
+  let h='<thead><tr><th rowspan="2" class="gh-total" style="position:sticky;left:0;z-index:15;min-width:100px;">'+firstColLabel+'</th>';
+  const colors=['gh-total','gh-sg','gh-wp','gh-total','gh-sg','gh-wp','gh-total','gh-sg','gh-wp'];
+  groups.forEach((g,gi)=>{
+    h+='<th colspan="'+g.span+'" class="'+colors[gi%9]+'">'+g.name+'</th>';
+  });
+  h+='</tr><tr>';
+  let ci=0;
+  groups.forEach((g,gi)=>{
+    for(let j=0;j<g.span;j++){
+      h+='<th class="'+colors[gi%9]+'">'+cols[ci].l+'</th>';
+      ci++;
+    }
+  });
+  h+='</tr></thead><tbody>';
+  data.forEach(row=>{
+    const isTotal=row.r==='合计';
+    h+='<tr'+(isTotal?' class="row-total"':'')+'>';
+    h+='<td class="rn">'+row.r+'</td>';
+    cols.forEach(c=>{
+      let v=row[c.k];
+      let cls='num';
+      if(typeof v==='string'){
+        if(v.indexOf('%')>-1) cls='num';
+        else if(v==='') cls='num';
+        else{
+          let n=parseFloat(v.replace(/,/g,''));
+          if(!isNaN(n)&&n<0) cls='num neg';
+          else if(!isNaN(n)&&n>0) cls='num pos';
+        }
+      }
+      h+='<td class="'+cls+'">'+v+'</td>';
+    });
+    h+='</tr>';
+  });
+  h+='</tbody>';
+  t.innerHTML=h;
+  if(countId) document.getElementById(countId).textContent='共 '+data.length+' 条';
+}
+
+// Flat table renderer (for 收益明细/费用明细)
+function renderFlatTable(tableId, countId, cols, data){
+  const t=document.getElementById(tableId);
+  let h='<thead><tr>';
+  cols.forEach(c=>{
+    let thCls='';
+    let tipHtml='';
+    if(c.cls==='new'){thCls=' col-new';tipHtml='<span class="col-tip">'+c.tip+'</span>';}
+    else if(c.cls==='changed'){thCls=' col-changed';tipHtml='<span class="col-tip">'+c.tip+'</span>';}
+    else if(c.tip){thCls=' col-changed';tipHtml='<span class="col-tip">'+c.tip+'</span>';}
+    h+='<th class="'+thCls+'">'+c.l.replace(/\\n/g,'<br>')+tipHtml+'</th>';
+  });
+  h+='</tr></thead><tbody>';
+  data.forEach(row=>{
+    h+='<tr>';
+    cols.forEach((c,i)=>{
+      let v=row[c.k];
+      if(v===undefined) v='';
+      let cls=i<2?'rn':'num';
+      if(typeof v==='string'&&v!==''){
+        let n=parseFloat(v.replace(/,/g,''));
+        if(!isNaN(n)&&n<0) cls='num neg';
+        else if(!isNaN(n)&&n>0) cls='num pos';
+      }
+      h+='<td class="'+cls+'">'+v+'</td>';
+    });
+    h+='</tr>';
+  });
+  h+='</tbody>';
+  t.innerHTML=h;
+  if(countId) document.getElementById(countId).textContent='共 '+data.length+' 条';
+}
+
+function renderPurchaseTable(){ renderGroupedTable('purchaseTable','purchaseCount',purchaseGroups,purchaseCols,purchaseData,'大区'); }
+function renderConsignTable(){ renderGroupedTable('consignTable','consignCount',consignGroups,consignCols,consignData,'大区'); }
+function renderRevenueTable(){ renderFlatTable('revenueTable','revenueCount',revenueCols,revenueData); }
+function renderCostTable(){ renderFlatTable('costTable','costCount',costCols,costData); }
+
+function renderRegionTable(){
+  const t=document.getElementById('regionTable');
+  let h='<thead><tr><th rowspan="2" class="gh-total" style="position:sticky;left:0;z-index:15;min-width:100px;">大区</th>';
+  h+='<th colspan="17" class="gh-total">合计</th>';
+  h+='<th colspan="18" class="gh-sg">收购业务</th>';
+  h+='<th colspan="15" class="gh-wp">委拍业务</th>';
+  h+='</tr><tr>';
+  regionCols.forEach((c,i)=>{
+    let cls=i<17?'gh-total':i<35?'gh-sg':'gh-wp';
+    h+='<th class="'+cls+'">'+c.l+'</th>';
+  });
+  h+='</tr></thead>';
+  h+='<tbody>';
+  D.forEach(row=>{
+    const isTotal=row.r==='合计';
+    h+='<tr'+(isTotal?' class="row-total"':'')+'>';
+    h+='<td class="rn">'+row.r+'</td>';
+    regionCols.forEach(c=>{
+      let v=row[c.k];
+      let cls='num';
+      if(typeof v==='string'){
+        if(v.indexOf('%')>-1) cls='num';
+        else if(v==='') cls='num';
+        else{
+          let n=parseFloat(v.replace(/,/g,''));
+          if(!isNaN(n)&&n<0) cls='num neg';
+          else if(!isNaN(n)&&n>0) cls='num pos';
+        }
+      }
+      h+='<td class="'+cls+'">'+v+'</td>';
+    });
+    h+='</tr>';
+  });
+  h+='</tbody>';
+  t.innerHTML=h;
+  document.getElementById('regionCount').textContent='共 '+D.length+' 条';
+}
+
+function switchTab(btn,id){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+function setActive(el){
+  document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function doPreview(){ renderRegionTable(); }
+function doExport(){ alert('导出功能（模拟）'); }
+function logout(){ alert('退出登录（模拟）'); }
+
+function showCostTemplate(){
+  document.getElementById('tplModal').style.display='flex';
+}
+function closeTplModal(){
+  document.getElementById('tplModal').style.display='none';
+}
+
+function showCostDetail(){
+  document.querySelector('.tabs-wrap').style.display='none';
+  document.getElementById('costDetailPage').style.display='flex';
+  document.querySelector('.topbar-title').textContent='费用明细';
+  document.querySelector('.topbar-breadcrumb').innerHTML='<span>首页</span><span class="sep">›</span><span>报表管理</span><span class="sep">›</span><span>费用明细</span>';
+  renderCostDetailTable();
+}
+function showCostDetailFromSidebar(el){
+  setActive(el);
+  showCostDetail();
+}
+function hideCostDetail(){
+  document.querySelector('.tabs-wrap').style.display='flex';
+  document.getElementById('costDetailPage').style.display='none';
+  document.querySelector('.topbar-title').textContent='经管报表';
+  document.querySelector('.topbar-breadcrumb').innerHTML='<span>报表中心</span><span class="sep">›</span><span>经管报表</span>';
+  document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item')[0].classList.add('active');
+}
+const feeDetailData=[
+{v:'1707307120',p:'湘A8Q1W7',f:'维保出险',t:'2026-03-11 08:22:37',a:'6.00',u:'系统上传'},
+{v:'1707306999',p:'粤F2U678',f:'维保出险',t:'2026-03-11 09:06:43',a:'6.00',u:'系统上传'},
+{v:'1707306583',p:'鄂AY2G62',f:'交付过户',t:'2026-03-11 09:13:06',a:'100.00',u:'系统上传'},
+{v:'1707306470',p:'粤N0F757',f:'维保出险',t:'2026-03-11 09:19:06',a:'26.00',u:'系统上传'},
+{v:'1707307021',p:'粤ADH1939',f:'维保出险',t:'2026-03-11 09:27:29',a:'6.00',u:'系统上传'},
+{v:'1707307123',p:'湘L1KD76',f:'维保出险',t:'2026-03-11 09:28:03',a:'6.00',u:'系统上传'},
+{v:'1707307030',p:'粤KBC982',f:'维保出险',t:'2026-03-11 09:29:23',a:'6.00',u:'系统上传'},
+{v:'1707307030',p:'粤KBC982',f:'维保出险',t:'2026-03-11 09:29:56',a:'21.90',u:'系统上传'},
+{v:'1707307124',p:'湘L1KD76',f:'维保出险',t:'2026-03-11 09:31:51',a:'6.00',u:'系统上传'},
+{v:'1707307121',p:'桂A285U4',f:'维保出险',t:'2026-03-11 09:39:29',a:'21.90',u:'系统上传'},
+{v:'1707307065',p:'粤EE8C54',f:'维保出险',t:'2026-03-11 09:40:05',a:'6.00',u:'系统上传'},
+{v:'1707307128',p:'粤Y18K20',f:'维保出险',t:'2026-03-11 09:50:14',a:'6.00',u:'系统上传'},
+{v:'1707307026',p:'粤B9B0K5',f:'维保出险',t:'2026-03-11 10:02:11',a:'6.00',u:'系统上传'},
+{v:'1707307026',p:'粤B9B0K5',f:'维保出险',t:'2026-03-11 10:02:43',a:'26.00',u:'系统上传'},
+{v:'1707307021',p:'粤ADH1939',f:'查验成本',t:'2026-03-11 10:02:45',a:'75.00',u:'系统上传'},
+{v:'1707307030',p:'粤KBC982',f:'查验成本',t:'2026-03-11 10:03:07',a:'75.00',u:'系统上传'},
+{v:'1707307118',p:'粤AQ46A9',f:'维保出险',t:'2026-03-11 10:04:21',a:'21.90',u:'系统上传'},
+{v:'1707307011',p:'粤A0W9D8',f:'维保出险',t:'2026-03-11 10:06:46',a:'6.00',u:'系统上传'},
+{v:'1707307121',p:'桂A285U4',f:'查验成本',t:'2026-03-11 10:06:56',a:'75.00',u:'系统上传'},
+{v:'1707307011',p:'粤A0W9D8',f:'维保出险',t:'2026-03-11 10:07:18',a:'21.90',u:'系统上传'},
+{v:'1707307138',p:'琼A760GG',f:'维保出险',t:'2026-03-11 10:08:41',a:'6.00',u:'系统上传'},
+{v:'1707306999',p:'粤F2U678',f:'查验成本',t:'2026-03-11 10:12:02',a:'75.00',u:'系统上传'},
+{v:'1707307143',p:'湘A53MW0',f:'维保出险',t:'2026-03-11 10:17:31',a:'6.00',u:'系统上传'},
+{v:'1707307149',p:'粤SQP887',f:'维保出险',t:'2026-03-11 10:20:07',a:'6.00',u:'系统上传'},
+{v:'1707307134',p:'琼ADY7043',f:'维保出险',t:'2026-03-11 10:22:27',a:'6.00',u:'系统上传'},
+{v:'1707307113',p:'粤E1C6D5',f:'维保出险',t:'2026-03-11 10:26:01',a:'6.00',u:'系统上传'},
+{v:'1707307158',p:'粤HGG723',f:'维保出险',t:'2026-03-11 10:29:06',a:'6.00',u:'系统上传'},
+{v:'1707307159',p:'粤AD789K',f:'维保出险',t:'2026-03-11 10:30:40',a:'6.00',u:'系统上传'},
+{v:'1707300378',p:'粤YUA920',f:'维保出险',t:'2026-03-11 10:33:03',a:'21.90',u:'系统上传'},
+{v:'1707307119',p:'粤X7858C',f:'维保出险',t:'2026-03-11 10:35:40',a:'21.90',u:'系统上传'},
+{v:'1707113663',p:'粤E4Q84Y',f:'维保出险',t:'2026-03-11 10:36:38',a:'21.90',u:'系统上传'},
+{v:'1707305978',p:'桂P47297',f:'查验成本',t:'2026-03-11 10:40:07',a:'75.00',u:'系统上传'},
+{v:'1707307128',p:'粤Y18K20',f:'查验成本',t:'2026-03-11 10:41:46',a:'75.00',u:'系统上传'},
+{v:'1707307130',p:'粤R6L267',f:'维保出险',t:'2026-03-11 10:42:02',a:'6.00',u:'系统上传'},
+{v:'1707307011',p:'粤A0W9D8',f:'查验成本',t:'2026-03-11 10:47:29',a:'75.00',u:'系统上传'},
+{v:'1707307166',p:'陕A33BW0',f:'维保出险',t:'2026-03-11 10:50:16',a:'6.00',u:'系统上传'},
+{v:'1707307020',p:'粤AP708Q',f:'维保出险',t:'2026-03-11 10:51:47',a:'6.00',u:'系统上传'},
+{v:'1707307020',p:'粤AP708Q',f:'维保出险',t:'2026-03-11 10:52:41',a:'21.90',u:'系统上传'},
+{v:'1707307082',p:'粤E0C02K',f:'维保出险',t:'2026-03-11 10:53:57',a:'26.00',u:'系统上传'},
+{v:'1707307082',p:'粤E0C02K',f:'查验成本',t:'2026-03-11 10:55:12',a:'75.00',u:'系统上传'},
+{v:'1707307134',p:'琼ADY7043',f:'查验成本',t:'2026-03-11 11:06:17',a:'75.00',u:'系统上传'},
+{v:'1707307138',p:'琼A760GG',f:'查验成本',t:'2026-03-11 11:06:27',a:'75.00',u:'系统上传'},
+{v:'1707307179',p:'粤A296TM',f:'维保出险',t:'2026-03-11 11:08:31',a:'6.00',u:'系统上传'},
+{v:'1707113663',p:'粤E4Q84Y',f:'查验成本',t:'2026-03-11 11:08:39',a:'75.00',u:'系统上传'},
+{v:'1707307113',p:'粤E1C6D5',f:'查验成本',t:'2026-03-11 11:12:18',a:'75.00',u:'系统上传'},
+{v:'1707307026',p:'粤B9B0K5',f:'查验成本',t:'2026-03-11 11:13:47',a:'75.00',u:'系统上传'},
+{v:'1707307187',p:'粤BAF5620',f:'维保出险',t:'2026-03-11 11:15:10',a:'21.90',u:'系统上传'},
+{v:'1707307159',p:'粤AD789K',f:'维保出险',t:'2026-03-11 11:18:50',a:'21.90',u:'系统上传'},
+{v:'1707301594',p:'贵A902K0',f:'查验成本',t:'2026-03-11 11:19:40',a:'75.00',u:'系统上传'},
+{v:'1707304412',p:'粤A9QZ30',f:'交付过户',t:'2026-03-11 11:22:59',a:'100.00',u:'系统上传'},
+{v:'1707306761',p:'粤T9Q387',f:'查验成本',t:'2026-03-11 11:24:08',a:'75.00',u:'系统上传'},
+{v:'1707307188',p:'粤A4T05R',f:'维保出险',t:'2026-03-11 11:25:04',a:'6.00',u:'系统上传'},
+{v:'1707307020',p:'粤AP708Q',f:'查验成本',t:'2026-03-11 11:32:32',a:'75.00',u:'系统上传'},
+{v:'1707306468',p:'湘A7RM72',f:'交付过户',t:'2026-03-11 11:35:02',a:'100.00',u:'系统上传'},
+{v:'1707306335',p:'粤A2RF29',f:'查验成本',t:'2026-03-11 11:39:45',a:'75.00',u:'系统上传'},
+{v:'1707304969',p:'湘B7V231',f:'交付过户',t:'2026-03-11 11:41:29',a:'100.00',u:'系统上传'},
+{v:'1707307206',p:'粤AFT0065',f:'维保出险',t:'2026-03-11 11:48:21',a:'21.90',u:'系统上传'},
+{v:'1707307209',p:'粤E7K7E5',f:'维保出险',t:'2026-03-11 11:48:24',a:'6.00',u:'系统上传'},
+{v:'1707306742',p:'粤A3H65R',f:'维保出险',t:'2026-03-11 11:54:36',a:'6.00',u:'系统上传'},
+{v:'1707307214',p:'粤E6HB89',f:'维保出险',t:'2026-03-11 11:56:21',a:'6.00',u:'系统上传'},
+{v:'1707307130',p:'粤R6L267',f:'维保出险',t:'2026-03-11 11:58:43',a:'21.90',u:'系统上传'},
+{v:'1707307188',p:'粤A4T05R',f:'查验成本',t:'2026-03-11 12:01:40',a:'75.00',u:'系统上传'},
+{v:'1707307119',p:'粤X7858C',f:'查验成本',t:'2026-03-11 12:02:05',a:'75.00',u:'系统上传'},
+{v:'1707307216',p:'粤A6PP00',f:'维保出险',t:'2026-03-11 12:02:52',a:'6.00',u:'系统上传'},
+{v:'1707307130',p:'粤R6L267',f:'查验成本',t:'2026-03-11 12:07:57',a:'75.00',u:'系统上传'},
+{v:'1707306102',p:'陕U398RX',f:'交付过户',t:'2026-03-11 12:09:18',a:'100.00',u:'系统上传'},
+{v:'1707306158',p:'粤A9BV80',f:'维保出险',t:'2026-03-11 12:12:32',a:'6.00',u:'系统上传'},
+{v:'1707306997',p:'湘AE71Y5',f:'维保出险',t:'2026-03-11 12:17:13',a:'21.90',u:'系统上传'},
+{v:'1707307223',p:'粤SB7D76',f:'维保出险',t:'2026-03-11 12:21:24',a:'6.00',u:'系统上传'},
+{v:'1707298359',p:'湘F66F02',f:'查验成本',t:'2026-03-11 12:24:12',a:'75.00',u:'系统上传'},
+{v:'1707302571',p:'贵A9JY33',f:'查验成本',t:'2026-03-11 12:25:15',a:'75.00',u:'系统上传'},
+{v:'1706186001',p:'粤AA70573',f:'查验成本',t:'2026-03-11 12:26:35',a:'75.00',u:'系统上传'},
+{v:'1707306997',p:'湘AE71Y5',f:'查验成本',t:'2026-03-11 12:29:58',a:'75.00',u:'系统上传'},
+{v:'1707307160',p:'湘A0N9J6',f:'查验成本',t:'2026-03-11 12:31:19',a:'75.00',u:'系统上传'},
+{v:'1707307230',p:'粤A5L50J',f:'维保出险',t:'2026-03-11 12:42:19',a:'6.00',u:'系统上传'},
+{v:'1707307238',p:'冀R6T6N6',f:'维保出险',t:'2026-03-11 12:46:54',a:'6.00',u:'系统上传'},
+{v:'1707307234',p:'粤A66EZ1',f:'维保出险',t:'2026-03-11 12:50:49',a:'21.90',u:'系统上传'},
+{v:'1707306003',p:'粤S5G63E',f:'交付过户',t:'2026-03-11 12:53:39',a:'100.00',u:'系统上传'},
+{v:'1707306003',p:'粤S5G63E',f:'业务合作服务费',t:'2026-03-11 12:53:39',a:'3000.00',u:'系统上传'},
+{v:'1707307178',p:'琼CD66620',f:'查验成本',t:'2026-03-11 12:59:10',a:'75.00',u:'系统上传'},
+{v:'1707301445',p:'粤A9T1D8',f:'维保出险',t:'2026-03-11 13:02:31',a:'6.00',u:'系统上传'},
+{v:'1707307242',p:'粤AFS9263',f:'维保出险',t:'2026-03-11 13:05:04',a:'6.00',u:'系统上传'},
+{v:'1707307243',p:'粤A5S9V9',f:'维保出险',t:'2026-03-11 13:09:58',a:'6.00',u:'系统上传'},
+{v:'1707306328',p:'桂REG885',f:'维保出险',t:'2026-03-11 13:10:21',a:'26.00',u:'系统上传'},
+{v:'1707307248',p:'粤S811HR',f:'维保出险',t:'2026-03-11 13:17:35',a:'6.00',u:'系统上传'},
+{v:'1707307248',p:'粤S811HR',f:'维保出险',t:'2026-03-11 13:18:29',a:'26.00',u:'系统上传'},
+{v:'1707306462',p:'粤A8F03D',f:'交付过户',t:'2026-03-11 13:26:31',a:'600.00',u:'系统上传'},
+{v:'1707301445',p:'粤A9T1D8',f:'查验成本',t:'2026-03-11 13:29:51',a:'75.00',u:'系统上传'},
+{v:'1707307249',p:'粤DD26372',f:'维保出险',t:'2026-03-11 13:43:14',a:'21.90',u:'系统上传'},
+{v:'1707307207',p:'粤BB51985',f:'维保出险',t:'2026-03-11 13:43:24',a:'6.00',u:'系统上传'},
+{v:'1707306742',p:'粤A3H65R',f:'维保出险',t:'2026-03-11 13:44:23',a:'21.90',u:'系统上传'},
+{v:'1707307255',p:'桂C22T51',f:'维保出险',t:'2026-03-11 13:46:52',a:'6.00',u:'系统上传'},
+{v:'1707307255',p:'桂C22T51',f:'维保出险',t:'2026-03-11 13:47:29',a:'21.90',u:'系统上传'},
+{v:'1707305439',p:'粤LD338H',f:'交付过户',t:'2026-03-11 13:47:49',a:'250.00',u:'系统上传'},
+{v:'1707307249',p:'粤DD26372',f:'查验成本',t:'2026-03-11 13:48:36',a:'75.00',u:'系统上传'},
+{v:'1707307204',p:'川GF2K98',f:'维保出险',t:'2026-03-11 13:50:59',a:'21.90',u:'系统上传'},
+{v:'1707306742',p:'粤A3H65R',f:'查验成本',t:'2026-03-11 13:51:24',a:'75.00',u:'系统上传'},
+{v:'1707307229',p:'粤RRW519',f:'维保出险',t:'2026-03-11 13:53:17',a:'6.00',u:'系统上传'},
+{v:'1707307229',p:'粤RRW519',f:'查验成本',t:'2026-03-11 13:56:23',a:'75.00',u:'系统上传'},
+{v:'1707307164',p:'晋A3D2N6',f:'维保出险',t:'2026-03-11 13:59:27',a:'26.00',u:'系统上传'},
+{v:'1707306281',p:'鄂D5N431',f:'交付过户',t:'2026-03-11 14:02:27',a:'100.00',u:'系统上传'},
+{v:'1707306790',p:'粤A0KJ22',f:'交付过户',t:'2026-03-11 14:02:52',a:'100.00',u:'系统上传'},
+{v:'1707306802',p:'粤AW9W84',f:'交付过户',t:'2026-03-11 14:02:56',a:'100.00',u:'系统上传'},
+{v:'1707307204',p:'川GF2K98',f:'查验成本',t:'2026-03-11 14:03:10',a:'75.00',u:'系统上传'},
+{v:'1707304038',p:'赣CYJ772',f:'交付过户',t:'2026-03-11 14:04:55',a:'600.00',u:'系统上传'},
+{v:'1707307266',p:'粤E705HP',f:'维保出险',t:'2026-03-11 14:04:56',a:'6.00',u:'系统上传'},
+{v:'1707307207',p:'粤BB51985',f:'查验成本',t:'2026-03-11 14:06:34',a:'75.00',u:'系统上传'},
+{v:'1707305360',p:'粤SD922M',f:'交付过户',t:'2026-03-11 14:09:41',a:'100.00',u:'系统上传'},
+{v:'1707307271',p:'粤TN053X',f:'维保出险',t:'2026-03-11 14:11:15',a:'6.00',u:'系统上传'},
+{v:'1707307271',p:'粤TN053X',f:'维保出险',t:'2026-03-11 14:11:57',a:'26.00',u:'系统上传'},
+{v:'1707307236',p:'晋A801LM',f:'维保出险',t:'2026-03-11 14:15:08',a:'26.00',u:'系统上传'},
+{v:'1707307276',p:'粤S62A6A',f:'维保出险',t:'2026-03-11 14:17:31',a:'6.00',u:'系统上传'},
+{v:'1707307236',p:'晋A801LM',f:'查验成本',t:'2026-03-11 14:18:37',a:'75.00',u:'系统上传'},
+{v:'1707306628',p:'粤V660B5',f:'查验成本',t:'2026-03-11 14:20:16',a:'75.00',u:'系统上传'},
+{v:'1707304404',p:'粤A9E1U2',f:'交付过户',t:'2026-03-11 14:25:50',a:'100.00',u:'系统上传'},
+{v:'1707306590',p:'粤AH01779',f:'交付过户',t:'2026-03-11 14:25:51',a:'600.00',u:'系统上传'},
+{v:'1707301184',p:'粤AC125R',f:'查验成本',t:'2026-03-11 14:27:52',a:'75.00',u:'系统上传'},
+{v:'1707307283',p:'粤E64Q27',f:'维保出险',t:'2026-03-11 14:29:05',a:'6.00',u:'系统上传'},
+{v:'1707306972',p:'粤RD77345',f:'查验成本',t:'2026-03-11 14:30:16',a:'75.00',u:'系统上传'},
+{v:'1707307267',p:'粤AFG3707',f:'维保出险',t:'2026-03-11 14:35:08',a:'6.00',u:'系统上传'},
+{v:'1707307155',p:'豫AHG1880',f:'查验成本',t:'2026-03-11 14:36:28',a:'75.00',u:'系统上传'},
+{v:'1707307270',p:'粤AGE2660',f:'维保出险',t:'2026-03-11 14:38:21',a:'21.90',u:'系统上传'},
+{v:'1707306808',p:'粤JCW563',f:'交付过户',t:'2026-03-11 14:40:36',a:'100.00',u:'系统上传'},
+{v:'1707306553',p:'粤PV7662',f:'交付过户',t:'2026-03-11 14:42:35',a:'100.00',u:'系统上传'},
+{v:'1707307288',p:'粤BQ6B23',f:'维保出险',t:'2026-03-11 14:43:35',a:'6.00',u:'系统上传'},
+{v:'1707307142',p:'粤L706MU',f:'维保出险',t:'2026-03-11 14:46:27',a:'26.00',u:'系统上传'},
+{v:'1707307142',p:'粤L706MU',f:'查验成本',t:'2026-03-11 14:47:01',a:'75.00',u:'系统上传'},
+{v:'1707307264',p:'鄂A51VQ1',f:'维保出险',t:'2026-03-11 14:47:45',a:'21.90',u:'系统上传'},
+{v:'1707307102',p:'粤LD20881',f:'查验成本',t:'2026-03-11 14:49:17',a:'75.00',u:'系统上传'},
+{v:'1707307292',p:'粤F2G955',f:'维保出险',t:'2026-03-11 14:49:58',a:'6.00',u:'系统上传'},
+{v:'1707307163',p:'湘G68JQ6',f:'查验成本',t:'2026-03-11 14:54:12',a:'75.00',u:'系统上传'},
+{v:'1707307296',p:'粤E9WZ75',f:'维保出险',t:'2026-03-11 14:54:58',a:'6.00',u:'系统上传'},
+{v:'1707307270',p:'粤AGE2660',f:'查验成本',t:'2026-03-11 14:55:52',a:'75.00',u:'系统上传'},
+{v:'1707307297',p:'粤T97N92',f:'维保出险',t:'2026-03-11 14:56:34',a:'6.00',u:'系统上传'},
+{v:'1707307297',p:'粤T97N92',f:'维保出险',t:'2026-03-11 14:57:18',a:'26.00',u:'系统上传'},
+{v:'1707306464',p:'粤A7WB62',f:'交付过户',t:'2026-03-11 14:57:34',a:'600.00',u:'系统上传'},
+{v:'1707307267',p:'粤AFG3707',f:'查验成本',t:'2026-03-11 14:58:02',a:'75.00',u:'系统上传'},
+{v:'1707307461',p:'鄂A51VQ1',f:'查验成本',t:'2026-03-11 14:59:28',a:'75.00',u:'系统上传'},
+{v:'1707306477',p:'粤AM2Y25',f:'交付过户',t:'2026-03-11 15:11:32',a:'250.00',u:'系统上传'},
+{v:'1707304601',p:'川Y06D19',f:'交付过户',t:'2026-03-11 15:12:08',a:'600.00',u:'系统上传'},
+{v:'1707307303',p:'粤A10L0E',f:'维保出险',t:'2026-03-11 15:12:12',a:'6.00',u:'系统上传'},
+{v:'1707306979',p:'粤LK5E62',f:'交付过户',t:'2026-03-11 15:14:08',a:'100.00',u:'系统上传'},
+{v:'1707306774',p:'粤FZE212',f:'交付过户',t:'2026-03-11 15:15:36',a:'100.00',u:'系统上传'},
+{v:'1707307273',p:'桂A9X0T0',f:'维保出险',t:'2026-03-11 15:17:11',a:'21.90',u:'系统上传'},
+{v:'1707307315',p:'鄂C6328H',f:'维保出险',t:'2026-03-11 15:19:18',a:'6.00',u:'系统上传'},
+{v:'1707306745',p:'桂C2D381',f:'交付过户',t:'2026-03-11 15:21:06',a:'100.00',u:'系统上传'},
+{v:'1707307298',p:'粤S6RC13',f:'维保出险',t:'2026-03-11 15:21:38',a:'6.00',u:'系统上传'},
+{v:'1707307323',p:'粤E8AX76',f:'维保出险',t:'2026-03-11 15:24:01',a:'6.00',u:'系统上传'},
+{v:'1707307328',p:'粤SM91S2',f:'维保出险',t:'2026-03-11 15:25:37',a:'6.00',u:'系统上传'},
+{v:'1707307327',p:'粤AY1H46',f:'维保出险',t:'2026-03-11 15:27:19',a:'6.00',u:'系统上传'},
+{v:'1707307335',p:'桂R3M699',f:'维保出险',t:'2026-03-11 15:30:22',a:'6.00',u:'系统上传'},
+{v:'1707306985',p:'粤RD64964',f:'查验成本',t:'2026-03-11 15:30:43',a:'75.00',u:'系统上传'},
+{v:'1707307205',p:'川A69AZ2',f:'维保出险',t:'2026-03-11 15:32:12',a:'21.90',u:'系统上传'},
+{v:'1707307205',p:'川A69AZ2',f:'查验成本',t:'2026-03-11 15:33:05',a:'75.00',u:'系统上传'},
+{v:'1707307337',p:'桂RWT228',f:'维保出险',t:'2026-03-11 15:35:05',a:'6.00',u:'系统上传'},
+{v:'1707306386',p:'湘K8SC86',f:'交付过户',t:'2026-03-11 15:39:26',a:'100.00',u:'系统上传'},
+{v:'1707285037',p:'粤A07XR8',f:'交付过户',t:'2026-03-11 15:39:29',a:'600.00',u:'系统上传'},
+{v:'1707306034',p:'赣JK6769',f:'交付过户',t:'2026-03-11 15:40:26',a:'100.00',u:'系统上传'},
+{v:'1707306857',p:'粤AF64049',f:'交付过户',t:'2026-03-11 15:41:20',a:'100.00',u:'系统上传'},
+{v:'1707305793',p:'粤NER111',f:'交付过户',t:'2026-03-11 15:48:50',a:'100.00',u:'系统上传'},
+{v:'1707307147',p:'粤D25P75',f:'查验成本',t:'2026-03-11 15:49:03',a:'75.00',u:'系统上传'},
+{v:'1707307273',p:'桂A9X0T0',f:'查验成本',t:'2026-03-11 15:49:13',a:'75.00',u:'系统上传'},
+{v:'1707307332',p:'粤AJ77P8',f:'维保出险',t:'2026-03-11 15:51:39',a:'6.00',u:'系统上传'},
+{v:'1707306777',p:'粤BP238R',f:'交付过户',t:'2026-03-11 16:01:25',a:'250.00',u:'系统上传'},
+{v:'1707307101',p:'粤JLF003',f:'查验成本',t:'2026-03-11 16:02:44',a:'75.00',u:'系统上传'},
+{v:'1707307342',p:'鄂AU67X0',f:'维保出险',t:'2026-03-11 16:03:01',a:'6.00',u:'系统上传'},
+{v:'1707307342',p:'鄂AU67X0',f:'维保出险',t:'2026-03-11 16:03:43',a:'21.90',u:'系统上传'},
+{v:'1707307347',p:'湘A399AG',f:'查验成本',t:'2026-03-11 16:05:12',a:'75.00',u:'系统上传'},
+{v:'1707307161',p:'湘E89K33',f:'维保出险',t:'2026-03-11 16:07:17',a:'26.00',u:'系统上传'},
+{v:'1707307364',p:'贵AC61P7',f:'维保出险',t:'2026-03-11 16:07:33',a:'6.00',u:'系统上传'},
+{v:'1707307161',p:'湘E89K33',f:'查验成本',t:'2026-03-11 16:07:47',a:'75.00',u:'系统上传'},
+{v:'1707307281',p:'桂MZN193',f:'维保出险',t:'2026-03-11 16:08:32',a:'6.00',u:'系统上传'},
+{v:'1707307369',p:'粤BY772F',f:'维保出险',t:'2026-03-11 16:09:49',a:'6.00',u:'系统上传'},
+{v:'1707305948',p:'粤A2QM73',f:'交付过户',t:'2026-03-11 16:10:09',a:'100.00',u:'系统上传'},
+{v:'1707307371',p:'粤ES6K76',f:'维保出险',t:'2026-03-11 16:10:19',a:'6.00',u:'系统上传'},
+{v:'1707307269',p:'冀R6T6N6',f:'查验成本',t:'2026-03-11 16:10:41',a:'75.00',u:'系统上传'},
+{v:'1707297676',p:'粤A441Y1',f:'查验成本',t:'2026-03-11 16:10:57',a:'75.00',u:'系统上传'},
+{v:'1707295786',p:'贵AK68R4',f:'交付过户',t:'2026-03-11 16:10:58',a:'600.00',u:'系统上传'},
+{v:'1707306528',p:'苏FM612A',f:'交付过户',t:'2026-03-11 16:11:28',a:'100.00',u:'系统上传'},
+{v:'1707303118',p:'粤E0737C',f:'交付过户',t:'2026-03-11 16:12:46',a:'600.00',u:'系统上传'},
+{v:'1707307375',p:'赣CZT717',f:'维保出险',t:'2026-03-11 16:12:54',a:'6.00',u:'系统上传'},
+{v:'1707306957',p:'桂AHX691',f:'交付过户',t:'2026-03-11 16:16:13',a:'100.00',u:'系统上传'},
+{v:'1707307383',p:'粤A0G3U8',f:'维保出险',t:'2026-03-11 16:20:17',a:'6.00',u:'系统上传'},
+{v:'1707307303',p:'粤A10L0E',f:'查验成本',t:'2026-03-11 16:20:37',a:'75.00',u:'系统上传'},
+{v:'1707307164',p:'晋A3D2N6',f:'查验成本',t:'2026-03-11 16:20:45',a:'75.00',u:'系统上传'},
+{v:'1707307383',p:'粤A0G3U8',f:'维保出险',t:'2026-03-11 16:21:31',a:'21.90',u:'系统上传'},
+{v:'1707307301',p:'粤A50NN9',f:'维保出险',t:'2026-03-11 16:27:26',a:'21.90',u:'系统上传'},
+{v:'1707307483',p:'陕A152LT',f:'查验成本',t:'2026-03-11 16:28:45',a:'75.00',u:'系统上传'},
+{v:'1707307190',p:'粤L17M99',f:'查验成本',t:'2026-03-11 16:30:04',a:'75.00',u:'系统上传'},
+{v:'1707307082',p:'粤E0C02K',f:'交付过户',t:'2026-03-11 16:34:53',a:'100.00',u:'系统上传'},
+{v:'1707306690',p:'粤E3710J',f:'交付过户',t:'2026-03-11 16:35:18',a:'600.00',u:'系统上传'},
+{v:'1707306794',p:'粤S5B9U2',f:'交付过户',t:'2026-03-11 16:36:18',a:'100.00',u:'系统上传'},
+{v:'1707303883',p:'粤S67JE7',f:'交付过户',t:'2026-03-11 16:37:12',a:'600.00',u:'系统上传'},
+{v:'1707307342',p:'鄂AU67X0',f:'查验成本',t:'2026-03-11 16:39:33',a:'75.00',u:'系统上传'},
+{v:'1707307399',p:'粤AJ4R19',f:'维保出险',t:'2026-03-11 16:45:53',a:'6.00',u:'系统上传'},
+{v:'1707307428',p:'粤E2526Z',f:'维保出险',t:'2026-03-11 16:50:26',a:'6.00',u:'系统上传'},
+{v:'1707307004',p:'陕U933Y9',f:'交付过户',t:'2026-03-11 16:50:44',a:'100.00',u:'系统上传'},
+{v:'1707307428',p:'粤E2526Z',f:'维保出险',t:'2026-03-11 16:54:08',a:'21.90',u:'系统上传'},
+{v:'1707307332',p:'粤AJ77P8',f:'查验成本',t:'2026-03-11 17:02:10',a:'75.00',u:'系统上传'},
+{v:'1707303641',p:'粤A7JJ86',f:'交付过户',t:'2026-03-11 17:09:35',a:'600.00',u:'系统上传'},
+{v:'1707307324',p:'豫SJL922',f:'查验成本',t:'2026-03-11 17:11:42',a:'75.00',u:'系统上传'},
+{v:'1707300378',p:'粤YUA920',f:'查验成本',t:'2026-03-11 17:12:26',a:'75.00',u:'系统上传'},
+{v:'1707306869',p:'粤MJE692',f:'交付过户',t:'2026-03-11 17:12:41',a:'100.00',u:'系统上传'},
+{v:'1707307298',p:'粤S6RC13',f:'查验成本',t:'2026-03-11 17:14:19',a:'75.00',u:'系统上传'},
+{v:'1707307301',p:'粤A50NN9',f:'查验成本',t:'2026-03-11 17:14:30',a:'75.00',u:'系统上传'},
+{v:'1707307442',p:'湘AAT6920',f:'维保出险',t:'2026-03-11 17:16:10',a:'21.90',u:'系统上传'},
+{v:'1707307034',p:'琼AQ5M13',f:'交付过户',t:'2026-03-11 17:22:25',a:'100.00',u:'系统上传'},
+{v:'1707305979',p:'粤S12J8P',f:'交付过户',t:'2026-03-11 17:25:47',a:'100.00',u:'系统上传'},
+{v:'1707307435',p:'粤YLU027',f:'查验成本',t:'2026-03-11 17:30:41',a:'75.00',u:'系统上传'},
+{v:'1707307035',p:'粤AJ482Z',f:'交付过户',t:'2026-03-11 17:31:23',a:'600.00',u:'系统上传'},
+{v:'1707306466',p:'粤A373TC',f:'交付过户',t:'2026-03-11 17:35:42',a:'100.00',u:'系统上传'},
+{v:'1707307289',p:'桂ECY822',f:'维保出险',t:'2026-03-11 17:36:10',a:'26.00',u:'系统上传'},
+{v:'1707307281',p:'桂MZN193',f:'查验成本',t:'2026-03-11 17:38:58',a:'75.00',u:'系统上传'},
+{v:'1707307438',p:'粤AE23C8',f:'查验成本',t:'2026-03-11 17:40:33',a:'75.00',u:'系统上传'},
+{v:'1707307310',p:'鄂AK721Z',f:'维保出险',t:'2026-03-11 17:44:46',a:'21.90',u:'系统上传'},
+{v:'1707307310',p:'鄂AK721Z',f:'查验成本',t:'2026-03-11 17:46:04',a:'75.00',u:'系统上传'},
+{v:'1707307471',p:'湘AAT6920',f:'查验成本',t:'2026-03-11 17:48:10',a:'75.00',u:'系统上传'},
+{v:'1707307413',p:'粤AN92E5',f:'查验成本',t:'2026-03-11 17:48:34',a:'75.00',u:'系统上传'},
+{v:'1707307398',p:'湘AM337E',f:'查验成本',t:'2026-03-11 18:05:12',a:'75.00',u:'系统上传'},
+{v:'1707304104',p:'粤KHY055',f:'交付过户',t:'2026-03-11 18:05:25',a:'600.00',u:'系统上传'},
+{v:'1707307290',p:'粤E6FV95',f:'查验成本',t:'2026-03-11 18:06:39',a:'75.00',u:'系统上传'},
+{v:'1707307257',p:'粤E655QG',f:'查验成本',t:'2026-03-11 18:07:02',a:'75.00',u:'系统上传'},
+{v:'1707307224',p:'粤CD81349',f:'查验成本',t:'2026-03-11 18:07:56',a:'75.00',u:'系统上传'},
+{v:'1707307067',p:'粤E0WD59',f:'查验成本',t:'2026-03-11 18:11:40',a:'75.00',u:'系统上传'},
+{v:'1707307065',p:'粤EE8C54',f:'查验成本',t:'2026-03-11 18:12:10',a:'75.00',u:'系统上传'},
+{v:'1707307300',p:'粤AM17A7',f:'维保出险',t:'2026-03-11 18:20:00',a:'21.90',u:'系统上传'},
+{v:'1707307199',p:'桂C3Z357',f:'维保出险',t:'2026-03-11 18:32:37',a:'21.90',u:'系统上传'},
+{v:'1707306602',p:'豫C8MK15',f:'交付过户',t:'2026-03-11 18:46:25',a:'100.00',u:'系统上传'},
+{v:'1707307302',p:'粤A5P95K',f:'维保出险',t:'2026-03-11 19:05:57',a:'21.90',u:'系统上传'},
+{v:'1707307305',p:'粤A6C58V',f:'维保出险',t:'2026-03-11 19:11:10',a:'21.90',u:'系统上传'},
+{v:'1707306684',p:'苏BE177H',f:'交付过户',t:'2026-03-11 19:32:25',a:'100.00',u:'系统上传'},
+{v:'1707307305',p:'粤A6C58V',f:'查验成本',t:'2026-03-11 19:52:41',a:'75.00',u:'系统上传'},
+{v:'1707307302',p:'粤A5P95K',f:'查验成本',t:'2026-03-11 19:52:53',a:'75.00',u:'系统上传'},
+{v:'1707307300',p:'粤AM17A7',f:'查验成本',t:'2026-03-11 19:53:06',a:'75.00',u:'系统上传'}
+];
+function renderCostDetailTable(){
+  const cols=['vid','车牌','费用款项','款项发生时间','金额（单位：元）','上传人'];
+  const keys=['v','p','f','t','a','u'];
+  const t=document.getElementById('costDetailTable');
+  let h='<thead><tr>';
+  cols.forEach(c=>{ h+='<th>'+c+'</th>'; });
+  h+='</tr></thead><tbody>';
+  if(feeDetailData.length===0){
+    h+='<tr><td colspan="'+cols.length+'" style="text-align:center;padding:40px 0;color:var(--text-muted)">暂无数据</td></tr>';
+  } else {
+    feeDetailData.forEach(row=>{
+      h+='<tr>';
+      keys.forEach((k,i)=>{
+        let v=row[k]||'';
+        let cls=i<2?'rn':'num';
+        if(k==='a'&&v!==''){
+          let n=parseFloat(v);
+          if(!isNaN(n)&&n<0) cls='num neg';
+          else if(!isNaN(n)&&n>0) cls='num pos';
+        }
+        if(k==='f'||k==='t'||k==='u') cls='';
+        h+='<td class="'+cls+'">'+v+'</td>';
+      });
+      h+='</tr>';
+    });
+  }
+  h+='</tbody>';
+  t.innerHTML=h;
+  document.getElementById('costDetailCount').textContent='共 '+feeDetailData.length+' 条';
+}
+
+renderRegionTable();
+renderPurchaseTable();
+renderConsignTable();
+renderRevenueTable();
+renderCostTable();
+</script>
+</body>
+</html>

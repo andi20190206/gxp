@@ -140,6 +140,14 @@
         @media(max-width:1024px){.filter-grid{grid-template-columns:repeat(2,1fr)}.sidebar{width:160px}.stats-bar{grid-template-columns:1fr 1fr}}
         @media(max-width:768px){.layout{flex-direction:column}.sidebar{width:100%;height:auto;flex-direction:row;flex-wrap:wrap}.filter-grid{grid-template-columns:1fr}.stats-bar{grid-template-columns:1fr}}
         ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+        #mainTable th:nth-last-child(1),#mainTable td:nth-last-child(1){position:sticky;right:0;z-index:5;background:#fff;box-shadow:-2px 0 4px rgba(0,0,0,.06)}
+        #mainTable th:nth-last-child(2),#mainTable td:nth-last-child(2){position:sticky;right:80px;z-index:5;background:#fff;box-shadow:-2px 0 4px rgba(0,0,0,.06)}
+        #mainTable th:nth-last-child(1),#mainTable th:nth-last-child(2){background:#f8fafc;z-index:15}
+        #mainTable tr:hover td:nth-last-child(1),#mainTable tr:hover td:nth-last-child(2){background:#f8fafc}
+        tr.aftersale td:nth-last-child(1),tr.aftersale td:nth-last-child(2){background:#fff5f5}
+        tr.aftersale:hover td:nth-last-child(1),tr.aftersale:hover td:nth-last-child(2){background:#fee2e2}
+        .card-desc-popup{position:fixed;z-index:2000;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:14px 18px;box-shadow:0 8px 24px rgba(0,0,0,.15);max-width:320px;font-size:12.5px;line-height:1.6;animation:fadeIn .15s}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
     </style>
 </head>
 <body>
@@ -205,7 +213,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="table-toolbar"><div class="table-toolbar-left"><span>数据预览（前100条）</span><span class="total-badge">共 47 条</span><span style="color:#94a3b8;font-size:11px">⚠ 超出100条请导出查看</span></div></div>
+                    <div class="table-toolbar"><div class="table-toolbar-left"><span>数据预览（前100条）</span><button class="btn btn-reset" style="margin-left:6px;padding:5px 10px;font-size:11px;" onclick="showFieldDefs()">指标取值</button><span class="total-badge">共 47 条</span><span style="color:#94a3b8;font-size:11px">⚠ 超出100条请导出查看</span></div></div>
                     <div class="table-outer">
                         <table id="mainTable"><thead><tr>
                             <th style="min-width:80px">车牌</th><th style="min-width:130px">VIN码</th><th style="min-width:100px">VID</th>
@@ -231,14 +239,14 @@
                 </div>
                 <!-- 使用指南 -->
                 <div class="tab-pane" id="tabGuide" style="padding:24px;overflow-y:auto;">
-                    <div style="max-width:640px">
+                    <div style="max-width:900px">
                         <h3 style="font-size:15px;font-weight:700;margin-bottom:12px;">📖 使用指南</h3>
-                        <div style="display:flex;flex-direction:column;gap:12px;font-size:13px;line-height:1.7;color:#475569;">
-                            <div><strong style="color:#0f172a;">1. 筛选查询</strong><br>支持按确认日期、成交日期、检测过审日期、车牌/VIN/VID、合同类型、车辆状态、门店、区域多维筛选，选择完毕后点击「搜索」。</div>
-                            <div><strong style="color:#0f172a;">2. 数据预览</strong><br>表格最多展示 100 条预览数据。如需查看全量数据，请使用导出功能。</div>
-                            <div><strong style="color:#0f172a;">3. 查看详情</strong><br>点击行末「详情」按钮可查看该车辆的完整财务明细及各时机点（T1-T6）事件日志。</div>
-                            <div><strong style="color:#0f172a;">4. 导出数据</strong><br>支持导出为 CSV 格式，系统将自动按您的权限范围过滤数据。</div>
-                            <div><strong style="color:#0f172a;">5. 数据权限</strong><br>系统根据您的角色自动限制数据可见范围（评估师仅见本人数据、门店总监见本店数据、区域经理见本区域数据）。</div>
+                        <div style="display:flex;flex-wrap:wrap;gap:12px 24px;font-size:13px;line-height:1.7;color:#475569;">
+                            <div><strong style="color:#0f172a;">1. 筛选查询</strong> 支持按清分日期、成交日期、检测过审日期、车牌/VIN/VID、合同类型、车辆状态、门店、区域多维筛选，选择完毕后点击「搜索」。</div>
+                            <div><strong style="color:#0f172a;">2. 数据预览</strong> 表格最多展示 100 条预览数据。如需查看全量数据，请使用导出功能。</div>
+                            <div><strong style="color:#0f172a;">3. 查看详情</strong> 点击行末「详情」按钮可查看该车辆的完整财务明细及各时机点（T1-T6）事件日志。</div>
+                            <div><strong style="color:#0f172a;">4. 导出数据</strong> 支持导出为 CSV 格式，系统将自动按您的权限范围过滤数据。</div>
+                            <div style="flex-basis:100%;"><strong style="color:#0f172a;">5. 数据权限</strong> 系统根据您的角色自动限制数据可见范围。</div>
                         </div>
                     </div>
                 </div>
@@ -289,11 +297,11 @@
                 </div>
                 <!-- 需求说明 tab -->
                 <div class="tab-pane" id="tabReqNotes" style="overflow-y:auto;padding:24px;">
-                    <div style="max-width:900px;margin:0 auto;" id="reqNotesContent"></div>
+                    <div style="max-width:900px;margin:0;" id="reqNotesContent"></div>
                 </div>
                 <!-- 实际案例 -->
                 <div class="tab-pane" id="tabCases" style="overflow-y:auto;padding:24px;">
-                    <div style="max-width:900px;margin:0 auto;" id="casesContent"></div>
+                    <div style="max-width:900px;margin:0;" id="casesContent"></div>
                 </div>
             </div>
         </div>
@@ -324,14 +332,15 @@ function renderDashboard(){
     const numS=`font-size:22px;font-weight:700;font-family:var(--mono);`;
     const lblS=`font-size:11px;color:#94a3b8;margin-bottom:2px;font-weight:500;`;
     const subS=`font-size:11px;color:#64748b;margin-top:2px;`;
-    function card(bg,border,label,value,unit,color){
-        return `<div style="background:${bg};border:1px solid ${border};border-radius:8px;padding:14px 16px;">
-            <div style="${lblS}">${label}</div>
+    function card(bg,border,label,value,unit,color,desc){
+        const descAttr=desc?` onclick="showCardDesc('${label}','${desc.replace(/'/g,"\\&#39;")}')" style="cursor:pointer;background:${bg};border:1px solid ${border};border-radius:8px;padding:14px 16px;transition:box-shadow .15s;" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow='none'"`:`style="background:${bg};border:1px solid ${border};border-radius:8px;padding:14px 16px;"`;
+        return `<div ${descAttr}>
+            <div style="${lblS}display:flex;align-items:center;gap:4px;">${label}${desc?'<span style="color:#94a3b8;font-size:10px;">ⓘ</span>':''}</div>
             <div style="${numS}color:${color||'var(--text-primary)'}">${value}</div>
             <div style="${subS}">${unit}</div></div>`;
     }
-    function sectionTitle(icon,text,color){
-        return `<div style="font-size:14px;font-weight:700;color:${color};display:flex;align-items:center;gap:6px;margin-bottom:12px;border-left:3px solid ${color};padding-left:8px;">${icon} ${text}</div>`;
+    function sectionTitle(text,color){
+        return `<div style="font-size:14px;font-weight:700;color:${color};display:flex;align-items:center;gap:6px;margin-bottom:12px;border-left:3px solid ${color};padding-left:8px;">${text}</div>`;
     }
     // 成交率子维度表格
     const rateData=[
@@ -350,9 +359,9 @@ function renderDashboard(){
     ];
     const rateRows=rateData.map(d=>`<tr>
         <td style="padding:6px 10px;border-bottom:1px solid #f1f5f9;font-size:12px;">${d.region}</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #f1f5f9;text-align:right;font-family:var(--mono);font-size:12px;">${d.upload}</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #f1f5f9;text-align:right;font-family:var(--mono);font-size:12px;">${d.deal}</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #f1f5f9;text-align:right;font-family:var(--mono);font-size:12px;font-weight:600;color:${parseFloat(d.rate)>=80?'#16a34a':'#d97706'}">${d.rate}</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f1f5f9;text-align:right;font-family:var(--mono);font-size:12px;" data-val="${d.upload}">${d.upload}</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f1f5f9;text-align:right;font-family:var(--mono);font-size:12px;" data-val="${d.deal}">${d.deal}</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f1f5f9;text-align:right;font-family:var(--mono);font-size:12px;font-weight:600;color:${parseFloat(d.rate)>=80?'#16a34a':'#d97706'}" data-val="${parseFloat(d.rate)}">${d.rate}</td>
     </tr>`).join('');
 
     document.getElementById('dashboardContent').innerHTML=`
@@ -367,43 +376,43 @@ function renderDashboard(){
         <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 20px;margin-bottom:20px;">
             <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:14px;">业务汇总</div>
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
-                ${card('#f0fdf4','#bbf7d0','上拍台次（去重）',242,'台','#16a34a')}
-                ${card('#f0fdf4','#bbf7d0','成交台次（去重）',192,'台','#16a34a')}
-                ${card('#f0fdf4','#bbf7d0','成交率（去重）','79.34%','成交/上拍','#16a34a')}
-                ${card('#f8fafc','#e2e8f0','检测台次',215,'台','')}
-                ${card('#eff6ff','#bfdbfe','交易总毛利','284,500','元','#2563eb')}
-                ${card('#eff6ff','#bfdbfe','绩效毛利','198,350','元','#2563eb')}
-                ${card('#fff1f2','#fecdd3','售后台次',5,'台','#dc2626')}
-                ${card('#fff1f2','#fecdd3','售后退车台次',3,'台','#dc2626')}
+                ${card('#f0fdf4','#bbf7d0','上拍台次（去重）',242,'台','#16a34a','按VIN去重统计的上拍车辆总数，同一VIN多次上拍仅计1次')}
+                ${card('#f0fdf4','#bbf7d0','成交台次（去重）',192,'台','#16a34a','按VIN去重统计的成交车辆总数，同一VIN多次成交仅计1次')}
+                ${card('#f0fdf4','#bbf7d0','成交率（去重）','79.34%','','#16a34a','去重成交台次 ÷ 去重上拍台次，保留2位小数')}
+                ${card('#f8fafc','#e2e8f0','检测台次',215,'台','','不排重统计的检测过审次数，延期不算，同月多次检测分别计数')}
+                ${card('#eff6ff','#bfdbfe','交易总毛利','284,500','元','#2563eb','唯普毛利+唯普云毛利+汇和毛利+机拍毛利的合计')}
+                ${card('#eff6ff','#bfdbfe','绩效毛利','198,350','元','#2563eb','交易总毛利减去所有成本费用项后的最终绩效金额')}
+                ${card('#fff1f2','#fecdd3','售后台次',5,'台','#dc2626','不排重统计的发生售后的车辆次数')}
+                ${card('#fff1f2','#fecdd3','售后退车台次',3,'台','#dc2626','不排重统计的售后退车车辆次数')}
             </div>
         </div>
 
-        <!-- ===== 委拍板块 ===== -->
+        <!-- ===== 委拍业务 ===== -->
         <div style="background:#fff;border:1px solid #bbf7d0;border-radius:10px;padding:18px 20px;margin-bottom:20px;">
-            ${sectionTitle('🏷','委拍板块','#16a34a')}
+            ${sectionTitle('委拍业务','#16a34a')}
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;">
-                ${card('#f0fdf4','#bbf7d0','上拍台次(委拍)',190,'台（去重）','#16a34a')}
-                ${card('#f0fdf4','#bbf7d0','成交台次(委拍)',151,'台（去重）','#16a34a')}
-                ${card('#f0fdf4','#bbf7d0','去重成交率(委拍)','79.47%','成交/上拍','#16a34a')}
+                ${card('#f0fdf4','#bbf7d0','上拍台次(委拍)',190,'台（去重）','#16a34a','委拍类型车辆按VIN去重的上拍总数')}
+                ${card('#f0fdf4','#bbf7d0','成交台次(委拍)',151,'台（去重）','#16a34a','委拍类型车辆按VIN去重的成交总数')}
+                ${card('#f0fdf4','#bbf7d0','去重成交率(委拍)','79.47%','','#16a34a','委拍成交台次÷委拍上拍台次，保留2位小数')}
             </div>
             <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px;">
-                ${card('#f8fafc','#e2e8f0','检测台次',168,'台（不排重）','')}
-                ${card('#f8fafc','#e2e8f0','交易总毛利','218,600','元','')}
-                ${card('#f8fafc','#e2e8f0','绩效毛利','152,800','元','')}
-                ${card('#fff1f2','#fecdd3','售后台次',3,'台（不排重）','#dc2626')}
-                ${card('#fff1f2','#fecdd3','售后退车台次',2,'台（不排重）','#dc2626')}
-                ${card('#f8fafc','#e2e8f0','管理门店',18,'家（账号关联）','')}
+                ${card('#f8fafc','#e2e8f0','检测台次',168,'台（不排重）','','委拍车辆检测过审次数，不排重，延期不算')}
+                ${card('#f8fafc','#e2e8f0','交易总毛利','218,600','元','','委拍车辆的交易总毛利合计')}
+                ${card('#f8fafc','#e2e8f0','绩效毛利','152,800','元','','委拍车辆的绩效毛利合计')}
+                ${card('#fff1f2','#fecdd3','售后台次',3,'台（不排重）','#dc2626','委拍车辆发生售后的次数，不排重')}
+                ${card('#fff1f2','#fecdd3','售后退车台次',2,'台（不排重）','#dc2626','委拍车辆售后退车的次数，不排重')}
+                ${card('#f8fafc','#e2e8f0','管理门店',18,'家（账号关联）','','当前账号关联的委拍业务门店数量')}
             </div>
             <!-- 成交率子维度 -->
             <div style="margin-bottom:16px;">
                 <div style="font-size:12px;font-weight:600;color:#475569;margin-bottom:8px;">成交率 — 按城市/大区域</div>
                 <div style="overflow-x:auto;border:1px solid #e2e8f0;border-radius:6px;">
-                    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+                    <table id="rateTable" style="width:100%;border-collapse:collapse;font-size:12px;">
                         <thead><tr style="background:#f8fafc;">
                             <th style="padding:7px 10px;text-align:left;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;">城市/大区域</th>
-                            <th style="padding:7px 10px;text-align:right;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;">上拍台次</th>
-                            <th style="padding:7px 10px;text-align:right;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;">成交台次</th>
-                            <th style="padding:7px 10px;text-align:right;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;">去重成交率</th>
+                            <th style="padding:7px 10px;text-align:right;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;cursor:pointer;" onclick="sortRateTable(1)">上拍台次 <span id="rateSort1" style="font-size:10px;">⇅</span></th>
+                            <th style="padding:7px 10px;text-align:right;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;cursor:pointer;" onclick="sortRateTable(2)">成交台次 <span id="rateSort2" style="font-size:10px;">⇅</span></th>
+                            <th style="padding:7px 10px;text-align:right;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;cursor:pointer;" onclick="sortRateTable(3)">去重成交率 <span id="rateSort3" style="font-size:10px;">⇅</span></th>
                         </tr></thead>
                         <tbody>${rateRows}</tbody>
                     </table>
@@ -411,21 +420,21 @@ function renderDashboard(){
             </div>
         </div>
 
-        <!-- ===== 收购板块 ===== -->
+        <!-- ===== 收购业务 ===== -->
         <div style="background:#fff;border:1px solid #bfdbfe;border-radius:10px;padding:18px 20px;margin-bottom:20px;">
-            ${sectionTitle('📦','收购板块','#2563eb')}
+            ${sectionTitle('收购业务','#2563eb')}
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;">
-                ${card('#eff6ff','#bfdbfe','上拍台次(收购)',52,'台（去重）','#2563eb')}
-                ${card('#eff6ff','#bfdbfe','成交台次(收购)',41,'台（去重）','#2563eb')}
-                ${card('#eff6ff','#bfdbfe','去重成交率(收购)','78.85%','成交/上拍','#2563eb')}
+                ${card('#eff6ff','#bfdbfe','上拍台次(收购)',52,'台（去重）','#2563eb','收购类型车辆按VIN去重的上拍总数')}
+                ${card('#eff6ff','#bfdbfe','成交台次(收购)',41,'台（去重）','#2563eb','收购类型车辆按VIN去重的成交总数')}
+                ${card('#eff6ff','#bfdbfe','去重成交率(收购)','78.85%','','#2563eb','收购成交台次÷收购上拍台次，保留2位小数')}
             </div>
             <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;">
-                ${card('#f8fafc','#e2e8f0','检测台次',47,'台（不排重）','')}
-                ${card('#f8fafc','#e2e8f0','交易总毛利','65,900','元','')}
-                ${card('#f8fafc','#e2e8f0','绩效毛利','45,550','元','')}
-                ${card('#fff1f2','#fecdd3','售后台次',2,'台（不排重）','#dc2626')}
-                ${card('#fff1f2','#fecdd3','售后退车台次',1,'台（不排重）','#dc2626')}
-                ${card('#f8fafc','#e2e8f0','管理门店',12,'家（账号关联）','')}
+                ${card('#f8fafc','#e2e8f0','检测台次',47,'台（不排重）','','收购车辆检测过审次数，不排重，延期不算')}
+                ${card('#f8fafc','#e2e8f0','交易总毛利','65,900','元','','收购车辆的交易总毛利合计')}
+                ${card('#f8fafc','#e2e8f0','绩效毛利','45,550','元','','收购车辆的绩效毛利合计')}
+                ${card('#fff1f2','#fecdd3','售后台次',2,'台（不排重）','#dc2626','收购车辆发生售后的次数，不排重')}
+                ${card('#fff1f2','#fecdd3','售后退车台次',1,'台（不排重）','#dc2626','收购车辆售后退车的次数，不排重')}
+                ${card('#f8fafc','#e2e8f0','管理门店',12,'家（账号关联）','','当前账号关联的收购业务门店数量')}
             </div>
         </div>`;
 }
@@ -835,6 +844,57 @@ function searchStore(val){const box=document.getElementById('storeSuggest');if(!
 function exportFile(type){alert(`正在导出 CSV 文件...\n文件名：车源绩效表_${new Date().toISOString().slice(0,10)}.csv`)}
 function printDetail(){window.print()}
 function logout(){if(confirm('确认退出系统？'))alert('已退出')}
+function showCardDesc(label,desc){
+    const old=document.querySelector('.card-desc-popup');if(old)old.remove();
+    const div=document.createElement('div');div.className='card-desc-popup';
+    div.innerHTML=`<div style="font-weight:600;color:#0f172a;margin-bottom:4px;">${label}</div><div style="color:#475569;">${desc}</div><div style="text-align:right;margin-top:8px;"><span style="color:#94a3b8;font-size:11px;cursor:pointer;" onclick="this.closest('.card-desc-popup').remove()">关闭</span></div>`;
+    document.body.appendChild(div);
+    const rect=event.currentTarget.getBoundingClientRect();
+    div.style.top=Math.min(rect.bottom+6,window.innerHeight-div.offsetHeight-10)+'px';
+    div.style.left=Math.min(rect.left,window.innerWidth-div.offsetWidth-10)+'px';
+    setTimeout(()=>{document.addEventListener('click',function handler(e){if(!div.contains(e.target)){div.remove();document.removeEventListener('click',handler)}},{once:false})},10);
+}
+let rateSortDir={};
+function sortRateTable(colIdx){
+    const table=document.getElementById('rateTable');
+    const tbody=table.querySelector('tbody');
+    const rows=Array.from(tbody.querySelectorAll('tr'));
+    const dir=rateSortDir[colIdx]==='asc'?'desc':'asc';
+    rateSortDir[colIdx]=dir;
+    rows.sort((a,b)=>{
+        const av=parseFloat(a.cells[colIdx].getAttribute('data-val'))||0;
+        const bv=parseFloat(b.cells[colIdx].getAttribute('data-val'))||0;
+        return dir==='asc'?av-bv:bv-av;
+    });
+    rows.forEach(r=>tbody.appendChild(r));
+    [1,2,3].forEach(i=>{document.getElementById('rateSort'+i).textContent=i===colIdx?(dir==='asc'?'↑':'↓'):'⇅'});
+}
+function showFieldDefs(){
+    const defs=[
+        ['车牌','车辆号牌'],['VIN码','车辆识别代号，17位'],['VID','唯普系统内部车辆ID'],
+        ['合同类型','委拍 或 收购'],['是否查验','是否完成车辆查验'],['车辆状态','已入库→已检测→已清分→已交付→已过户→已售后'],
+        ['售后状态','无/售后退车/售后仲裁'],['责任方','售后时的责任归属部门'],['清分日期','订单清分完成日期'],
+        ['成交价','拍卖成交价格'],['合同价','合同约定价格'],['起拍价','拍卖起拍价格'],
+        ['门店名称','车辆归属门店'],['大区域','门店所属大区'],['小区域','门店所属小区'],
+        ['交易总毛利','唯普+唯普云+汇和+机拍毛利合计'],['唯普毛利','归属唯普的毛利'],['唯普云毛利','归属唯普云的毛利'],
+        ['汇和毛利','归属汇和的毛利'],['机拍毛利','归属机拍的毛利'],
+        ['综合服务费','综合服务费用'],['评估费','T3清分后计入'],['检测成本','T2过审：省内85/省外120'],['销售成本','T3清分后按车源类型分档'],
+        ['评估师','负责评估的人员'],['区域经理','负责区域的经理'],['副部长','分管副部长'],['事业部','归属事业部'],
+        ['业务合作服务费','清分后按集团/门店分档，沉没成本'],['垫款利息','垫款产生的利息'],
+        ['入库时间','T1车辆入库时间'],['入库地点','T1入库的服务中心/仓库'],['提车费','T1入库100元/台，同VIN仅计一次'],
+        ['提车人','提车助手中将车辆送入唯普库的人'],['提车类型','自提（自己送车）或第三方（他人送车）'],
+        ['现场交付成本','T4交付型出库150元'],['现场交付部门','执行现场交付的服务中心'],
+        ['空中交付成本','T5车辆不在服务中心库时50元'],['空中交付部门','服务中心或中控'],['空中交付跟进人','点击资料回收完毕的操作人'],
+        ['现场过户成本','T5过户费≠0时350元'],['现场过户部门','执行过户的服务中心'],
+        ['检测员','执行检测的人员'],['数据成本','查询成功后触发（维保/出险26元/电池等）'],['政企场地费','人工核算字段'],
+        ['收购车成本','T3清分后，仅收购车，按车价分档'],['绩效毛利','总毛利−所有成本费用项'],['绩效工资','人工核算占位字段']
+    ];
+    const rows=defs.map(d=>`<tr><td style="padding:6px 10px;border-bottom:1px solid #f1f5f9;font-weight:600;white-space:nowrap;width:120px;">${d[0]}</td><td style="padding:6px 10px;border-bottom:1px solid #f1f5f9;color:#475569;">${d[1]}</td></tr>`).join('');
+    document.getElementById('modalTitle').textContent='指标取值说明';
+    document.getElementById('modalSubtitle').textContent='各字段含义与取值逻辑';
+    document.getElementById('modalBody').innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:12.5px;white-space:normal;"><thead><tr style="background:#f8fafc;"><th style="padding:8px 10px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;color:#64748b;width:120px;">字段名</th><th style="padding:8px 10px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;color:#64748b;">含义与取值逻辑</th></tr></thead><tbody>${rows}</tbody></table>`;
+    document.getElementById('detailModal').classList.add('open');
+}
 // Init
 renderDashboard();
 renderTable();
