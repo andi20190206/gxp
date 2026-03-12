@@ -161,7 +161,6 @@
             <div class="sidebar-item" onclick="location.href='经管报表.html#costDetail'"><span class="icon">📋</span> 费用明细</div>
             <div class="sidebar-item active" onclick="setActive(this)"><span class="icon">🚗</span> 车源绩效表</div>
         </div>
-        <div class="sidebar-footer"><div class="user-info"><div class="user-avatar">张</div><div><div class="user-name">张三</div><div class="user-role">区域经理</div></div></div></div>
     </div>
     <!-- MAIN -->
     <div class="main">
@@ -435,6 +434,29 @@ function renderDashboard(){
                 ${card('#fff1f2','#fecdd3','售后台次',2,'台（不排重）','#dc2626','收购车辆发生售后的次数，不排重')}
                 ${card('#fff1f2','#fecdd3','售后退车台次',1,'台（不排重）','#dc2626','收购车辆售后退车的次数，不排重')}
                 ${card('#f8fafc','#e2e8f0','管理门店',12,'家（账号关联）','','当前账号关联的收购业务门店数量')}
+            </div>
+        </div>
+
+        <!-- ===== 指标说明 ===== -->
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 20px;margin-bottom:20px;">
+            <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:14px;">📖 指标取值说明</div>
+            <div style="overflow-x:auto;border:1px solid #e2e8f0;border-radius:6px;">
+                <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+                    <thead><tr style="background:#f8fafc;">
+                        <th style="padding:8px 12px;text-align:left;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;width:160px;">指标</th>
+                        <th style="padding:8px 12px;text-align:left;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;">取值逻辑</th>
+                    </tr></thead>
+                    <tbody>
+                        <tr><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">上拍台次（去重）</td><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;line-height:1.6;">统计周期内参与上拍的车辆数，按 VIN 码唯一去重计数。<br><span style="color:#64748b;font-size:11px;">示例值：242 台</span></td></tr>
+                        <tr style="background:#fafbfc;"><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">成交台次（去重）</td><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;line-height:1.6;">统计周期内成交订单中的车辆数，按 VIN 码唯一去重计数。<br><span style="color:#64748b;font-size:11px;">示例值：192 台</span></td></tr>
+                        <tr><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">成交率（去重）</td><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;line-height:1.6;">去重成交台次 ÷ 去重上拍台次，保留两位小数。<br><span style="color:#64748b;font-size:11px;">示例：192 / 242 ≈ 79.34%</span></td></tr>
+                        <tr style="background:#fafbfc;"><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">检测台次</td><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;line-height:1.6;">统计周期内完成检测的记录数，<span style="color:#dc2626;font-weight:500;">不去重</span>（同一辆车可多次检测，每次分别计数）。<br><span style="color:#64748b;font-size:11px;">示例值：215 台</span></td></tr>
+                        <tr><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">交易总毛利</td><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;line-height:1.6;">所有成交订单的毛利求和（唯普毛利 + 唯普云毛利 + 汇和毛利 + 机拍毛利）。<br><span style="color:#64748b;font-size:11px;">示例值：284,500 元</span></td></tr>
+                        <tr style="background:#fafbfc;"><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">绩效毛利</td><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;line-height:1.6;">用于绩效核算的毛利合计，即交易总毛利减去所有成本费用项后的最终金额。<br><span style="color:#64748b;font-size:11px;">示例值：198,350 元</span></td></tr>
+                        <tr><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">售后台次</td><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;line-height:1.6;">统计周期内发生售后问题的车辆台次，<span style="color:#dc2626;font-weight:500;">不去重</span>（同一台车可多次售后）。<br><span style="color:#64748b;font-size:11px;">示例值：5 台</span></td></tr>
+                        <tr style="background:#fafbfc;"><td style="padding:8px 12px;font-weight:600;">售后退车台次</td><td style="padding:8px 12px;line-height:1.6;">售后中最终退车处理的台次，<span style="color:#dc2626;font-weight:500;">不去重</span>（同一台车可多次售后退车）。<br><span style="color:#64748b;font-size:11px;">示例值：3 台</span></td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>`;
 }
