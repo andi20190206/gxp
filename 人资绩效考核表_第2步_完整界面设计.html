@@ -224,10 +224,6 @@
                             <th style="min-width:68px">售后状态</th><th style="min-width:80px">责任方</th>
                             <th style="min-width:88px">清分日期</th><th class="num" style="min-width:90px">成交价</th><th class="num" style="min-width:90px">合同价</th><th class="num" style="min-width:90px">起拍价</th>
                             <th style="min-width:100px">门店名称</th><th style="min-width:60px">大区域</th><th style="min-width:60px">小区域</th>
-                            <th class="num" style="min-width:100px">交易总毛利</th>
-                            <th class="num" style="min-width:88px">唯普毛利</th><th class="num" style="min-width:88px">唯普云毛利</th>
-                            <th class="num" style="min-width:88px">汇和毛利</th><th class="num" style="min-width:88px">机拍毛利</th>
-                            <th class="num" style="min-width:80px">毛利</th>
                             <th style="min-width:72px">评估师</th><th style="min-width:72px">区域经理</th><th style="min-width:72px">副部长</th><th style="min-width:72px">事业部</th>
                             <th>入库时间</th><th style="min-width:80px">入库地点</th><th class="num" style="min-width:70px">提车费</th><th style="min-width:72px">提车人</th><th style="min-width:72px">提车类型</th>
                             <th class="num" style="min-width:80px">检测成本</th><th style="min-width:72px">检测员</th><th class="num" style="min-width:80px">数据成本</th>
@@ -235,6 +231,9 @@
                             <th class="num" style="min-width:88px">中间商费用</th><th class="num" style="min-width:80px">分成</th>
                             <th class="num" style="min-width:80px">销售成本</th><th class="num" style="min-width:88px">业务合作服务费</th>
                             <th class="num" style="min-width:88px">收购车成本</th><th class="num" style="min-width:80px">垫款利息</th><th class="num" style="min-width:80px">政企场地费</th>
+                            <th class="num" style="min-width:88px">唯普毛利</th><th class="num" style="min-width:88px">唯普云毛利</th>
+                            <th class="num" style="min-width:88px">汇和毛利</th><th class="num" style="min-width:88px">机拍毛利</th>
+                            <th class="num" style="min-width:80px">毛利</th><th class="num" style="min-width:100px">交易总毛利</th>
                             <th class="num" style="min-width:88px">现场交付成本</th><th style="min-width:80px">现场交付部门</th>
                             <th class="num" style="min-width:88px">空中交付成本</th><th style="min-width:100px">空中交付部门</th><th style="min-width:88px">空中交付跟进人</th>
                             <th class="num" style="min-width:88px">现场过户成本</th><th style="min-width:80px">现场过户部门</th>
@@ -525,12 +524,6 @@ function renderTable(){
             <td class="num">${r.contractPrice?fmt(r.contractPrice):'<span style="color:#94a3b8">—</span>'}</td>
             <td class="num">${fmt(r.startPrice)}</td>
             <td>${r.store}</td><td>${r.region}</td><td>${r.subRegion}</td>
-            <td class="${profitClass(r.totalProfit)}">${fmt(r.totalProfit)}</td>
-            <td class="${profitClass(r.weipuProfit)}">${fmt(r.weipuProfit)}</td>
-            <td class="num muted">${fmt(r.weipuyunProfit)}</td>
-            <td class="${profitClass(r.huiheProfit)}">${fmt(r.huiheProfit)}</td>
-            <td class="num muted">${fmt(r.jipaProfit)}</td>
-            <td class="num muted">${fmt(r.grossProfit||0)}</td>
             <td>${r.assessor}</td><td>${r.regionMgr}</td><td>${r.vp}</td><td>${r.dept}</td>
             <td style="font-size:11px">${r.inboundTime}</td><td>${r.inboundLoc}</td>
             <td class="num">${fmt(r.pickupFee)}</td><td>${r.pickupPerson}</td><td>${r.pickupType}</td>
@@ -540,6 +533,12 @@ function renderTable(){
             <td class="num">${fmt(r.salesCost)}</td><td class="num muted">${fmt(r.bizFee)}</td>
             <td class="num">${fmt(r.repoCost)}</td><td class="num muted">${fmt(r.loanInterest)}</td>
             <td class="num" style="color:#92400e">${r.siteFee?fmt(r.siteFee):'<span style="color:#94a3b8">—</span>'}</td>
+            <td class="${profitClass(r.weipuProfit)}">${fmt(r.weipuProfit)}</td>
+            <td class="num muted">${fmt(r.weipuyunProfit)}</td>
+            <td class="${profitClass(r.huiheProfit)}">${fmt(r.huiheProfit)}</td>
+            <td class="num muted">${fmt(r.jipaProfit)}</td>
+            <td class="num muted">${fmt(r.grossProfit||0)}</td>
+            <td class="${profitClass(r.totalProfit)}">${fmt(r.totalProfit)}</td>
             <td class="num">${fmt(r.deliveryCost)}</td><td>${r.deliveryDept}</td>
             <td class="num muted">${fmt(r.airDeliveryCost)}</td><td>${r.airDeliveryDept}</td><td>${r.airDeliveryFollower}</td>
             <td class="num">${fmt(r.transferCost)}</td><td>${r.transferDept}</td>
