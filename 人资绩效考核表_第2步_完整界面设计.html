@@ -363,11 +363,21 @@ function renderDashboard(){
         <td style="padding:6px 10px;border-bottom:1px solid #f1f5f9;text-align:right;font-family:var(--mono);font-size:12px;font-weight:600;color:${parseFloat(d.rate)>=80?'#16a34a':'#d97706'}" data-val="${parseFloat(d.rate)}">${d.rate}</td>
     </tr>`).join('');
 
+    // 默认自然月
+    const now=new Date();
+    const y=now.getFullYear(), m=String(now.getMonth()+1).padStart(2,'0');
+    const lastDay=new Date(y,now.getMonth()+1,0).getDate();
+    const defStart=y+'-'+m+'-01', defEnd=y+'-'+m+'-'+String(lastDay).padStart(2,'0');
+
     document.getElementById('dashboardContent').innerHTML=`
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
             <div style="font-size:15px;font-weight:700;color:var(--text-primary);">数据看板</div>
-            <div style="display:flex;align-items:center;gap:12px;">
-                <div style="font-size:11px;color:var(--text-muted);">统计周期：2026-03-01 至 2026-03-11</div>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <label style="font-size:12px;font-weight:600;color:#475569;">统计周期：</label>
+                <input type="date" id="dashStart" value="${defStart}" style="padding:5px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:12px;font-family:var(--sans);outline:none;">
+                <span style="font-size:11px;color:#94a3b8;">至</span>
+                <input type="date" id="dashEnd" value="${defEnd}" style="padding:5px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:12px;font-family:var(--sans);outline:none;">
+                <button class="btn btn-primary" onclick="refreshDashboard()" style="padding:5px 12px;font-size:12px;">查询</button>
             </div>
         </div>
 
@@ -918,6 +928,16 @@ function showFieldDefs(){
     document.getElementById('detailModal').classList.add('open');
 }
 // Init
+function refreshDashboard(){
+    const s=document.getElementById('dashStart').value;
+    const e=document.getElementById('dashEnd').value;
+    if(!s||!e){alert('请选择完整的统计周期');return;}
+    // 模拟刷新效果
+    const btn=event.currentTarget;
+    btn.textContent='查询中...';
+    setTimeout(()=>{btn.textContent='查询';},500);
+    renderDashboard();
+}
 renderDashboard();
 renderTable();
 renderCases();
