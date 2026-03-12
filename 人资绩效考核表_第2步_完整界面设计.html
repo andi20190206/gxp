@@ -258,29 +258,7 @@
                         <h3 style="font-size:14px;font-weight:700;margin-bottom:14px;color:#0f172a;">📚 字段含义</h3>
                         <table style="white-space:normal;width:100%;border-collapse:collapse;font-size:12.5px;">
                             <thead><tr style="background:#f8fafc;"><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;width:140px;font-size:11px;color:#64748b;font-weight:600;">字段名</th><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;color:#64748b;font-weight:600;">含义说明</th></tr></thead>
-                            <tbody>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">交易总毛利</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">唯普毛利 + 唯普云毛利 + 汇和毛利 + 机拍毛利，一台车仅归属一方</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">绩效毛利</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">总交易毛利 − 交付成本 − 检测成本 − 销售成本 − 数据成本 − 政企场地费 − 收购车成本 − 业务合作费</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">冲正行</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">售后执行完成（T6）时系统自动生成的调整记录，冲正项：交易总毛利、各方毛利。所有成本项（含业务合作服务费）均不做冲正</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">沉没成本</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">售后不予冲回：检测成本、评估费、销售成本、收购车成本、提车费、垫款利息、交付成本、过户成本、业务合作服务费、数据成本</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">可冲回成本</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">售后退车时仅冲回毛利相关项（交易总毛利、各方毛利），所有成本项均不冲回</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">提车费</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">T1入库自动计入100元，同一VIN仅计一次。提车人=提车助手中谁将车辆送入唯普库</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">提车人</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">提车助手中将车辆送入唯普库的操作人，即实际执行提车入库的人员</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">检测成本</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">T2检测过审：省内85元/台，省外120元/台；同月多次检测分别计费</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">现场交付成本</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">T4交付型出库计入150元</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">空中交付成本</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">T5资料回收时车辆不在服务中心库/唯普库，计入50元</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">空中交付部门</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">区分两种情况：①服务中心 — 对应具体服务中心名称（如南沙服务中心、番禺服务中心等）；②中控 — 由中控部门统一调度处理</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">空中交付跟进人</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">点击资料回收完毕对应的系统账号操作人姓名，即实际执行空中交付资料回收操作的人员</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">现场过户成本</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">T5过户资料回收完毕且过户费≠0时计入350元</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">业务合作服务费</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">与订单清算挂钩，清分后立即计算。按集团/门店分档计费。售后仲裁退车不做冲正（沉没成本）</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">数据成本</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">查询成功后触发计费，包含维保查询、出险查询（26元/次）、电池查询等多个费用项</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">销售成本</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">订单清分后计入，按车源类型分档</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">收购车成本</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">订单清分后计入，仅收购车，按车价分档</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">交付型出库</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">T4时机点，车辆从库存转为交付状态的出库操作，触发现场交付成本计入（150元/台）。包含4种情况：①服务中心出库，且出库类型=已售交付；②服务中心出库，且出库类型=过户临时过户出库（过户专员-过户不回库）；③服务中心出库，且出库类型=过户前临时放行；④服务中心出库，且出库类型=自过户提车</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">现场交付</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">买家到服务中心现场提车的交付方式，由现场交付部门负责，T4交付型出库时计入现场交付成本150元</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">提车类型</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">分为两种：①自提 — 自己送车，即车源部门人员亲自将车辆送入唯普库；②第三方 — 他人送车（姓名+手机号，在唯普系统不存在），委托外部人员提车入库。两种类型均计入提车费100元/台</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">绩效工资</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">人工核算占位字段</td></tr>
-                            </tbody>
+                            <tbody id="glossaryBody"></tbody>
                         </table>
                         <h3 style="font-size:14px;font-weight:700;margin:24px 0 14px;color:#0f172a;">⏱ 时机点触发与数据写入</h3>
                         <table style="white-space:normal;width:100%;border-collapse:collapse;font-size:12.5px;">
@@ -340,6 +318,60 @@
     </div>
 </div>
 <script>
+const fieldDefs=[
+['车牌','车辆号牌，车牌如发生更改，这里需同步更新车牌'],
+['VIN 码','车辆识别代号，17 位'],
+['VID','唯普系统内部车辆 ID'],
+['合同类型','委拍 或 收购'],
+['是否检测','是否完成车辆检测(是否检测单过审，过审则已检测反之否)'],
+['车辆状态','已入库→已检测→已清分→已交付→已过户→已售后'],
+['售后状态','无 / 售后退车 / 售后不退车：售后执行完毕统计'],
+['责任方','售后时的责任归属部门(仅取值到部门，eg.车源生态部)'],
+['清分日期','订单清分完成日期（yyyy-mm-dd）'],
+['成交价','拍卖成交价格'],
+['合同价','合同约定价格'],
+['起拍价','拍卖起拍价格'],
+['门店名称','车辆归属门店全称'],
+['大区域','门店所属大区'],
+['小区域','门店所属小区'],
+['评估师','车辆对应门店评估师'],
+['区域经理','车辆对应城市经理'],
+['副部长','大区负责人，BMS是否有此信息字段，若现状系统未维护则不提供'],
+['事业部','车辆归属门店的上级事业部'],
+['入库时间','T1 车辆首次入唯普库(服务中心库)时间'],
+['入库地点','T1 入库的仓库名称(不需要分区,eg.白云服务中心1库)'],
+['提车费','T1 入库 100 元 / 台，同 VIN 仅计一次'],
+['提车人','收购车送车入库的送车人姓名；\\n提车助手小程序中将车辆送入唯普库的人'],
+['提车类型','自提（自己送车、他人送车中送车人姓名和手机号是唯普内部员工）或第三方（他人送车）'],
+['检测成本','T2检测单过审后计入：省内 85 / 省外 120 （找小欣确认）\\n省内定义：85\\n省外定义：120'],
+['检测员','执行检测的人员'],
+['数据成本','查询成功后触发（维保 / 出险 26 元 / 电池等）'],
+['综合服务费','T3订单清分计入'],
+['评估费','T3订单清分后计入'],
+['中间商费用','T3订单清分后计入'],
+['分成','同财务系统"分成"字段；（待技术确认指标值，待红姐确认分成字段）'],
+['销售成本','T3 订单清分后计入，按车源类型分档；待定，未提供之前当做0处理（待和红姐确认）\\n省外委拍 70：委拍合同车源且非广东省(门店地址不在广东省)\\n省内委拍 35：委拍合同车源且广东省(门店地址不在广东省)\\n收购业务 15：收购合同的车源\\n政企业务 30：政企拍卖车源\\n批量车报废业务 5：报废车车源'],
+['业务合作服务费','T3 订单清分后计入，同经管报表"业务合作服务费"字段\\n售后退车场景，同车(同vin)后续不再计算 （待和红姐确认）\\n仲裁退车后，再次上架当做新车处理，这台车是否还要收取"业务合作服务费"？如果收取，这里就应该有冲正数据；'],
+['收购车成本','T3 订单清分后，非汽贸收购车，按车价分档(待红姐确认，仅非汽贸收购车？)\\n0＜收购合同价≤30,000元；收购车成本=1500元/台\\n30,000元＜收购合同价≤50,000元，收购车成本=1800元/台\\n50,000元＜收购合同价≤100,000元，收购车成本=2000元/台\\n100,000元＜收购合同价，收购车成本=收购合同价*2.5%\\n报废车收购合同，收购车成本：500元/台'],
+['垫款利息','收购车垫款产生的利息，同经管报表"垫款利息"字段；\\n售后退车场景，同车(同vin)后续不再计算？'],
+['政企场地费','人工核算，占位字段'],
+['唯普毛利','归属唯普的毛利，同经管报表"唯普毛利"字段'],
+['唯普云毛利','归属唯普云的毛利，同经管报表"唯普云毛利"字段'],
+['汇和毛利','调整汇和毛利取值逻辑，由原有1部分调整为4部分之和：汇和毛利 = ① 原有汇和收益 + ② 门店自垫款收益(门店自垫款车辆成交订单) + ③ 零售衍生收入(自拍后更改买家)+ ④ 门店自垫款订单调账\\n① 原有汇和收益（保持不变）\\n●数据来源：汇和毛利字段（huihesy + fshhgzsy + hhgzsy）\\n●钱包流水中摘要为【衍生服务-其他-结算】的记录，按车牌匹配90天内的成交订单（排除已仲裁退车的订单）\\n② 新增：门店自垫款收益\\n●适用范围：一汽大众事业部下属奥迪门店12家，见附表\\n●计算公式：门店成交订单，收益=（成交价 - 合同价）\\n●合同价 > 成交价时（结果为负），也纳入计算，记为负值\\n③ 新增：零售衍生收入\\n●适用范围：一汽大众事业部下属奥迪门店12家\\n●取值规则：该门店钱包账户中，已清算流水中摘要包含"零售溢价"的金额之和（含正负向）\\n●排重规则：排除账户名称为"汇和收益"的流水（避免与①重复计算）\\n④ 新增：门店自垫款调账\\n●适用范围：一汽大众事业部下属奥迪门店12家\\n●取值规则：已结算流水中摘要包含"订单调账款项：车牌"的金额之和'],
+['机拍毛利','归属机拍的毛利，同经管报表"机拍毛利"字段'],
+['毛利','同财务系统"毛利"字段；（待技术确认指标值，待红姐确认分成字段）'],
+['交易总毛利','唯普 + 唯普云 + 汇和 + 机拍毛利合计'],
+['现场交付成本','T4 交付型出库 150 元\\n交付型出库：包含4种情况：①服务中心出库，且出库类型=已售交付；②服务中心出库，且出库类型=过户临时过户出库（过户专员-过户不回库）；③服务中心出库，且出库类型=过户前临时放行；④服务中心出库，且出库类型=自过户提车'],
+['现场交付部门','执行现场交付的服务中心(跟进服务中心)\\n举例：唯普服务中心 （待小欣确认）'],
+['空中交付成本','50元；T5 过户资料回收完毕，车辆不在服务中心库时计入\\n空中交付：过户资料回收完毕 且 车辆不在服务中心库'],
+['空中交付部门','服务中心或中控\\n过户单中，除xxx服务中心外的都归属中控（待小欣确认）'],
+['空中交付跟进人','点击资料回收完毕的操作人姓名'],
+['现场过户成本','350元；T5过户资料回收完毕时，且过户费≠0时\\n现场过户：过户费≠0'],
+['现场过户部门','执行过户的服务中心（唯普云服务站？待小欣确认）'],
+['绩效毛利','总毛利−所有成本费用项(提车费+检测成本+ 数据成本+ 销售成本 + 政企场地费 +收购车成本+业务合作费+中间商费用+现场交付成本/空中交付成本+现场过户成本)'],
+['绩效工资','人工核算，占位字段'],
+['毛利调整','待与陈霞确认字段含义']
+];
 const rows=[
 {confirmDate:'2026-03-02',plate:'粤B·12345',vin:'LFV2A2150J3123456',vid:'1705143374',contractType:'委拍',inspected:'是',status:'已过户',paid:'已付款',aftersale:'无',responsibility:'-',dealPrice:50000,contractPrice:48000,startPrice:45000,store:'深圳南沙',region:'广东-深圳',subRegion:'广东-深圳',totalProfit:6000,weipuProfit:6000,weipuyunProfit:0,huiheProfit:0,jipaProfit:0,serviceFee:200,evalFee:1000,inspCost:85,salesCost:300,assessor:'王五',regionMgr:'张三',vp:'李四',dept:'车源部',bizFee:0,loanInterest:0,inboundTime:'2026-02-10',inboundLoc:'深圳服务中心',pickupFee:100,pickupPerson:'陈小明',pickupType:'自提',deliveryCost:150,deliveryDept:'南沙服务中心',airDeliveryCost:0,airDeliveryDept:'-',airDeliveryFollower:'-',transferCost:350,transferDept:'南沙服务中心',inspector:'李五',dataCost:10,siteFee:0,repoCost:0,perfProfit:4705,perfSalary:0,aftersaleRecord:null},
 {confirmDate:'',plate:'粤A·22222',vin:'LFV2A21509C234567',vid:'1705143376',contractType:'收购',inspected:'是',status:'已检测',paid:'',aftersale:'无',responsibility:'-',dealPrice:0,contractPrice:80000,startPrice:75000,store:'佛山汇和广州分公司',region:'广东-广州',subRegion:'番禺区域',totalProfit:0,weipuProfit:0,weipuyunProfit:0,huiheProfit:0,jipaProfit:0,serviceFee:0,evalFee:0,inspCost:120,salesCost:0,assessor:'赵六',regionMgr:'钱七',vp:'孙八',dept:'车源部',bizFee:0,loanInterest:0,inboundTime:'2026-02-20',inboundLoc:'白云服务中心',pickupFee:100,pickupPerson:'刘大力',pickupType:'第三方',deliveryCost:0,deliveryDept:'-',airDeliveryCost:0,airDeliveryDept:'-',airDeliveryFollower:'-',transferCost:0,transferDept:'-',inspector:'周九',dataCost:15,siteFee:0,repoCost:0,perfProfit:-235,perfSalary:0,aftersaleRecord:null},
@@ -910,30 +942,14 @@ function sortRateTable(colIdx){
     [1,2,3].forEach(i=>{document.getElementById('rateSort'+i).textContent=i===colIdx?(dir==='asc'?'↑':'↓'):'⇅'});
 }
 function showFieldDefs(){
-    const defs=[
-        ['车牌','车辆号牌'],['VIN码','车辆识别代号，17位'],['VID','唯普系统内部车辆ID'],
-        ['合同类型','委拍 或 收购'],['是否查验','是否完成车辆查验'],['车辆状态','已入库→已检测→已清分→已交付→已过户→已售后'],
-        ['售后状态','无/售后退车/售后仲裁'],['责任方','售后时的责任归属部门'],['清分日期','订单清分完成日期'],
-        ['成交价','拍卖成交价格'],['合同价','合同约定价格'],['起拍价','拍卖起拍价格'],
-        ['门店名称','车辆归属门店'],['大区域','门店所属大区'],['小区域','门店所属小区'],
-        ['交易总毛利','唯普+唯普云+汇和+机拍毛利合计'],['唯普毛利','归属唯普的毛利'],['唯普云毛利','归属唯普云的毛利'],
-        ['汇和毛利','归属汇和的毛利'],['机拍毛利','归属机拍的毛利'],
-        ['综合服务费','综合服务费用'],['评估费','T3清分后计入'],['检测成本','T2过审：省内85/省外120'],['销售成本','T3清分后按车源类型分档'],
-        ['评估师','负责评估的人员'],['区域经理','负责区域的经理'],['副部长','分管副部长'],['事业部','归属事业部'],
-        ['业务合作服务费','清分后按集团/门店分档，沉没成本'],['垫款利息','垫款产生的利息'],
-        ['入库时间','T1车辆入库时间'],['入库地点','T1入库的服务中心/仓库'],['提车费','T1入库100元/台，同VIN仅计一次'],
-        ['提车人','提车助手中将车辆送入唯普库的人'],['提车类型','自提（自己送车）或第三方（他人送车）'],
-        ['现场交付成本','T4交付型出库150元'],['现场交付部门','执行现场交付的服务中心'],
-        ['空中交付成本','T5车辆不在服务中心库时50元'],['空中交付部门','服务中心或中控'],['空中交付跟进人','点击资料回收完毕的操作人'],
-        ['现场过户成本','T5过户费≠0时350元'],['现场过户部门','执行过户的服务中心'],
-        ['检测员','执行检测的人员'],['数据成本','查询成功后触发（维保/出险26元/电池等）'],['政企场地费','人工核算字段'],
-        ['收购车成本','T3清分后，仅收购车，按车价分档'],['绩效毛利','总毛利−所有成本费用项'],['绩效工资','人工核算占位字段']
-    ];
-    const rows=defs.map(d=>`<tr><td style="padding:6px 10px;border-bottom:1px solid #f1f5f9;font-weight:600;white-space:nowrap;width:120px;">${d[0]}</td><td style="padding:6px 10px;border-bottom:1px solid #f1f5f9;color:#475569;">${d[1]}</td></tr>`).join('');
+    const rows=fieldDefs.map(d=>`<tr><td style="padding:6px 10px;border-bottom:1px solid #f1f5f9;font-weight:600;white-space:nowrap;width:140px;">${d[0]}</td><td style="padding:6px 10px;border-bottom:1px solid #f1f5f9;color:#475569;line-height:1.6;">${d[1].replace(/\\n/g,'<br>')}</td></tr>`).join('');
     document.getElementById('modalTitle').textContent='指标取值说明';
-    document.getElementById('modalSubtitle').textContent='各字段含义与取值逻辑';
-    document.getElementById('modalBody').innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:12.5px;white-space:normal;"><thead><tr style="background:#f8fafc;"><th style="padding:8px 10px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;color:#64748b;width:120px;">字段名</th><th style="padding:8px 10px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;color:#64748b;">含义与取值逻辑</th></tr></thead><tbody>${rows}</tbody></table>`;
+    document.getElementById('modalSubtitle').textContent='各字段含义与取值逻辑（来源：字段名和含义取值.xlsx）';
+    document.getElementById('modalBody').innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:12.5px;white-space:normal;"><thead><tr style="background:#f8fafc;"><th style="padding:8px 10px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;color:#64748b;width:140px;">字段名</th><th style="padding:8px 10px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;color:#64748b;">含义与取值逻辑</th></tr></thead><tbody>${rows}</tbody></table>`;
     document.getElementById('detailModal').classList.add('open');
+}
+function renderGlossary(){
+    document.getElementById('glossaryBody').innerHTML=fieldDefs.map(d=>`<tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">${d[0]}</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;line-height:1.6;">${d[1].replace(/\\n/g,'<br>')}</td></tr>`).join('');
 }
 // Init
 function refreshDashboard(){
@@ -950,6 +966,7 @@ renderDashboard();
 renderTable();
 renderCases();
 renderReqNotes();
+renderGlossary();
 document.getElementById('detailModal').addEventListener('click',function(e){if(e.target===this)closeModal()});
 document.addEventListener('click',function(e){['regionSuggest','subRegionSuggest','storeSuggest'].forEach(id=>{const box=document.getElementById(id);if(box&&!box.contains(e.target)&&e.target.id!==id.replace('Suggest','Input'))box.style.display='none'})});
 </script>
