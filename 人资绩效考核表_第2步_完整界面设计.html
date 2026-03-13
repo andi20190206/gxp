@@ -891,36 +891,22 @@ function renderReqNotes(){
     <div style="font-size:16px;font-weight:700;color:#0f172a;border-left:4px solid #16a34a;padding-left:10px;margin-bottom:6px;">需求补充说明</div>
     <div style="font-size:13px;color:#475569;margin-bottom:14px;padding-left:14px;">关联需求和其他需求点说明</div>
     <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
-        <div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:10px;">1. 销售成本</div>
-        <div style="font-size:12.5px;color:#475569;line-height:1.7;">
-            公式已有，具体数值待定，由人资提供。
+        <div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:10px;">待确认事项</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:12.5px;color:#475569;line-height:1.7;">
+            <div>1. <b>销售成本</b>：公式已有，具体数值待定，由人资提供</div>
+            <div>2. <b>省内省外的定义</b>：待刘总和丽君确认，关联检测成本、销售成本</div>
+            <div>3. <b>售后冲正</b>：业务合作费、垫款利息是否冲正处理？</div>
+            <div>4. <b>经管报表</b>：① 交付成本字段拆分么？售后不冲正 ② 汇和收益取值更新 ③ 费用项之前是人工上传，现在还需要人工上传么？</div>
+            <div>5. <b>财务报表</b>：汇和收益对应调整；新增的费用项是否对应增加到报表内？</div>
         </div>
     </div>
-    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
-        <div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:10px;">2. 省内省外的定义</div>
-        <div style="font-size:12.5px;color:#475569;line-height:1.7;">
-            待刘总和丽君确认，关联检测成本、销售成本。
-        </div>
-    </div>
-    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
-        <div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:10px;">3. 售后冲正</div>
-        <div style="font-size:12.5px;color:#475569;line-height:1.7;">
-            业务合作费、垫款利息是否冲正处理？
-        </div>
-    </div>
-    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
-        <div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:10px;">4. 经管报表</div>
-        <div style="display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:#475569;line-height:1.7;">
-            <div>① 交付成本字段拆分么？售后不冲正</div>
-            <div>② 汇和收益取值更新</div>
-            <div>③ 费用项之前是人工上传，现在还需要人工上传么？</div>
-        </div>
-    </div>
-    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
-        <div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:10px;">5. 财务报表</div>
-        <div style="display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:#475569;line-height:1.7;">
-            <div>• 汇和收益对应调整</div>
-            <div>• 新增的费用项是否对应增加到报表内？</div>
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
+        <div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:10px;">权限说明</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:12.5px;color:#475569;line-height:1.7;">
+            <div>• 支持各角色按<b>门店</b>配置权限</div>
+            <div>• <b>人资</b>需按汇和和非汇和进行分类（汇和垫款门店 + 门店自垫款的12家门店）</div>
+            <div>• <b>汇和财务</b>所看的内容同"汇和人资"</div>
+            <div>• <b>业务员、门店总监、城市经理、副部长、部长</b>都是按照门店和事业部来配置的</div>
         </div>
     </div>
     <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:16px 20px;">
