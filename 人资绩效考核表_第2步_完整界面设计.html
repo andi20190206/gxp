@@ -261,13 +261,8 @@
                 <!-- 字段含义 -->
                 <div class="tab-pane" id="tabGlossary" style="padding:20px;overflow-y:auto;">
                     <div style="max-width:760px">
-                        <h3 style="font-size:14px;font-weight:700;margin-bottom:14px;color:#0f172a;">📚 字段含义 <span style="font-size:13px;font-weight:500;color:#dc2626;margin-left:12px;">（纯解释，同"绩效表"-"指标含义"，功能上线不用展示此tab）</span></h3>
-                        <table style="white-space:normal;width:100%;border-collapse:collapse;font-size:12.5px;">
-                            <thead><tr style="background:#f8fafc;"><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;width:140px;font-size:11px;color:#64748b;font-weight:600;">字段名</th><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;color:#64748b;font-weight:600;">含义说明</th></tr></thead>
-                            <tbody id="glossaryBody"></tbody>
-                        </table>
-                        <h3 style="font-size:14px;font-weight:700;margin:24px 0 14px;color:#0f172a;">⏱ 时机点触发与数据写入</h3>
-                        <table style="white-space:normal;width:100%;border-collapse:collapse;font-size:12.5px;">
+                        <h3 style="font-size:14px;font-weight:700;margin-bottom:14px;color:#0f172a;">⏱ 时机点触发与数据写入</h3>
+                        <table style="white-space:normal;width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:28px;">
                             <thead><tr style="background:#f8fafc;"><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;width:80px;font-size:11px;color:#64748b;font-weight:600;">时机点</th><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;width:140px;font-size:11px;color:#64748b;font-weight:600;">触发事件</th><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;color:#64748b;font-weight:600;">写入数据</th></tr></thead>
                             <tbody>
                                 <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T1</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">车辆入库</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">提车费100元、入库时间、入库地点、提车人、提车类型</td></tr>
@@ -278,6 +273,11 @@
                                 <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T5</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">过户资料回收</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">现场过户成本350元（过户费≠0时）、空中交付成本50元（车辆不在服务中心库/唯普库时）、过户部门、空中交付跟进人</td></tr>
                                 <tr><td style="padding:7px 12px;font-weight:600;color:#dc2626;">T6</td><td style="padding:7px 12px;color:#475569;">售后执行完成</td><td style="padding:7px 12px;color:#475569;">冲正行：仅冲回交易总毛利、各方毛利；所有成本项不做冲正。写入售后原因、责任方、是否豁免</td></tr>
                             </tbody>
+                        </table>
+                        <h3 style="font-size:14px;font-weight:700;margin-bottom:14px;color:#0f172a;">📚 字段含义 <span style="font-size:13px;font-weight:500;color:#dc2626;margin-left:12px;">（纯解释，同"绩效表"-"指标含义"，功能上线不用展示此tab）</span></h3>
+                        <table style="white-space:normal;width:100%;border-collapse:collapse;font-size:12.5px;">
+                            <thead><tr style="background:#f8fafc;"><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;width:140px;font-size:11px;color:#64748b;font-weight:600;">字段名</th><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;color:#64748b;font-weight:600;">含义说明</th></tr></thead>
+                            <tbody id="glossaryBody"></tbody>
                         </table>
                     </div>
                 </div>
