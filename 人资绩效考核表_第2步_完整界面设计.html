@@ -227,8 +227,9 @@
                             <th style="min-width:88px">清分日期</th><th class="num" style="min-width:90px">成交价</th><th class="num" style="min-width:90px">合同价</th><th class="num" style="min-width:90px">起拍价</th>
                             <th>入库时间</th><th style="min-width:80px">入库地点</th><th class="num" style="min-width:70px">提车费</th><th style="min-width:72px">提车人</th><th style="min-width:72px">提车类型</th>
                             <th class="num" style="min-width:80px">检测成本</th><th style="min-width:72px">检测员</th><th class="num" style="min-width:80px">数据成本</th>
+                            <th class="num" style="min-width:88px">平台使用费</th>
                             <th class="num" style="min-width:88px">综合服务费</th><th class="num" style="min-width:80px">评估费</th>
-                            <th class="num" style="min-width:88px">中间商费用</th><th class="num" style="min-width:80px">分成</th>
+                            <th class="num" style="min-width:88px">中间商费用</th><th class="num" style="min-width:80px">其他费</th><th class="num" style="min-width:88px">按揭服务费</th><th class="num" style="min-width:88px">车辆延保费</th><th class="num" style="min-width:88px">整备服务费</th><th class="num" style="min-width:80px">分成</th>
                             <th class="num" style="min-width:80px">销售成本</th><th class="num" style="min-width:88px">业务合作服务费</th>
                             <th class="num" style="min-width:88px">收购车成本</th><th class="num" style="min-width:80px">垫款利息</th><th class="num" style="min-width:80px">政企场地费</th>
                             <th class="num" style="min-width:88px">唯普毛利</th><th class="num" style="min-width:88px">唯普云毛利</th>
@@ -534,8 +535,9 @@ function renderTable(){
             <td style="font-size:11px">${r.inboundTime}</td><td>${r.inboundLoc}</td>
             <td class="num">${fmt(r.pickupFee)}</td><td>${r.pickupPerson}</td><td>${r.pickupType}</td>
             <td class="num">${fmt(r.inspCost)}</td><td>${r.inspector}</td><td class="num muted">${fmt(r.dataCost)}</td>
+            <td class="num muted">${fmt(r.platformFee||0)}</td>
             <td class="num">${fmt(r.serviceFee)}</td><td class="num">${fmt(r.evalFee)}</td>
-            <td class="num muted">${fmt(r.middlemanFee||0)}</td><td class="num muted">${fmt(r.shareFee||0)}</td>
+            <td class="num muted">${fmt(r.middlemanFee||0)}</td><td class="num muted">${fmt(r.otherFee||0)}</td><td class="num muted">${fmt(r.mortgageFee||0)}</td><td class="num muted">${fmt(r.warrantyFee||0)}</td><td class="num muted">${fmt(r.refurbFee||0)}</td><td class="num muted">${fmt(r.shareFee||0)}</td>
             <td class="num">${fmt(r.salesCost)}</td><td class="num muted">${fmt(r.bizFee)}</td>
             <td class="num">${fmt(r.repoCost)}</td><td class="num muted">${fmt(r.loanInterest)}</td>
             <td class="num" style="color:#92400e">${r.siteFee?fmt(r.siteFee):'<span style="color:#94a3b8">—</span>'}</td>
