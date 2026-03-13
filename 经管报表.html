@@ -1113,6 +1113,17 @@ renderStoreTable();
 renderRevenueTable();
 renderCostTable();
 renderFinanceRevenueTable();
+// Hash routing
+(function(){
+  var h=location.hash;
+  if(h==='#costDetail'){
+    var el=document.querySelectorAll('.sidebar-item')[1];
+    showCostDetailFromSidebar(el);
+  } else if(h==='#financeRevenue'){
+    var el=document.querySelectorAll('.sidebar-item')[3];
+    showFinanceRevenueFromSidebar(el);
+  }
+})();
 </script>
 </body>
 </html>
