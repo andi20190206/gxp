@@ -789,64 +789,17 @@ function hideFinanceRevenue(){
 function renderFinanceRevenueTable(){
   const t=document.getElementById('financeRevenueTable');
   const totalCols=financeRevenueCols.length;
-  let h='<thead>';
-  // Group header row
-  h+='<tr>';
-  financeRevenueGroups.forEach(g=>{
-    if(g.name===''){
-      for(let i=0;i<g.span;i++) h+='<th rowspan="2" style="min-width:80px"></th>';
-    } else {
-      let bg='';
-      if(g.name==='买家') bg='background:#e0f2fe;';
-      else if(g.name==='卖家') bg='background:#fef3c7;';
-      else if(g.name==='门店') bg='background:#dcfce7;';
-      else if(g.name==='唯普') bg='background:#f3e8ff;';
-      h+='<th colspan="'+g.span+'" style="'+bg+'text-align:center">'+g.name+'</th>';
-    }
-  });
-  h+='</tr>';
-  // Sub header row
-  h+='<tr>';
+  const yellowKeys=['f19'];
+  let h='<thead><tr>';
   let idx=0;
   financeRevenueGroups.forEach(g=>{
-    if(g.name!==''){
-      for(let i=0;i<g.span;i++){
-        let bg='';
-        if(g.name==='买家') bg='background:#e0f2fe;';
-        else if(g.name==='卖家') bg='background:#fef3c7;';
-        else if(g.name==='门店') bg='background:#dcfce7;';
-        else if(g.name==='唯普') bg='background:#f3e8ff;';
-        h+='<th style="'+bg+'min-width:80px">'+financeRevenueCols[idx+i].l+'</th>';
-      }
-    }
-    idx+=g.span;
-  });
-  h+='</tr>';
-  // Fill in rowspan=2 headers
-  let h2='';idx=0;
-  financeRevenueGroups.forEach(g=>{
     if(g.name===''){
       for(let i=0;i<g.span;i++){
-        h2+='<th rowspan="2" style="min-width:80px">'+financeRevenueCols[idx+i].l+'</th>';
-      }
-    }
-    idx+=g.span;
-  });
-  // Rebuild properly
-  h='<thead><tr>';
-  idx=0;
-  financeRevenueGroups.forEach(g=>{
-    if(g.name===''){
-      for(let i=0;i<g.span;i++){
-        h+='<th rowspan="2" style="min-width:80px">'+financeRevenueCols[idx+i].l+'</th>';
+        let cls=yellowKeys.indexOf(financeRevenueCols[idx+i].k)>-1?' class="col-changed"':'';
+        h+='<th rowspan="2"'+cls+' style="min-width:80px">'+financeRevenueCols[idx+i].l+'</th>';
       }
     } else {
-      let bg='';
-      if(g.name==='买家') bg='background:#e0f2fe;';
-      else if(g.name==='卖家') bg='background:#fef3c7;';
-      else if(g.name==='门店') bg='background:#dcfce7;';
-      else if(g.name==='唯普') bg='background:#f3e8ff;';
-      h+='<th colspan="'+g.span+'" style="'+bg+'text-align:center">'+g.name+'</th>';
+      h+='<th colspan="'+g.span+'" style="text-align:center">'+g.name+'</th>';
     }
     idx+=g.span;
   });
@@ -855,12 +808,8 @@ function renderFinanceRevenueTable(){
   financeRevenueGroups.forEach(g=>{
     if(g.name!==''){
       for(let i=0;i<g.span;i++){
-        let bg='';
-        if(g.name==='买家') bg='background:#e0f2fe;';
-        else if(g.name==='卖家') bg='background:#fef3c7;';
-        else if(g.name==='门店') bg='background:#dcfce7;';
-        else if(g.name==='唯普') bg='background:#f3e8ff;';
-        h+='<th style="'+bg+'min-width:80px">'+financeRevenueCols[idx+i].l+'</th>';
+        let cls=yellowKeys.indexOf(financeRevenueCols[idx+i].k)>-1?' class="col-changed"':'';
+        h+='<th'+cls+' style="min-width:80px">'+financeRevenueCols[idx+i].l+'</th>';
       }
     }
     idx+=g.span;
