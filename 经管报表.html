@@ -118,7 +118,7 @@
             <!-- 其他tab -->
             <div class="tab-pane" id="tabPurchase"><div class="filter-bar"><label>统计周期：</label><input type="date" value="2026-03-01"><span class="sep">-</span><input type="date" value="2026-03-01"><label style="margin-left:12px;">大区：</label><select><option>大区</option></select><button class="btn btn-blue" onclick="renderPurchaseTable()">数据预览</button><button class="btn btn-export" onclick="doExport()">导出</button><span class="filter-note">注：性能考虑，数据预览只提供前100条预览，具体数据请导出</span></div><div class="table-outer"><table id="purchaseTable"></table></div><div class="table-footer"><div style="color:#000;font-size:11px;">数据预览（前100条）</div><div id="purchaseCount"></div></div></div>
             <div class="tab-pane" id="tabConsign"><div class="filter-bar"><label>统计周期：</label><input type="date" value="2026-03-01"><span class="sep">-</span><input type="date" value="2026-03-01"><label style="margin-left:12px;">大区：</label><select><option>大区</option></select><button class="btn btn-blue" onclick="renderConsignTable()">数据预览</button><button class="btn btn-export" onclick="doExport()">导出</button><span class="filter-note">注：性能考虑，数据预览只提供前100条预览，具体数据请导出</span></div><div class="table-outer"><table id="consignTable"></table></div><div class="table-footer"><div style="color:#000;font-size:11px;">数据预览（前100条）</div><div id="consignCount"></div></div></div>
-            <div class="tab-pane" id="tabStore"><div class="filter-bar"><label>统计周期：</label><input type="date" value="2026-03-01"><span class="sep">-</span><input type="date" value="2026-03-01"><label style="margin-left:12px;">大区：</label><select><option>大区</option></select><button class="btn btn-blue">数据预览</button><button class="btn btn-export">导出</button><span class="filter-note">注：性能考虑，数据预览只提供前100条预览，具体数据请导出</span></div><div class="placeholder">📋 成绩单-门店维度（待填充数据）</div></div>
+            <div class="tab-pane" id="tabStore"><div class="filter-bar"><label>统计周期：</label><input type="date" value="2026-03-01"><span class="sep">-</span><input type="date" value="2026-03-01"><label style="margin-left:12px;">大区：</label><select><option>大区</option></select><button class="btn btn-blue" onclick="renderStoreTable()">数据预览</button><button class="btn btn-export" onclick="doExport()">导出</button><span class="filter-note">注：性能考虑，数据预览只提供前100条预览，具体数据请导出</span></div><div class="table-outer"><table id="storeTable"></table></div><div class="table-footer"><div style="color:#000;font-size:11px;">数据预览（前100条）</div><div id="storeCount"></div></div></div>
 
             <div class="tab-pane" id="tabRevenue"><div class="filter-bar"><label>统计周期：</label><input type="date" value="2026-03-01"><span class="sep">-</span><input type="date" value="2026-03-01"><label style="margin-left:12px;">大区：</label><select><option>大区</option></select><button class="btn btn-blue" onclick="renderRevenueTable()">数据预览</button><button class="btn btn-export" onclick="doExport()">导出</button><span class="filter-note">注：性能考虑，数据预览只提供前100条预览，具体数据请导出</span></div><div class="table-outer"><table id="revenueTable"></table></div><div class="table-footer"><div style="color:#000;font-size:11px;">数据预览（前100条）</div><div id="revenueCount"></div></div></div>
             <div class="tab-pane" id="tabCost"><div class="filter-bar" style="justify-content:space-between"><div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap"><label>统计周期：</label><input type="date" value="2026-03-01"><span class="sep">-</span><input type="date" value="2026-03-01"><label style="margin-left:12px;">大区：</label><select><option>大区</option></select><button class="btn btn-blue" onclick="renderCostTable()">数据预览</button><button class="btn btn-export" onclick="doExport()">导出</button><button class="btn btn-yellow" onclick="showCostTemplate()">导出模板</button><span class="filter-note">注：性能考虑，数据预览只提供前100条预览，具体数据请导出</span></div><div style="display:flex;gap:8px;"><button class="btn btn-blue" onclick="showCostDetail()">费用明细</button><button class="btn" style="background:#dc2626;color:#fff;" onclick="document.getElementById('costReqNote').style.display=document.getElementById('costReqNote').style.display==='none'?'block':'none'">需求点</button></div></div><div id="costReqNote" style="display:none;padding:12px 16px;background:#fff5f5;border-bottom:1px solid #fca5a5;font-size:12.5px;color:#dc2626;line-height:1.8;">新增 费用项，放在 收购车成本后面，其他前面：<br>新增费用项有：<b>提车费</b>、<b>空中交付成本</b>、<b>现场交付成本</b>、<b>现场过户成本</b>；<br><span style="margin-top:4px;display:inline-block;">导出模板对应新增费用项</span></div><div class="table-outer"><table id="costTable"></table></div><div class="table-footer"><div style="color:#000;font-size:11px;">数据预览（前100条）</div><div id="costCount"></div></div></div>
@@ -336,6 +336,20 @@ const consignData=[
 {r:'服务中心',c1:5,c2:5,c3:0,c4:'0.00%',c5:'0.00%',c6:'0.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'0.00',c12:'',c13:'0.00',c14:'0.00',c15:'',c16:5,c17:5,c18:0,c19:'0.00%',c20:'0.00%',c21:'0.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'0.00',c27:'',c28:'0.00',c29:'0.00',c30:'',c31:0,c32:0,c33:0,c34:'',c35:'',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:0,c122:0,c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
 {r:'交易中心',c1:2,c2:2,c3:0,c4:'0.00%',c5:'0.00%',c6:'0.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'0.00',c12:'',c13:'0.00',c14:'0.00',c15:'',c16:2,c17:2,c18:0,c19:'0.00%',c20:'0.00%',c21:'0.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'0.00',c27:'',c28:'0.00',c29:'0.00',c30:'',c31:0,c32:0,c33:0,c34:'',c35:'',c36:'0.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'0.00',c42:'',c43:'0.00',c44:'0.00',c45:'',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:0,c92:0,c93:0,c94:'',c95:'',c96:'0.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'0.00',c102:'',c103:'0.00',c104:'0.00',c105:'',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:0,c122:0,c123:0,c124:'',c125:'',c126:'0.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'0.00',c132:'',c133:'0.00',c134:'0.00',c135:''},
 {r:'合计',c1:75,c2:75,c3:11,c4:'14.67%',c5:'14.67%',c6:'8100.00',c7:'0.00',c8:'0.00',c9:'0.00',c10:'0.00',c11:'8100.00',c12:'736.36',c13:'8873.20',c14:'-773.20',c15:'-70.29',c16:69,c17:69,c18:9,c19:'13.04%',c20:'13.04%',c21:'9400.00',c22:'0.00',c23:'0.00',c24:'0.00',c25:'0.00',c26:'9400.00',c27:'1,044.44',c28:'625.00',c29:'8775.00',c30:'975.00',c31:3,c32:3,c33:1,c34:'33.33%',c35:'33.33%',c36:'1000.00',c37:'0.00',c38:'0.00',c39:'0.00',c40:'0.00',c41:'1000.00',c42:'1,000.00',c43:'3100.00',c44:'-2100.00',c45:'-2,100.00',c46:0,c47:0,c48:0,c49:'',c50:'',c51:'0.00',c52:'0.00',c53:'0.00',c54:'0.00',c55:'0.00',c56:'0.00',c57:'',c58:'0.00',c59:'0.00',c60:'',c61:0,c62:0,c63:0,c64:'',c65:'',c66:'0.00',c67:'0.00',c68:'0.00',c69:'0.00',c70:'0.00',c71:'0.00',c72:'',c73:'0.00',c74:'0.00',c75:'',c76:0,c77:0,c78:0,c79:'',c80:'',c81:'0.00',c82:'0.00',c83:'0.00',c84:'0.00',c85:'0.00',c86:'0.00',c87:'',c88:'0.00',c89:'0.00',c90:'',c91:1,c92:1,c93:1,c94:'100.00%',c95:'100.00%',c96:'300.00',c97:'0.00',c98:'0.00',c99:'0.00',c100:'0.00',c101:'300.00',c102:'300.00',c103:'0.00',c104:'300.00',c105:'300.00',c106:0,c107:0,c108:0,c109:'',c110:'',c111:'0.00',c112:'0.00',c113:'0.00',c114:'0.00',c115:'0.00',c116:'0.00',c117:'',c118:'0.00',c119:'0.00',c120:'',c121:2,c122:2,c123:0,c124:'0.00%',c125:'0.00%',c126:'-2600.00',c127:'0.00',c128:'0.00',c129:'0.00',c130:'0.00',c131:'-2600.00',c132:'',c133:'0.00',c134:'-2600.00',c135:''}
+];
+
+const storeCols=[{k:'t0',l:'上拍量'},{k:'t1',l:'上拍量(去重)'},{k:'t2',l:'查验台次（去重）'},{k:'t3',l:'成交量'},{k:'t4',l:'查验比例'},{k:'t5',l:'成交率'},{k:'t6',l:'成交率(去重)'},{k:'t7',l:'唯普毛利（单位：元）'},{k:'t8',l:'唯普云毛利（单位：元）'},{k:'t9',l:'汇和毛利（单位：元）',cls:'changed'},{k:'t10',l:'机拍毛利（单位：元）'},{k:'t11',l:'毛利调整（单位：元）'},{k:'t12',l:'总毛利（单位：元）',cls:'changed'},{k:'t13',l:'台均总毛利（单位：元）'},{k:'t14',l:'内部结算（单位：元）'},{k:'t15',l:'考核毛利（单位：元）'},{k:'t16',l:'台均考核毛利'},{k:'sg0',l:'上拍量'},{k:'sg1',l:'上拍量(去重)'},{k:'sg2',l:'成交量'},{k:'sg3',l:'成交率'},{k:'sg4',l:'成交率(去重)'},{k:'sg5',l:'总溢价'},{k:'sg6',l:'总合同价'},{k:'sg7',l:'溢价率'},{k:'sg8',l:'唯普毛利（单位：元）'},{k:'sg9',l:'唯普云毛利（单位：元）'},{k:'sg10',l:'汇和毛利（单位：元）',cls:'changed'},{k:'sg11',l:'机拍毛利（单位：元）'},{k:'sg12',l:'毛利调整（单位：元）'},{k:'sg13',l:'总毛利（单位：元）',cls:'changed'},{k:'sg14',l:'台均总毛利'},{k:'sg15',l:'内部结算（单位：元）'},{k:'sg16',l:'考核毛利（单位：元）'},{k:'sg17',l:'台均考核毛利'},{k:'wp0',l:'上拍量'},{k:'wp1',l:'上拍量(去重)'},{k:'wp2',l:'成交量'},{k:'wp3',l:'成交率'},{k:'wp4',l:'成交率(去重)'},{k:'wp5',l:'唯普毛利（单位：元）'},{k:'wp6',l:'唯普云毛利（单位：元）'},{k:'wp7',l:'汇和毛利（单位：元）',cls:'changed'},{k:'wp8',l:'机拍毛利（单位：元）'},{k:'wp9',l:'毛利调整（单位：元）'},{k:'wp10',l:'总毛利（单位：元）',cls:'changed'},{k:'wp11',l:'台均总毛利'},{k:'wp12',l:'内部结算（单位：元）'},{k:'wp13',l:'考核毛利（单位：元）'},{k:'wp14',l:'台均考核毛利'}];
+const storeGroups=[{name:'合计',span:17},{name:'收购业务',span:18},{name:'委拍业务',span:15}];
+const storeInfoCols=[{k:'s0',l:'门店id'},{k:'s1',l:'所属集团'},{k:'s2',l:'所属大区'},{k:'s3',l:'所属小区'},{k:'s4',l:'门店全称'},{k:'s5',l:'自营/合营'},{k:'s6',l:'总店'}];
+const storeData=[
+{s0:'7',s1:'广物汽贸',s2:'置换一部',s3:'广东-广州',s4:'广东广物福恒汽车贸易有限公司',s5:'自营',s6:'',t0:'',t1:'',t2:'',t3:'0',t4:'',t5:'',t6:'',t7:'0.00',t8:'0.00',t9:'0.00',t10:'0.00',t11:'0.00',t12:'0.00',t13:'',t14:'6.00',t15:'-6.00',t16:'',sg0:'',sg1:'',sg2:'0',sg3:'',sg4:'',sg5:'',sg6:'',sg7:'0%',sg8:'0.00',sg9:'0.00',sg10:'0.00',sg11:'0.00',sg12:'0.00',sg13:'0.00',sg14:'',sg15:'0.00',sg16:'0.00',sg17:'',wp0:'',wp1:'',wp2:'0',wp3:'',wp4:'',wp5:'0.00',wp6:'0.00',wp7:'0.00',wp8:'0.00',wp9:'0.00',wp10:'0.00',wp11:'',wp12:'6.00',wp13:'-6.00',wp14:''},
+{s0:'15',s1:'广物汽贸',s2:'置换一部',s3:'广东-广州',s4:'广东恒远汽车贸易有限公司',s5:'自营',s6:'',t0:'',t1:'',t2:'',t3:'0',t4:'',t5:'',t6:'',t7:'0.00',t8:'0.00',t9:'0.00',t10:'0.00',t11:'0.00',t12:'0.00',t13:'',t14:'87.00',t15:'-87.00',t16:'',sg0:'',sg1:'',sg2:'0',sg3:'',sg4:'',sg5:'',sg6:'',sg7:'0%',sg8:'0.00',sg9:'0.00',sg10:'0.00',sg11:'0.00',sg12:'0.00',sg13:'0.00',sg14:'',sg15:'81.00',sg16:'-81.00',sg17:'',wp0:'',wp1:'',wp2:'0',wp3:'',wp4:'',wp5:'0.00',wp6:'0.00',wp7:'0.00',wp8:'0.00',wp9:'0.00',wp10:'0.00',wp11:'',wp12:'6.00',wp13:'-6.00',wp14:''},
+{s0:'25',s1:'广物汽贸',s2:'置换一部',s3:'广东-广州',s4:'广东广物东本汽车贸易有限公司',s5:'自营',s6:'',t0:'1',t1:'1',t2:'1',t3:'1',t4:'100.00%',t5:'100.00%',t6:'100.00%',t7:'1900.00',t8:'0.00',t9:'-2000.00',t10:'0.00',t11:'0.00',t12:'-100.00',t13:'-100.00',t14:'606.00',t15:'-706.00',t16:'-706.00',sg0:'1',sg1:'1',sg2:'1',sg3:'100.00%',sg4:'100.00%',sg5:'-1400.00',sg6:'18000.00',sg7:'-7.78%',sg8:'1900.00',sg9:'0.00',sg10:'-2000.00',sg11:'0.00',sg12:'0.00',sg13:'-100.00',sg14:'-100.00',sg15:'600.00',sg16:'-700.00',sg17:'-700.00',wp0:'0',wp1:'0',wp2:'0',wp3:'',wp4:'',wp5:'0.00',wp6:'0.00',wp7:'0.00',wp8:'0.00',wp9:'0.00',wp10:'0.00',wp11:'',wp12:'6.00',wp13:'-6.00',wp14:''},
+{s0:'29',s1:'广物汽贸',s2:'置换一部',s3:'广东-广州',s4:'广州广物盈凯汽车销售有限公司',s5:'自营',s6:'通用',t0:'',t1:'',t2:'',t3:'0',t4:'',t5:'',t6:'',t7:'0.00',t8:'0.00',t9:'0.00',t10:'0.00',t11:'0.00',t12:'0.00',t13:'',t14:'6.00',t15:'-6.00',t16:'',sg0:'',sg1:'',sg2:'0',sg3:'',sg4:'',sg5:'',sg6:'',sg7:'0%',sg8:'0.00',sg9:'0.00',sg10:'0.00',sg11:'0.00',sg12:'0.00',sg13:'0.00',sg14:'',sg15:'0.00',sg16:'0.00',sg17:'',wp0:'',wp1:'',wp2:'0',wp3:'',wp4:'',wp5:'0.00',wp6:'0.00',wp7:'0.00',wp8:'0.00',wp9:'0.00',wp10:'0.00',wp11:'',wp12:'6.00',wp13:'-6.00',wp14:''},
+{s0:'37',s1:'广物汽贸',s2:'置换一部',s3:'广东-广州',s4:'广东五菱汽车销售服务有限公司',s5:'自营',s6:'',t0:'',t1:'',t2:'',t3:'0',t4:'',t5:'',t6:'',t7:'0.00',t8:'0.00',t9:'0.00',t10:'0.00',t11:'0.00',t12:'0.00',t13:'',t14:'12.00',t15:'-12.00',t16:'',sg0:'',sg1:'',sg2:'0',sg3:'',sg4:'',sg5:'',sg6:'',sg7:'0%',sg8:'0.00',sg9:'0.00',sg10:'0.00',sg11:'0.00',sg12:'0.00',sg13:'0.00',sg14:'',sg15:'0.00',sg16:'0.00',sg17:'',wp0:'',wp1:'',wp2:'0',wp3:'',wp4:'',wp5:'0.00',wp6:'0.00',wp7:'0.00',wp8:'0.00',wp9:'0.00',wp10:'0.00',wp11:'',wp12:'12.00',wp13:'-12.00',wp14:''},
+{s0:'41',s1:'广物汽贸',s2:'置换三部',s3:'广东-广州（合资）',s4:'广东兴锐汽车销售有限公司',s5:'合营',s6:'',t0:'',t1:'',t2:'',t3:'0',t4:'',t5:'',t6:'',t7:'0.00',t8:'0.00',t9:'0.00',t10:'0.00',t11:'0.00',t12:'0.00',t13:'',t14:'67.80',t15:'-67.80',t16:'',sg0:'',sg1:'',sg2:'0',sg3:'',sg4:'',sg5:'',sg6:'',sg7:'0%',sg8:'0.00',sg9:'0.00',sg10:'0.00',sg11:'0.00',sg12:'0.00',sg13:'0.00',sg14:'',sg15:'0.00',sg16:'0.00',sg17:'',wp0:'',wp1:'',wp2:'0',wp3:'',wp4:'',wp5:'0.00',wp6:'0.00',wp7:'0.00',wp8:'0.00',wp9:'0.00',wp10:'0.00',wp11:'',wp12:'67.80',wp13:'-67.80',wp14:''},
+{s0:'45',s1:'广物汽贸',s2:'置换一部',s3:'广东-广州',s4:'广东物通凯骏汽车有限公司',s5:'自营',s6:'一汽大众',t0:'',t1:'',t2:'',t3:'0',t4:'',t5:'',t6:'',t7:'0.00',t8:'0.00',t9:'0.00',t10:'0.00',t11:'0.00',t12:'0.00',t13:'',t14:'93.00',t15:'-93.00',t16:'',sg0:'',sg1:'',sg2:'0',sg3:'',sg4:'',sg5:'',sg6:'',sg7:'0%',sg8:'0.00',sg9:'0.00',sg10:'0.00',sg11:'0.00',sg12:'0.00',sg13:'0.00',sg14:'',sg15:'75.00',sg16:'-75.00',sg17:'',wp0:'',wp1:'',wp2:'0',wp3:'',wp4:'',wp5:'0.00',wp6:'0.00',wp7:'0.00',wp8:'0.00',wp9:'0.00',wp10:'0.00',wp11:'',wp12:'18.00',wp13:'-18.00',wp14:''},
+{s0:'53',s1:'广物汽贸',s2:'置换一部',s3:'广东-佛山',s4:'佛山市广物福恒汽车贸易有限公司',s5:'自营',s6:'',t0:'',t1:'',t2:'',t3:'0',t4:'',t5:'',t6:'',t7:'0.00',t8:'0.00',t9:'0.00',t10:'0.00',t11:'0.00',t12:'0.00',t13:'',t14:'6.00',t15:'-6.00',t16:'',sg0:'',sg1:'',sg2:'0',sg3:'',sg4:'',sg5:'',sg6:'',sg7:'0%',sg8:'0.00',sg9:'0.00',sg10:'0.00',sg11:'0.00',sg12:'0.00',sg13:'0.00',sg14:'',sg15:'6.00',sg16:'-6.00',sg17:'',wp0:'',wp1:'',wp2:'0',wp3:'',wp4:'',wp5:'0.00',wp6:'0.00',wp7:'0.00',wp8:'0.00',wp9:'0.00',wp10:'0.00',wp11:'',wp12:'0.00',wp13:'0.00',wp14:''}
 ];
 
 const revenueCols=[{k:'c0',l:'vid'},{k:'c1',l:'大区'},{k:'c2',l:'小区'},{k:'c3',l:'门店全称'},{k:'c4',l:'订单号'},{k:'c5',l:'日期'},{k:'c6',l:'来源'},{k:'c7',l:'车牌'},{k:'c8',l:'VIN'},{k:'c9',l:'唯普毛利（单位：元）'},{k:'c10',l:'唯普云毛利单位：元）'},{k:'c11',l:'汇和毛利（单位：元）',cls:'changed'},{k:'c12',l:'机拍毛利单位：元）'},{k:'c13',l:'毛利调整（单位：元）'},{k:'c14',l:'总毛利（单位：元）',cls:'changed'}];
@@ -574,6 +588,47 @@ function renderPurchaseTable(){ renderGroupedTable('purchaseTable','purchaseCoun
 function renderConsignTable(){ renderGroupedTable('consignTable','consignCount',consignGroups,consignCols,consignData,'大区'); }
 function renderRevenueTable(){ renderFlatTable('revenueTable','revenueCount',revenueCols,revenueData); }
 function renderCostTable(){ renderFlatTable('costTable','costCount',costCols,costData); }
+
+function renderStoreTable(){
+  const t=document.getElementById('storeTable');
+  const infoCols=storeInfoCols;
+  const groups=storeGroups;
+  const cols=storeCols;
+  const data=storeData;
+  let h='<thead><tr>';
+  infoCols.forEach(ic=>{h+='<th rowspan="2" class="gh-total" style="position:sticky;left:0;z-index:15;min-width:80px;">'+ic.l+'</th>';});
+  const colors=['gh-total','gh-sg','gh-wp'];
+  groups.forEach((g,gi)=>{h+='<th colspan="'+g.span+'" class="'+colors[gi]+'">'+g.name+'</th>';});
+  h+='</tr><tr>';
+  let ci=0;
+  groups.forEach((g,gi)=>{
+    for(let j=0;j<g.span;j++){
+      var colCls=colors[gi];
+      if(cols[ci].cls==='changed') colCls='col-changed';
+      h+='<th class="'+colCls+'">'+cols[ci].l+'</th>';
+      ci++;
+    }
+  });
+  h+='</tr></thead><tbody>';
+  data.forEach(row=>{
+    h+='<tr>';
+    infoCols.forEach(ic=>{h+='<td class="rn">'+(row[ic.k]||'')+'</td>';});
+    cols.forEach(c=>{
+      let v=row[c.k];if(v===undefined)v='';
+      let cls='num';
+      if(typeof v==='string'&&v!==''){
+        let n=parseFloat(v.replace(/,/g,''));
+        if(!isNaN(n)&&n<0) cls='num neg';
+        else if(!isNaN(n)&&n>0) cls='num pos';
+      }
+      h+='<td class="'+cls+'">'+v+'</td>';
+    });
+    h+='</tr>';
+  });
+  h+='</tbody>';
+  t.innerHTML=h;
+  document.getElementById('storeCount').textContent='共 '+data.length+' 条';
+}
 
 function renderRegionTable(){
   const t=document.getElementById('regionTable');
@@ -935,6 +990,7 @@ function renderCostDetailTable(){
 renderRegionTable();
 renderPurchaseTable();
 renderConsignTable();
+renderStoreTable();
 renderRevenueTable();
 renderCostTable();
 </script>
