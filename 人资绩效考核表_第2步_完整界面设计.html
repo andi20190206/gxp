@@ -229,7 +229,7 @@
                             <th class="num" style="min-width:100px">交易总毛利</th>
                             <th class="num" style="min-width:88px">唯普毛利</th><th class="num" style="min-width:88px">唯普云毛利</th>
                             <th class="num" style="min-width:88px">汇和毛利</th><th class="num" style="min-width:88px">机拍毛利</th>
-                            <th>入库时间</th><th style="min-width:80px">入库地点</th><th class="num" style="min-width:70px">提车费</th><th style="min-width:72px">提车人</th><th style="min-width:72px">提车类型</th>
+                            <th>入唯普库时间</th><th style="min-width:80px">入库地点</th><th class="num" style="min-width:70px">提车费</th><th style="min-width:72px">提车人</th><th style="min-width:72px">提车类型</th>
                             <th class="num" style="min-width:80px">检测成本</th><th style="min-width:72px">检测员</th><th class="num" style="min-width:80px">数据成本</th>
                             <th class="num" style="min-width:88px">平台使用费</th>
                             <th class="num" style="min-width:88px">综合服务费</th><th class="num" style="min-width:80px">评估费</th>
@@ -265,7 +265,7 @@
                         <table style="white-space:normal;width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:28px;">
                             <thead><tr style="background:#f8fafc;"><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;width:80px;font-size:11px;color:#64748b;font-weight:600;">时机点</th><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;width:140px;font-size:11px;color:#64748b;font-weight:600;">触发事件</th><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;color:#64748b;font-weight:600;">写入数据</th></tr></thead>
                             <tbody>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T1</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">车辆入库</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">提车费100元、入库时间、入库地点、提车人、提车类型</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T1</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">车辆入库</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">提车费100元、入唯普库时间、入库地点、提车人、提车类型</td></tr>
                                 <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T2</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">检测报告过审</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">检测成本（省内85/省外120）、检测员、确认日期</td></tr>
                                 <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">—</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">数据查询成功</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">数据成本（维保/出险/电池等查询费用，查询成功后触发）</td></tr>
                                 <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T3</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">成交付款清分后</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">成交价、合同价、起拍价、交易总毛利、各方毛利（唯普/唯普云/汇和/机拍）、评估费、销售成本、收购车成本、业务合作服务费</td></tr>
@@ -309,9 +309,9 @@
             <table style="width:100%;border-collapse:collapse;font-size:12.5px;white-space:normal;">
                 <thead><tr style="background:#f8fafc;"><th style="padding:8px 12px;text-align:left;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;width:160px;">指标</th><th style="padding:8px 12px;text-align:left;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;">取值逻辑</th></tr></thead>
                 <tbody>
-                    <tr><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">上拍台次（去重）</td><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;line-height:1.6;">统计周期内参与上拍的车辆数，按 VIN 码唯一去重计数。<br><span style="color:#64748b;font-size:11px;">示例值：242 台</span></td></tr>
-                    <tr style="background:#fafbfc;"><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">成交台次（去重）</td><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;line-height:1.6;">统计周期内成交订单中的车辆数，按 VIN 码唯一去重计数。<br><span style="color:#64748b;font-size:11px;">示例值：192 台</span></td></tr>
-                    <tr><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">成交率（去重）</td><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;line-height:1.6;">去重成交台次 ÷ 去重上拍台次，保留两位小数。<br><span style="color:#64748b;font-size:11px;">示例：192 / 242 ≈ 79.34%</span></td></tr>
+                    <tr><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">上拍量（去重）</td><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;line-height:1.6;">统计周期内参与上拍的车辆数，按 VIN 码唯一去重计数。<br><span style="color:#64748b;font-size:11px;">示例值：242 台</span></td></tr>
+                    <tr style="background:#fafbfc;"><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">成交量（去重）</td><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;line-height:1.6;">统计周期内成交订单中的车辆数，按 VIN 码唯一去重计数。<br><span style="color:#64748b;font-size:11px;">示例值：192 台</span></td></tr>
+                    <tr><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">成交率（去重）</td><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;line-height:1.6;">去重成交量 ÷ 去重上拍量，保留两位小数。<br><span style="color:#64748b;font-size:11px;">示例：192 / 242 ≈ 79.34%</span></td></tr>
                     <tr style="background:#fafbfc;"><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">检测台次</td><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;line-height:1.6;">统计周期内完成检测的记录数，<span style="color:#dc2626;font-weight:500;">不去重</span>（同一辆车可多次检测，每次分别计数）。<br><span style="color:#64748b;font-size:11px;">示例值：215 台</span></td></tr>
                     <tr><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">交易总毛利</td><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;line-height:1.6;">所有成交订单的毛利求和（唯普毛利 + 唯普云毛利 + 汇和毛利 + 机拍毛利）。<br><span style="color:#64748b;font-size:11px;">示例值：284,500 元</span></td></tr>
                     <tr style="background:#fafbfc;"><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">绩效毛利</td><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;line-height:1.6;">交易总毛利−所有成本费用项（提车费+检测成本+数据成本+销售成本+政企场地费+收购车成本+业务合作服务费+垫款利息+现场交付成本/空中交付成本+现场过户成本）。<br><span style="color:#64748b;font-size:11px;">示例值：198,350 元</span></td></tr>
@@ -343,7 +343,7 @@ const fieldDefs=[
 ['区域经理','车辆对应城市经理'],
 ['副部长','大区负责人，BMS是否有此信息字段，若现状系统未维护则不提供'],
 ['事业部','车辆归属门店的上级事业部'],
-['入库时间','T1 车辆首次入唯普库(服务中心库)时间'],
+['入唯普库时间','T1 车辆首次入唯普库(服务中心库)时间'],
 ['入库地点','T1 入库的仓库名称(不需要分区,eg.白云服务中心1库)'],
 ['提车费','T1 入库 100 元 / 台，同 VIN 仅计一次'],
 ['提车人','收购车送车入库的送车人姓名；\\n提车助手小程序中将车辆送入唯普库的人'],
@@ -422,7 +422,7 @@ function renderDashboard(){
         {region:'广西-南宁',upload:6,deal:5,rate:'83.33%'},
         {region:'湖北-武汉',upload:11,deal:8,rate:'72.73%'},
         {region:'湖南-长沙',upload:7,deal:5,rate:'71.43%'},
-        {region:'其他',upload:14,deal:10,rate:'71.43%'}
+        {region:'剩余',upload:14,deal:10,rate:'71.43%'}
     ];
     const rateRows=rateData.map(d=>`<tr>
         <td style="padding:6px 10px;border-bottom:1px solid #f1f5f9;font-size:12px;">${d.region}</td>
@@ -462,9 +462,9 @@ function renderDashboard(){
         <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 20px;margin-bottom:20px;">
             <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:14px;">业务汇总</div>
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
-                ${card('#f0fdf4','#bbf7d0','上拍台次（去重）',242,'台','#16a34a','按VIN去重统计的上拍车辆总数，同一VIN多次上拍仅计1次')}
-                ${card('#f0fdf4','#bbf7d0','成交台次（去重）',192,'台','#16a34a','按VIN去重统计的成交车辆总数，同一VIN多次成交仅计1次')}
-                ${card('#f0fdf4','#bbf7d0','成交率（去重）','79.34%','','#16a34a','去重成交台次 ÷ 去重上拍台次，保留2位小数')}
+                ${card('#f0fdf4','#bbf7d0','上拍量（去重）',242,'台','#16a34a','按VIN去重统计的上拍车辆总数，同一VIN多次上拍仅计1次')}
+                ${card('#f0fdf4','#bbf7d0','成交量（去重）',192,'台','#16a34a','按VIN去重统计的成交车辆总数，同一VIN多次成交仅计1次')}
+                ${card('#f0fdf4','#bbf7d0','成交率（去重）','79.34%','','#16a34a','去重成交量 ÷ 去重上拍量，保留2位小数')}
                 ${card('#f8fafc','#e2e8f0','检测台次',215,'台','','不排重统计的检测过审次数，延期不算，同月多次检测分别计数')}
                 ${card('#eff6ff','#bfdbfe','交易总毛利','284,500','元','#2563eb','唯普毛利+唯普云毛利+汇和毛利+机拍毛利的合计')}
                 ${card('#eff6ff','#bfdbfe','绩效毛利','198,350','元','#2563eb','交易总毛利−所有成本费用项(提车费+检测成本+数据成本+销售成本+政企场地费+收购车成本+业务合作服务费+垫款利息+现场交付成本/空中交付成本+现场过户成本)')}
@@ -477,9 +477,9 @@ function renderDashboard(){
         <div style="background:#fff;border:1px solid #bbf7d0;border-radius:10px;padding:18px 20px;margin-bottom:20px;">
             ${sectionTitle('委拍业务','#16a34a')}
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;">
-                ${card('#f0fdf4','#bbf7d0','上拍台次(委拍)',190,'台（去重）','#16a34a','委拍类型车辆按VIN去重的上拍总数')}
-                ${card('#f0fdf4','#bbf7d0','成交台次(委拍)',151,'台（去重）','#16a34a','委拍类型车辆按VIN去重的成交总数')}
-                ${card('#f0fdf4','#bbf7d0','去重成交率(委拍)','79.47%','','#16a34a','委拍成交台次÷委拍上拍台次，保留2位小数')}
+                ${card('#f0fdf4','#bbf7d0','上拍量(委拍)',190,'台（去重）','#16a34a','委拍类型车辆按VIN去重的上拍总数')}
+                ${card('#f0fdf4','#bbf7d0','成交量(委拍)',151,'台（去重）','#16a34a','委拍类型车辆按VIN去重的成交总数')}
+                ${card('#f0fdf4','#bbf7d0','去重成交率(委拍)','79.47%','','#16a34a','委拍成交量÷委拍上拍量，保留2位小数')}
             </div>
             <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px;">
                 ${card('#f8fafc','#e2e8f0','检测台次',168,'台（不排重）','','委拍车辆检测过审次数，不排重，延期不算')}
@@ -496,8 +496,8 @@ function renderDashboard(){
                     <table id="rateTable" style="width:100%;border-collapse:collapse;font-size:12px;">
                         <thead><tr style="background:#f8fafc;">
                             <th style="padding:7px 10px;text-align:left;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;">城市/大区域</th>
-                            <th style="padding:7px 10px;text-align:right;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;cursor:pointer;" onclick="sortRateTable(1)">上拍台次 <span id="rateSort1" style="font-size:10px;">⇅</span></th>
-                            <th style="padding:7px 10px;text-align:right;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;cursor:pointer;" onclick="sortRateTable(2)">成交台次 <span id="rateSort2" style="font-size:10px;">⇅</span></th>
+                            <th style="padding:7px 10px;text-align:right;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;cursor:pointer;" onclick="sortRateTable(1)">上拍量 <span id="rateSort1" style="font-size:10px;">⇅</span></th>
+                            <th style="padding:7px 10px;text-align:right;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;cursor:pointer;" onclick="sortRateTable(2)">成交量 <span id="rateSort2" style="font-size:10px;">⇅</span></th>
                             <th style="padding:7px 10px;text-align:right;font-size:11px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;cursor:pointer;" onclick="sortRateTable(3)">去重成交率 <span id="rateSort3" style="font-size:10px;">⇅</span></th>
                         </tr></thead>
                         <tbody>${rateRows}</tbody>
@@ -510,9 +510,9 @@ function renderDashboard(){
         <div style="background:#fff;border:1px solid #bfdbfe;border-radius:10px;padding:18px 20px;margin-bottom:20px;">
             ${sectionTitle('收购业务','#2563eb')}
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;">
-                ${card('#eff6ff','#bfdbfe','上拍台次(收购)',52,'台（去重）','#2563eb','收购类型车辆按VIN去重的上拍总数')}
-                ${card('#eff6ff','#bfdbfe','成交台次(收购)',41,'台（去重）','#2563eb','收购类型车辆按VIN去重的成交总数')}
-                ${card('#eff6ff','#bfdbfe','去重成交率(收购)','78.85%','','#2563eb','收购成交台次÷收购上拍台次，保留2位小数')}
+                ${card('#eff6ff','#bfdbfe','上拍量(收购)',52,'台（去重）','#2563eb','收购类型车辆按VIN去重的上拍总数')}
+                ${card('#eff6ff','#bfdbfe','成交量(收购)',41,'台（去重）','#2563eb','收购类型车辆按VIN去重的成交总数')}
+                ${card('#eff6ff','#bfdbfe','去重成交率(收购)','78.85%','','#2563eb','收购成交量÷收购上拍量，保留2位小数')}
             </div>
             <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;">
                 ${card('#f8fafc','#e2e8f0','检测台次',47,'台（不排重）','','收购车辆检测过审次数，不排重，延期不算')}
@@ -897,7 +897,7 @@ function renderReqNotes(){
         </div>
     </div>
     <div style="background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:16px 20px;">
-        <div style="font-size:13px;font-weight:700;color:#dc2626;margin-bottom:10px;">费用明细导入 — 导入模板</div>
+        <div style="font-size:13px;font-weight:700;color:#dc2626;margin-bottom:10px;">费用明细导入 — 导入模板(新模板)</div>
         <div style="font-size:12.5px;color:#dc2626;line-height:1.7;">
         </div>
     </div>
