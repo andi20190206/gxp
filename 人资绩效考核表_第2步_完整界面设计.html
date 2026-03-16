@@ -345,10 +345,11 @@
 </div>
 <div class="indicator-modal-overlay" id="permModal" onclick="if(event.target===this)closePermModal()">
     <div class="modal" style="width:620px;">
-        <div class="modal-header"><div><div class="modal-title">🔐 权限说明</div><div class="modal-subtitle">数据权限与菜单配置说明</div></div><button class="modal-close" onclick="closePermModal()">✕</button></div>
+        <div class="modal-header"><div><div class="modal-title">🔐 权限和其他说明</div><div class="modal-subtitle">数据权限与菜单配置说明</div></div><button class="modal-close" onclick="closePermModal()">✕</button></div>
         <div class="modal-body" style="padding:16px 20px;">
-            <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:6px;padding:10px 14px;font-size:12.5px;color:#dc2626;font-weight:600;margin-bottom:16px;">⚠️ 权限说明和本弹框仅是需求说明，上线后不展示</div>
-            <div style="display:flex;flex-direction:column;gap:14px;font-size:13px;color:#334155;line-height:1.8;">
+            <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:6px;padding:10px 14px;font-size:12.5px;color:#dc2626;font-weight:600;margin-bottom:16px;">⚠️ 权限和其他说明和本弹框仅是需求说明，上线后不展示</div>
+            <div style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:10px;border-left:3px solid #1e40af;padding-left:8px;">一、权限类</div>
+            <div style="display:flex;flex-direction:column;gap:14px;font-size:13px;color:#334155;line-height:1.8;margin-bottom:20px;">
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:12px 16px;">
                     <div style="font-weight:700;color:#1e40af;margin-bottom:6px;">1. 菜单配置</div>
                     <div>菜单需配置，菜单里的数据权限根据每个人绑定的门店来展示。</div>
@@ -360,6 +361,12 @@
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:12px 16px;">
                     <div style="font-weight:700;color:#1e40af;margin-bottom:6px;">3. 数据展示逻辑</div>
                     <div>成交率数据，按账号挂钩的门店，展示对应的台次毛利等数据。<br><span style="color:#dc2626;font-weight:500;">如果门店分布在2个区域，则展示2个区域内关联的门店数据。</span></div>
+                </div>
+            </div>
+            <div style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:10px;border-left:3px solid #1e40af;padding-left:8px;">二、统计周期</div>
+            <div style="display:flex;flex-direction:column;gap:14px;font-size:13px;color:#334155;line-height:1.8;">
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:12px 16px;">
+                    <div>默认是自然月1号到当天的数据统计；支持统计周期自主选择。</div>
                 </div>
             </div>
         </div>
@@ -487,7 +494,7 @@ function renderDashboard(){
             <div style="display:flex;align-items:center;gap:16px;">
                 <div style="font-size:15px;font-weight:700;color:var(--text-primary);">数据看板</div>
                 <button onclick="showIndicatorModal()" style="padding:5px 14px;border-radius:6px;border:1px solid #dc2626;background:#fff;color:#dc2626;font-size:12.5px;font-weight:500;cursor:pointer;font-family:var(--sans);">指标含义</button>
-                <button onclick="showPermModal()" style="padding:5px 14px;border-radius:6px;border:1px solid #dc2626;background:#fff;color:#dc2626;font-size:12.5px;font-weight:500;cursor:pointer;font-family:var(--sans);">权限说明</button>
+                <button onclick="showPermModal()" style="padding:5px 14px;border-radius:6px;border:1px solid #dc2626;background:#fff;color:#dc2626;font-size:12.5px;font-weight:500;cursor:pointer;font-family:var(--sans);">权限和其他说明</button>
             </div>
             <div style="display:flex;align-items:center;gap:10px;">
                 <label style="font-size:12px;font-weight:600;color:#475569;">统计周期：</label>
