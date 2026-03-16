@@ -884,20 +884,21 @@ function renderReqNotes(){
     <div style="font-size:16px;font-weight:700;color:#0f172a;border-left:4px solid #16a34a;padding-left:10px;margin-bottom:6px;">需求补充说明</div>
     <div style="font-size:13px;color:#dc2626;font-weight:600;margin-bottom:14px;padding-left:14px;">本tab仅是需求说明，功能上线不用展示此tab</div>
     <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
+        <div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:10px;">数据处理</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:12.5px;color:#475569;line-height:1.7;">
+            <div>1. 功能上线前，将26年1.1至功能上线日的数据跑一遍数据</div>
+        </div>
+    </div>
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
         <div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:10px;">待确认事项</div>
         <div style="display:flex;flex-direction:column;gap:8px;font-size:12.5px;color:#475569;line-height:1.7;">
-            <div>1. <b>销售成本</b>：功能上线前，人资未提供新的数值，则以原型说明为准</div>
-            <div>2. <b>检测成本</b>：<span style="color:#dc2626;">涉及该字段引用的地方统一修改；功能上线前需提前给业务部门宣导</span></div>
-            <div>3. <b>售后冲正 — 业务合作费处理方式</b>（关联经管报表需做对应处理）：<br>
-                <span style="margin-left:16px;display:block;margin-top:4px;">售后退车，不冲正；同VIN再次成交不再扣取业务合作费（因为有可能不交给我们拍，所以第一次要收取）</span>
-            </div>
-            <div>4. <b>经管报表</b>：① 交付成本字段不动，新增其他费用项字段 ② 汇和收益取值更新 ③ 总费用项成本=原有成本项+新增成本项</div>
+            <div>1. 功能上线后，可能组织结构会发生变动：（大小区域变更等）绩效表需按新的架构跑一遍数据</div>
         </div>
     </div>
     <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
         <div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:10px;">权限说明</div>
         <div style="display:flex;flex-direction:column;gap:8px;font-size:12.5px;color:#475569;line-height:1.7;">
-            <div>• 支持各角色按<b>门店</b>配置权限</div>
+            <div>• 支持各角色按<b>门店</b>配置权限 <span style="color:#dc2626;font-weight:600;">（每个角色有对应数据查看权限和导出权限）</span></div>
             <div>• <b>人资</b>需按汇和和非汇和进行分类（汇和垫款门店 + 门店自垫款的12家门店）</div>
             <div>• <b>汇和财务</b>所看的内容同"汇和人资"</div>
             <div>• <b>业务员、门店总监、城市经理、副部长、部长</b>都是按照门店和事业部来配置的</div>
@@ -921,9 +922,15 @@ function renderReqNotes(){
             <div style="margin-top:4px;padding-top:4px;border-top:1px dashed #fca5a5;color:#991b1b;font-weight:600;">以上费用系统实时计算，规则同绩效表同字段</div>
         </div>
     </div>
-    <div style="background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:16px 20px;">
+    <div style="background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
         <div style="font-size:13px;font-weight:700;color:#dc2626;margin-bottom:10px;">费用明细导入 — 导入模板(新模板)</div>
         <div style="font-size:12.5px;color:#dc2626;line-height:1.7;">
+        </div>
+    </div>
+    <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:16px 20px;">
+        <div style="font-size:13px;font-weight:700;color:#9a3412;margin-bottom:10px;">其他</div>
+        <div style="font-size:12.5px;color:#475569;line-height:1.7;">
+            功能上线前，需先做业务宣导（告知业务即将到来的变动点）
         </div>
     </div>
 </div>`;
