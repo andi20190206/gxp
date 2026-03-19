@@ -254,10 +254,9 @@
                         <h3 style="font-size:15px;font-weight:700;margin-bottom:12px;">📖 使用指南</h3>
                         <div style="display:flex;flex-wrap:wrap;gap:12px 24px;font-size:13px;line-height:1.7;color:#475569;">
                             <div><strong style="color:#0f172a;">1. 筛选查询</strong> 支持按清分日期、成交日期、检测过审日期、车牌/VIN/VID、合同类型、门店、区域多维筛选，选择完毕后点击「搜索」。</div>
-                            <div><strong style="color:#0f172a;">2. 数据预览</strong> 表格最多展示 100 条预览数据。如需查看全量数据，请使用导出功能。</div>
-                            <div><strong style="color:#0f172a;">3. 查看详情</strong> 点击行末「详情」按钮可查看该车辆的完整财务明细及各时机点（T1-T6）事件日志。</div>
-                            <div><strong style="color:#0f172a;">4. 导出数据</strong> 支持导出为 CSV 格式，系统将自动按您的权限范围过滤数据。</div>
-                            <div style="flex-basis:100%;"><strong style="color:#0f172a;">5. 数据权限</strong> 系统根据您的角色自动限制数据可见范围。</div>
+                            <div><strong style="color:#0f172a;">2. 查看详情</strong> 点击行末「详情」按钮可查看该车辆的完整财务明细及各时机点（T1-T6）事件日志。</div>
+                            <div><strong style="color:#0f172a;">3. 导出数据</strong> 支持导出为 CSV 格式，系统将自动按您的权限范围过滤数据。</div>
+                            <div style="flex-basis:100%;"><strong style="color:#0f172a;">4. 数据权限</strong> 系统根据您的角色自动限制数据可见范围。</div>
                         </div>
                         <div style="margin-top:24px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:16px 20px;">
                             <div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:10px;">权限说明</div>
@@ -272,7 +271,7 @@
                             <div style="font-size:13px;font-weight:700;color:#92400e;margin-bottom:10px;">费用项变更说明</div>
                             <div style="font-size:12.5px;color:#475569;line-height:1.7;">
                                 费用项会发生变化，调整后，<b style="color:#dc2626;">调整前已生成的费用项成本不变</b>。<br>
-                                例：原检测成本75元，后改成85元，已生成的75元不变，仅新生成的按85元计算。
+                                例：原检测成本75元，后改成85元(省内)，仅新生成的检测成本按85元计算；已生成的费用项不做变化。
                             </div>
                         </div>
                     </div>
@@ -317,7 +316,7 @@
     <div class="modal">
         <div class="modal-header"><div><div class="modal-title" id="modalTitle">车辆详情</div><div class="modal-subtitle" id="modalSubtitle"></div></div><button class="modal-close" onclick="closeModal()">✕</button></div>
         <div class="modal-body" id="modalBody"></div>
-        <div class="modal-footer"><button class="btn btn-reset" onclick="closeModal()">关闭</button><button class="btn btn-primary" onclick="printDetail()">打印</button></div>
+        <div class="modal-footer"><button class="btn btn-reset" onclick="closeModal()">关闭</button></div>
     </div>
 </div>
 <!-- INDICATOR MODAL -->
@@ -612,7 +611,7 @@ function renderTable(){
             <td class="num muted">${fmt(r.airDeliveryCost)}</td><td>${r.airDeliveryDept}</td><td>${r.airDeliveryFollower}</td>
             <td class="num">${fmt(r.transferCost)}</td><td>${r.transferDept}</td>
             <td class="${profitClass(r.perfProfit)}" style="font-size:13px">${fmt(r.perfProfit)}</td>
-            <td class="num muted">${r.perfSalary?fmt(r.perfSalary):'<span style="color:#94a3b8">人工填</span>'}</td>
+            <td class="num muted">${r.perfSalary?fmt(r.perfSalary):'<span style="color:#94a3b8">人工核算</span>'}</td>
             <td><div style="display:flex;gap:4px"><button class="act-btn" onclick="openDetail(${i})">详情</button></div></td>
         </tr>`).join('');
 }
@@ -628,51 +627,7 @@ function openDetail(idx){
             <div class="finance-row"><span class="name">是否豁免</span><span class="amount" style="font-family:var(--sans);color:${r.aftersaleRecord.exempt?'#16a34a':'#dc2626'}">${r.aftersaleRecord.exempt?'✓ 豁免':'✗ 非豁免（全额纳入考核）'}</span></div>
         </div></div>`:'';
     document.getElementById('modalBody').innerHTML=`
-        <div class="modal-section"><div class="modal-section-title">基础信息</div>
-        <div class="info-grid">
-            <div class="info-field"><span class="label">车牌</span><span class="value mono" style="font-weight:700;font-size:15px">${r.plate}</span></div>
-            <div class="info-field"><span class="label">VIN码</span><span class="value mono" style="font-size:11px">${r.vin}</span></div>
-            <div class="info-field"><span class="label">VID</span><span class="value mono">${r.vid}</span></div>
-            <div class="info-field"><span class="label">合同类型</span><span class="value">${r.contractType}</span></div>
-            <div class="info-field"><span class="label">关键事件</span><span class="value">${r.status}</span></div>
-            <div class="info-field"><span class="label">付款状态</span><span class="value">${r.paid}</span></div>
-            <div class="info-field"><span class="label">门店</span><span class="value">${r.store}</span></div>
-            <div class="info-field"><span class="label">评估师</span><span class="value">${r.assessor}</span></div>
-            <div class="info-field"><span class="label">成交价</span><span class="value mono" style="font-weight:700">${r.dealPrice?r.dealPrice.toLocaleString()+'元':'—'}</span></div>
-            <div class="info-field"><span class="label">提车人</span><span class="value">${r.pickupPerson}</span></div>
-            <div class="info-field"><span class="label">提车类型</span><span class="value">${r.pickupType}</span></div>
-            <div class="info-field"><span class="label">空中交付跟进人</span><span class="value">${r.airDeliveryFollower}</span></div>
-        </div></div>
-        <div class="modal-section"><div class="modal-section-title">毛利明细</div>
-        <div class="finance-grid">
-            <div class="finance-row ${r.weipuProfit>0?'positive':r.weipuProfit<0?'negative':''}"><span class="name">唯普毛利</span><span class="amount">${fmtRaw(r.weipuProfit)}</span></div>
-            <div class="finance-row"><span class="name">唯普云毛利</span><span class="amount" style="color:#94a3b8">${fmtRaw(r.weipuyunProfit)}</span></div>
-            <div class="finance-row ${r.huiheProfit>0?'positive':''}"><span class="name">汇和毛利</span><span class="amount">${fmtRaw(r.huiheProfit)}</span></div>
-            <div class="finance-row"><span class="name">机拍毛利</span><span class="amount" style="color:#94a3b8">${fmtRaw(r.jipaProfit)}</span></div>
-            <div class="finance-row total"><span class="name">交易总毛利</span><span class="amount">${r.totalProfit.toLocaleString()}</span></div>
-        </div></div>
-        <div class="modal-section"><div class="modal-section-title">成本明细</div>
-        <div class="finance-grid">
-            <div class="finance-row"><span class="name">提车费（T1）</span><span class="amount">${fmtRaw(r.pickupFee)}</span></div>
-            <div class="finance-row"><span class="name">检测成本（T2）</span><span class="amount">${fmtRaw(r.inspCost)}</span></div>
-            <div class="finance-row"><span class="name">评估费（T3）</span><span class="amount">${fmtRaw(r.evalFee)}</span></div>
-            <div class="finance-row"><span class="name">销售成本（T3）</span><span class="amount">${fmtRaw(r.salesCost)}</span></div>
-            <div class="finance-row"><span class="name">现场交付成本（T4）</span><span class="amount">${fmtRaw(r.deliveryCost)}</span></div>
-            <div class="finance-row"><span class="name">空中交付成本（T5）</span><span class="amount" style="color:#94a3b8">${fmtRaw(r.airDeliveryCost)}</span></div>
-            <div class="finance-row"><span class="name">现场过户成本（T5）</span><span class="amount">${fmtRaw(r.transferCost)}</span></div>
-            <div class="finance-row"><span class="name">收购车成本</span><span class="amount">${fmtRaw(r.repoCost)}</span></div>
-            <div class="finance-row"><span class="name">业务合作服务费</span><span class="amount">${fmtRaw(r.bizFee)}</span></div>
-            <div class="finance-row"><span class="name">数据成本</span><span class="amount" style="color:#94a3b8">${fmtRaw(r.dataCost)}</span></div>
-            <div class="finance-row"><span class="name">垫款利息</span><span class="amount" style="color:#94a3b8">${fmtRaw(r.loanInterest)}</span></div>
-            <div class="finance-row"><span class="name">政企场地费</span><span class="amount" style="color:#92400e">${r.siteFee?fmtRaw(r.siteFee):'人工核算'}</span></div>
-        </div></div>
-        <div class="modal-section"><div class="modal-section-title">绩效结果</div>
-        <div class="finance-grid">
-            <div class="finance-row total" style="${r.perfProfit<0?'background:#fee2e2;border-color:#fca5a5':''}"><span class="name" style="${r.perfProfit<0?'color:#dc2626':''}">绩效毛利</span><span class="amount" style="color:${r.perfProfit>=0?'#16a34a':'#dc2626'};font-size:20px">${r.perfProfit.toLocaleString()}</span></div>
-            <div class="finance-row"><span class="name">绩效工资</span><span class="amount" style="font-family:var(--sans);font-size:12px;color:#92400e">人工核算</span></div>
-        </div></div>
-        ${afSec}
-        <div class="modal-section"><div class="modal-section-title">时机点日志</div>
+        <div class="modal-section"><div class="modal-section-title">关键事件日志</div>
         <div class="timeline">
             <div class="tl-item"><div class="tl-dot done"></div><div class="tl-card"><div class="tl-header"><span class="tl-title">T1 · 车辆入库</span><span class="tl-time">${r.inboundTime}</span></div><div class="tl-details"><div class="tl-detail">入库地点：<strong>${r.inboundLoc}</strong></div><div class="tl-detail">提车费：<strong>+${r.pickupFee}元</strong></div><div class="tl-detail">提车人：<strong>${r.pickupPerson}</strong></div><div class="tl-detail">提车类型：<strong>${r.pickupType}</strong></div></div></div></div>
             <div class="tl-item"><div class="tl-dot done"></div><div class="tl-card"><div class="tl-header"><span class="tl-title">T2 · 检测报告过审</span><span class="tl-time">${r.confirmDate}</span></div><div class="tl-details"><div class="tl-detail">检测成本：<strong>+${r.inspCost}元（${r.inspCost===85?'省内':'省外'}）</strong></div><div class="tl-detail">检测员：<strong>${r.inspector}</strong></div></div></div></div>
