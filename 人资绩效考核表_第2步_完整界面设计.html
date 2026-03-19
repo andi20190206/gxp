@@ -246,7 +246,22 @@
                             <th style="min-width:80px">操作</th>
                         </tr></thead><tbody id="tableBody"></tbody></table>
                     </div>
-                    <div class="table-footer"><div class="warn-note">⚠ 绩效工资、政企场地费为人工核算字段，仅供展示</div><div>已加载 <strong>5</strong> / 47 条（超出100条请导出）</div></div>
+                    <div class="table-footer">
+                        <div class="warn-note">⚠ 绩效工资、政企场地费为人工核算字段，仅供展示</div>
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <span>每页</span>
+                            <select id="pageSizeSelect" onchange="changePageSize()" style="padding:3px 6px;border:1px solid #e2e8f0;border-radius:4px;font-size:12px;font-family:var(--sans);">
+                                <option value="10">10</option><option value="20" selected>20</option><option value="40">40</option><option value="100">100</option>
+                            </select>
+                            <span>条</span>
+                            <span style="margin-left:8px;" id="pageInfo"></span>
+                            <div style="display:flex;gap:4px;margin-left:8px;">
+                                <button class="btn btn-reset" style="padding:3px 8px;font-size:11px;" onclick="goPage(-1)">上一页</button>
+                                <button class="btn btn-reset" style="padding:3px 8px;font-size:11px;" onclick="goPage(1)">下一页</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="summaryBar" style="padding:8px 14px;border-top:1px solid var(--border);background:#eff6ff;font-size:12px;display:flex;gap:20px;flex-wrap:wrap;color:#1e40af;font-weight:600;"></div>
                 </div>
                 <!-- 使用指南 -->
                 <div class="tab-pane" id="tabGuide" style="padding:24px;overflow-y:auto;">
@@ -283,13 +298,14 @@
                         <table style="white-space:normal;width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:28px;">
                             <thead><tr style="background:#f8fafc;"><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;width:80px;font-size:11px;color:#64748b;font-weight:600;">时机点</th><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;width:140px;font-size:11px;color:#64748b;font-weight:600;">触发事件</th><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;color:#64748b;font-weight:600;">写入数据</th></tr></thead>
                             <tbody>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T1</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">车辆入库</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">提车费100元、入唯普库时间、入库地点、提车人、提车类型</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T1</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">车辆首次入唯普库</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">提车费100元、入唯普库时间、入库地点、提车人、提车类型</td></tr>
                                 <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T2</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">检测报告过审</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">检测成本（省内85/省外120）、检测员、确认日期</td></tr>
                                 <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">—</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">数据查询成功</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">数据成本（维保/出险/电池等查询费用，查询成功后触发）</td></tr>
                                 <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T3</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">成交付款清分后</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">成交价、合同价、起拍价、交易总毛利、各方毛利（唯普/唯普云/汇和/机拍）、评估费、销售成本、收购车成本、业务合作服务费</td></tr>
                                 <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T4</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">交付型出库</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">现场交付成本150元、现场交付部门</td></tr>
                                 <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T5</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">过户资料回收</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">现场过户成本350元（过户费≠0时）、空中交付成本50元（车辆不在服务中心库/唯普库时）、过户部门、空中交付跟进人</td></tr>
                                 <tr><td style="padding:7px 12px;font-weight:600;color:#dc2626;">T6</td><td style="padding:7px 12px;color:#475569;">售后执行完成</td><td style="padding:7px 12px;color:#475569;">冲正行：仅冲回交易总毛利、各方毛利；所有成本项不做冲正。写入售后原因、责任方、是否豁免</td></tr>
+                                <tr><td style="padding:7px 12px;font-weight:600;color:#1e40af;">—</td><td style="padding:7px 12px;color:#475569;">垫款已全部回款</td><td style="padding:7px 12px;color:#475569;">再次写入垫款利息</td></tr>
                             </tbody>
                         </table>
                         <h3 style="font-size:14px;font-weight:700;margin-bottom:14px;color:#0f172a;">📚 字段含义 <span style="font-size:13px;font-weight:500;color:#dc2626;margin-left:12px;">（纯解释，同"绩效表"-"指标含义"，功能上线不用展示此tab）</span></h3>
@@ -378,10 +394,10 @@ const fieldDefs=[
 ['VIN 码','车辆识别代号，17 位'],
 ['VID','唯普系统内部车辆 ID'],
 ['合同类型','委拍 或 收购'],
-['关键事件','数据写入时机点：已入库→检测过审→数据查询→已清分→现场交付→空中交付→现场过户→售后退车/售后不退车'],
-['责任方','售后时的责任归属部门(仅取值到部门，eg.车源生态部)'],
+['关键事件','数据写入时机点：已入库→检测过审→数据查询→已清分→现场交付→空中交付→现场过户→售后退车/售后不退车\\n1天发生多个时机触发（非售后执行类），展示最新的关键事件'],
+['责任方','售后时的责任归属部门(仅取值到部门，eg.车源生态部)；如有多个责任方展示多个责任方；无责任方则展示"-"'],
 ['责任人','买家带出买家姓名；非买家若售后有填写责任人，则带出责任人（多个带出多个）'],
-['售后金额','取值逻辑：售后列表该车辆对应"唯普+汇和+唯普云+机拍"的售后金额汇总<br><br><div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:12px 14px;margin-top:6px;"><div style="font-size:12px;font-weight:700;color:#0f172a;margin-bottom:8px;">📷 售后信息 — 截图示例</div><div style="font-size:11.5px;color:#475569;line-height:1.6;margin-bottom:10px;"><b>基本信息：</b>车牌：鄂AK721Z；成交日期：2026-03-12；门店：武汉市盛世王朝汽车销售有限公司东西湖区分公司-比亚迪；业务员：叶升（专职查验）；区域经理：黄何；买受人：万岭<br><b>情况说明：</b>买受人提出遮阳帘掉落，发动机异响，提出退车或者补偿3000元的诉求。经复核，该车网页天窗遮阳帘卡滞，有些摆锈，但并无客户视频展示的程度，但不排除后续有掉落的险，发动机并无发现异常，驳回买家。由于该客户2025年刚注册过来，对平台规则不太熟悉，采取适度维护的手段撮合成交，申请该车给予客户优惠500元，后续申请300元优惠券用于下台车购车优惠。<br><b>处理方案：</b>现申请该车给予客户优惠500元，撮合成交，后续申请300元优惠券用于下台车购车优惠，请领导审批</div><table style="border-collapse:collapse;width:100%;font-size:12px;margin-top:6px;"><thead><tr style="background:#f1f5f9;"><th style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;font-weight:600;"></th><th style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;font-weight:600;">原应收/应付(元)</th><th style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;font-weight:600;">售后金额(元)</th><th style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;font-weight:600;">新应收/应付(元)</th></tr></thead><tbody><tr><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">买家</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">-53,200</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;color:#dc2626;font-weight:600;">500</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">-52,700</td></tr><tr><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">门店</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">52,200</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">0</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">52,200</td></tr><tr><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">中间商</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">0</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">0</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">0</td></tr><tr><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;border:2px solid #dc2626;font-weight:600;">唯普</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">1,000</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;color:#dc2626;font-weight:600;border:2px solid #dc2626;">-500</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">500</td></tr></tbody></table><div style="font-size:11px;color:#64748b;margin-top:6px;">↑ 售后金额 = 唯普(-500) + 汇和(0) + 唯普云(0) + 机拍(0) = <b style="color:#dc2626;">-500</b></div></div>'],
+['售后金额','取值逻辑：<br><b>机拍门店：</b>取门店售后金额 + 唯普售后金额 + 唯普云售后金额<br><b>非机拍门店：</b>取唯普售后金额 + 唯普云售后金额 + 汇和售后金额<br><br><span style="color:#dc2626;font-weight:600;">机拍门店：机动车拍卖 @红姐</span><br><span style="color:#dc2626;font-weight:600;">汇和：门店子垫款门店，若发生亏损，如果纳入到门店的亏损，是否也纳入售后金额？@汇和财务</span><br><br><div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:12px 14px;margin-top:6px;"><div style="font-size:12px;font-weight:700;color:#0f172a;margin-bottom:8px;">📷 售后信息 — 截图示例</div><div style="font-size:11.5px;color:#475569;line-height:1.6;margin-bottom:10px;"><b>基本信息：</b>车牌：鄂AK721Z；成交日期：2026-03-12；门店：武汉市盛世王朝汽车销售有限公司东西湖区分公司-比亚迪；业务员：叶升（专职查验）；区域经理：黄何；买受人：万岭<br><b>情况说明：</b>买受人提出遮阳帘掉落，发动机异响，提出退车或者补偿3000元的诉求。经复核，该车网页天窗遮阳帘卡滞，有些摆锈，但并无客户视频展示的程度，但不排除后续有掉落的险，发动机并无发现异常，驳回买家。由于该客户2025年刚注册过来，对平台规则不太熟悉，采取适度维护的手段撮合成交，申请该车给予客户优惠500元，后续申请300元优惠券用于下台车购车优惠。<br><b>处理方案：</b>现申请该车给予客户优惠500元，撮合成交，后续申请300元优惠券用于下台车购车优惠，请领导审批</div><table style="border-collapse:collapse;width:100%;font-size:12px;margin-top:6px;"><thead><tr style="background:#f1f5f9;"><th style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;font-weight:600;"></th><th style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;font-weight:600;">原应收/应付(元)</th><th style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;font-weight:600;">售后金额(元)</th><th style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;font-weight:600;">新应收/应付(元)</th></tr></thead><tbody><tr><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">买家</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">-53,200</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;color:#dc2626;font-weight:600;">500</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">-52,700</td></tr><tr><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">门店</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">52,200</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">0</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">52,200</td></tr><tr><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">中间商</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">0</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">0</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">0</td></tr><tr><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;border:2px solid #dc2626;font-weight:600;">唯普</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">1,000</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;color:#dc2626;font-weight:600;border:2px solid #dc2626;">-500</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">500</td></tr></tbody></table><div style="font-size:11px;color:#64748b;margin-top:6px;">↑ 售后金额 = 唯普(-500) + 汇和(0) + 唯普云(0) + 机拍(0) = <b style="color:#dc2626;">-500</b></div></div>'],
 ['情况说明','字段取值售后列表-"详情"（基本信息、情况说明、处理方案）'],
 ['清分日期','订单清分完成日期（yyyy-mm-dd）'],
 ['成交价','拍卖成交价格'],
@@ -393,12 +409,12 @@ const fieldDefs=[
 ['评估师','车辆对应门店评估师'],
 ['区域经理','车辆对应城市经理'],
 ['副部长','大区负责人，BMS是否有此信息字段，若现状系统未维护则不提供'],
-['事业部','车辆归属门店的上级事业部'],
+['事业部','同财务收益明细表中的"事业部"字段'],
 ['入唯普库时间','T1 车辆首次入唯普库(服务中心库)时间'],
 ['入库地点','T1 入库的仓库名称(不需要分区,eg.白云服务中心1库)'],
 ['提车费','T1 入库 100 元 / 台，同 VIN 仅计一次'],
 ['提车人','收购车送车入库的送车人姓名；\\n提车助手小程序中将车辆送入唯普库的人'],
-['提车类型','自提（自己送车、他人送车中送车人姓名和手机号是唯普内部员工）或第三方（他人送车）'],
+['提车类型','自提和第三方；自提定义："自己送车"；或"他人送车，送车人手机号在评估师名单中存在"'],
 ['检测成本','T2检测单过审后计入：省内 85 / 省外 120\\n省内定义：BMS门店地址在广东省的，属于省内\\n省外定义：BMS门店地址不在广东省的，属于省外'],
 ['检测员','执行检测的人员'],
 ['数据成本','查询成功后触发（维保 / 出险 26 元 / 电池等）'],
@@ -411,8 +427,8 @@ const fieldDefs=[
 ['车辆延保费','T3订单清分后计入，车辆延保服务费'],
 ['整备服务费','T3订单清分后计入，车辆整备服务费'],
 ['业务合作服务费','T3 订单清分后计入，同经管报表"业务合作服务费"字段\\n售后退车场景，同车(同vin)后续不再计算'],
-['分成','同财务系统"分成"字段；（待技术确认指标值）'],
-['销售成本','T3 订单清分后计入，按车源类型分档；功能上线后，人资未给新的数据，就按如下标准写入\\n省外委拍 70：委拍合同车源且BMS门店地址不在广东省\\n省内委拍 35：委拍合同车源且BMS门店地址在广东省\\n收购业务 15：收购合同的车源\\n政企业务 30：政企拍卖车源\\n批量车报废业务 5：报废车车源'],
+['分成','同财务系统"分成"字段'],
+['销售成本','T3 订单清分后计入，按车源类型分档；功能上线后，人资未给新的数据，就按如下标准写入\\n省外委拍 70：委拍合同车源且BMS门店地址不在广东省\\n省内委拍 35：委拍合同车源且BMS门店地址在广东省\\n收购业务 15：收购合同的车源\\n政企业务 30：政企系统上传的车辆（包含政企专场车辆，若政企系统上传的车放到竞价大厅也纳入计算）\\n批量报废车 5：若政企系统中的车辆为"报废处理"，则按5元/台计算报废车成本；若系统无法区分报废处理，则该数据无法自动获取，需人工补录或确认'],
 ['收购车成本','T3 订单清分后，非汽贸收购车，按车价分档；功能上线后，人资未给新的数据，就按如下标准写入\\n0＜收购合同价≤30,000元；收购车成本=1500元/台\\n30,000元＜收购合同价≤50,000元，收购车成本=1800元/台\\n50,000元＜收购合同价≤100,000元，收购车成本=2000元/台\\n100,000元＜收购合同价，收购车成本=收购合同价*2.5%\\n报废车收购合同，收购车成本：500元/台'],
 ['垫款利息','收购车垫款产生的利息，同经管报表"垫款利息"字段\\n不论是否售后退车，都不做冲正'],
 ['政企场地费','人工核算，占位字段'],
@@ -577,8 +593,15 @@ function renderDashboard(){
         </div>
 `;
 }
+let curPage=1,pageSize=20;
+function changePageSize(){pageSize=+document.getElementById('pageSizeSelect').value;curPage=1;renderTable();}
+function goPage(d){const maxP=Math.ceil(rows.length/pageSize);curPage=Math.max(1,Math.min(maxP,curPage+d));renderTable();}
 function renderTable(){
-    document.getElementById('tableBody').innerHTML=rows.map((r,i)=>`
+    const maxP=Math.ceil(rows.length/pageSize)||1;
+    if(curPage>maxP)curPage=maxP;
+    const start=(curPage-1)*pageSize,end=Math.min(start+pageSize,rows.length);
+    const pageRows=rows.slice(start,end);
+    document.getElementById('tableBody').innerHTML=pageRows.map((r,j)=>{const i=start+j;return `
         <tr class="${r.aftersale!=='无'&&r.aftersale?'aftersale':''}">
             <td><span class="plate">${r.plate}</span></td>
             <td style="font-family:var(--mono);font-size:11px">${r.vin}</td><td style="font-family:var(--mono);font-size:11px">${r.vid}</td>
@@ -613,7 +636,21 @@ function renderTable(){
             <td class="${profitClass(r.perfProfit)}" style="font-size:13px">${fmt(r.perfProfit)}</td>
             <td class="num muted">${r.perfSalary?fmt(r.perfSalary):'<span style="color:#94a3b8">人工核算</span>'}</td>
             <td><div style="display:flex;gap:4px"><button class="act-btn" onclick="openDetail(${i})">详情</button></div></td>
-        </tr>`).join('');
+        </tr>`}).join('');
+    document.getElementById('pageInfo').textContent=`第 ${curPage}/${maxP} 页，共 ${rows.length} 条`;
+    // summary
+    const s={totalProfit:0,weipuProfit:0,weipuyunProfit:0,huiheProfit:0,jipaProfit:0,perfProfit:0,pickupFee:0,inspCost:0,dataCost:0,salesCost:0,deliveryCost:0,airDeliveryCost:0,transferCost:0,bizFee:0,loanInterest:0};
+    rows.forEach(r=>{for(const k in s)s[k]+=(r[k]||0)});
+    document.getElementById('summaryBar').innerHTML=`<span>汇总（全部 ${rows.length} 条）：</span>`+
+        `<span>交易总毛利: ${s.totalProfit.toLocaleString()}</span>`+
+        `<span>绩效毛利: ${s.perfProfit.toLocaleString()}</span>`+
+        `<span>唯普: ${s.weipuProfit.toLocaleString()}</span>`+
+        `<span>唯普云: ${s.weipuyunProfit.toLocaleString()}</span>`+
+        `<span>汇和: ${s.huiheProfit.toLocaleString()}</span>`+
+        `<span>机拍: ${s.jipaProfit.toLocaleString()}</span>`+
+        `<span>提车费: ${s.pickupFee.toLocaleString()}</span>`+
+        `<span>检测: ${s.inspCost.toLocaleString()}</span>`+
+        `<span>销售: ${s.salesCost.toLocaleString()}</span>`;
 }
 function openDetail(idx){
     const r=rows[idx];
