@@ -233,8 +233,9 @@
                 <div><button class="btn" style="background:#dc2626;color:#fff;" onclick="document.getElementById('frReqNote').style.display=document.getElementById('frReqNote').style.display==='none'?'block':'none'">需求点</button></div>
             </div>
             <div id="frReqNote" style="display:none;padding:12px 16px;background:#fff5f5;border-bottom:1px solid #fca5a5;font-size:12.5px;color:#dc2626;line-height:1.8;">
-                <b>汇和收益调整</b>：收益明细中涉及汇和收益的字段需关注取值逻辑变更。<br>
-                <b>集团收益</b>（标黄列）：集团收益 = 汇和收益。
+                ① <b>集团收益</b>（标黄列）：集团收益 = 汇和收益，取值逻辑更改。<br>
+                ② <b>毛利(唯普+唯普云+机拍)</b>（标黄列）：取值逻辑修改，原"毛利(唯普+唯普云)"改为"毛利(唯普+唯普云+机拍)"，取值加上机拍毛利。<br>
+                ③ <b>新增机拍毛利字段</b>（标红列）：取值 = 经管报表"机拍毛利"。
             </div>
             <div class="table-outer"><table id="financeRevenueTable"></table></div>
             <div class="table-footer"><div style="color:#000;font-size:11px;">收益明细</div><div id="financeRevenueCount"></div></div>
@@ -792,7 +793,7 @@ function hideFinanceRevenue(){
 function renderFinanceRevenueTable(){
   const t=document.getElementById('financeRevenueTable');
   const totalCols=financeRevenueCols.length;
-  const yellowKeys=['f16'];
+  const yellowKeys=['f16','f19'];
   let h='<thead><tr>';
   let idx=0;
   financeRevenueGroups.forEach(g=>{
