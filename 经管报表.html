@@ -85,7 +85,7 @@
             <div class="sidebar-section-label">报表管理</div>
             <div class="sidebar-item active" onclick="backToReport(this)"><span class="icon">📈</span> 经管报表</div>
             <div class="sidebar-item" onclick="showCostDetailFromSidebar(this)"><span class="icon">📋</span> 费用明细</div>
-            <div class="sidebar-item" onclick="location.href='人资绩效考核表_第2步_完整界面设计.html'"><span class="icon">🚗</span> 车源绩效表</div>
+            <div class="sidebar-item" onclick="location.href='人资绩效考核表_第2步_完整界面设计.html'"><span class="icon">🚗</span> 车源绩效看板</div>
             <div class="sidebar-item" onclick="showFinanceRevenueFromSidebar(this)"><span class="icon">💰</span> 财务系统-收益明细</div>
         </div>
     </div>
@@ -141,8 +141,8 @@
                     <h3>3. 车辆费用明细表</h3>
                     <p><strong>① 新增费用项展示</strong></p>
                     <ul>
-                        <li>新增 <span class="new-field">「销售成本」</span>、<span class="new-field">「收购车成本」</span> 字段展示；计算规则见「车源绩效表」；</li>
-                        <li>新增 <span class="new-field">「提车费」</span>、<span class="new-field">「空中交付成本」</span>、<span class="new-field">「现场交付成本」</span>、<span class="new-field">「现场过户成本」</span>；费用系统实时计算，规则同绩效表同字段；</li>
+                        <li>新增 <span class="new-field">「销售成本」</span>、<span class="new-field">「收购车成本」</span> 字段展示；计算规则见「车源绩效看板」；</li>
+                        <li>新增 <span class="new-field">「提车费」</span>、<span class="new-field">「空中交付成本」</span>、<span class="new-field">「现场交付成本」</span>、<span class="new-field">「现场过户成本」</span>；费用系统实时计算，规则同绩效看板同字段；</li>
                         <li>新增字段位置：放到「收购车成本」后面，「其他」前面；</li>
                         <li>总费用成本项：取值加上销售成本、收购车成本、提车费、空中交付成本、现场交付成本、现场过户成本金额；</li>
                         <li>导出报表：增加以上新增字段处理；导出模板对应新增费用项。</li>
@@ -171,7 +171,7 @@
                         <li>政企场地费 = 0，人工计入；</li>
                         <li>合作服务费，仲裁退车改规则（同VIN仅收一次，退车不冲正）；</li>
                         <li>交付成本 = 0（或作废）；</li>
-                        <li>新增费用项：提车费、空中交付成本、现场交付成本、现场过户成本；这些费用系统实时计算，规则同绩效表同字段。</li>
+                        <li>新增费用项：提车费、空中交付成本、现场交付成本、现场过户成本；这些费用系统实时计算，规则同绩效看板同字段。</li>
                     </ul>
                     <p><strong>② 导入模板</strong></p>
                     <ul>
@@ -209,7 +209,7 @@
                             3、合作服务费，仲裁退车改规则<br>
                             4、交付成本=0（或作废）<br>
                             5、新增 提车费、空中交付成本、现场交付成本、现场过户成本<br>
-                            <span style="font-weight:600;">这些费用系统实时计算，规则同绩效表同字段</span>
+                            <span style="font-weight:600;">这些费用系统实时计算，规则同绩效看板同字段</span>
                         </div>
                     </div>
                     <div style="border:2px solid #dc2626;border-radius:8px;padding:14px;">
@@ -274,8 +274,8 @@
           <tr><td style="padding:8px 10px;border:1px solid #e2e8f0;font-weight:600;background:#fef3c7">业务合作服务费</td><td style="padding:8px 10px;border:1px solid #e2e8f0;white-space:pre-line;line-height:1.6">同VIN码仅收取一次，订单清分后收取
 售后退车不冲正；同车再次上拍不再收取
 （具体集团费率见导入模版）</td><td style="padding:8px 10px;border:1px solid #e2e8f0"><span style="background:#fef3c7;padding:2px 6px;border-radius:3px;font-size:11px">逻辑变动</span></td></tr>
-          <tr><td style="padding:8px 10px;border:1px solid #e2e8f0;font-weight:600;background:#fee2e2;color:#991b1b">销售成本</td><td style="padding:8px 10px;border:1px solid #e2e8f0">计算规则见「车源绩效表」；与订单清算挂钩，清算后立即计算</td><td style="padding:8px 10px;border:1px solid #e2e8f0"><span style="background:#fee2e2;color:#991b1b;padding:2px 6px;border-radius:3px;font-size:11px;font-weight:600">新增</span></td></tr>
-          <tr><td style="padding:8px 10px;border:1px solid #e2e8f0;font-weight:600;background:#fee2e2;color:#991b1b">收购车成本</td><td style="padding:8px 10px;border:1px solid #e2e8f0">计算规则见「车源绩效表」；与订单清算挂钩，清算后立即计算</td><td style="padding:8px 10px;border:1px solid #e2e8f0"><span style="background:#fee2e2;color:#991b1b;padding:2px 6px;border-radius:3px;font-size:11px;font-weight:600">新增</span></td></tr>
+          <tr><td style="padding:8px 10px;border:1px solid #e2e8f0;font-weight:600;background:#fee2e2;color:#991b1b">销售成本</td><td style="padding:8px 10px;border:1px solid #e2e8f0">计算规则见「车源绩效看板」；与订单清算挂钩，清算后立即计算</td><td style="padding:8px 10px;border:1px solid #e2e8f0"><span style="background:#fee2e2;color:#991b1b;padding:2px 6px;border-radius:3px;font-size:11px;font-weight:600">新增</span></td></tr>
+          <tr><td style="padding:8px 10px;border:1px solid #e2e8f0;font-weight:600;background:#fee2e2;color:#991b1b">收购车成本</td><td style="padding:8px 10px;border:1px solid #e2e8f0">计算规则见「车源绩效看板」；与订单清算挂钩，清算后立即计算</td><td style="padding:8px 10px;border:1px solid #e2e8f0"><span style="background:#fee2e2;color:#991b1b;padding:2px 6px;border-radius:3px;font-size:11px;font-weight:600">新增</span></td></tr>
         </tbody>
       </table>
       <div style="margin-top:16px;padding:12px;background:#f0f9ff;border-radius:8px;font-size:12px;color:#0369a1">
@@ -423,7 +423,7 @@ const revenueData=[
 {c0:1707302294,c1:'3-江苏-南京',c2:'江苏-张家港',c3:'张家港市联发汽车贸易有限公司',c4:450178,c5:'2026-03-01 22:25:53',c6:'订单成交',c7:'苏UHJ298',c8:'L6T7824S7GN227568',c9:'600.00',c10:'0.00',c11:'0.00',c12:'0.00',c13:'0.00',c14:'600.00'}
 ];
 
-const costCols=[{k:'c0',l:'vid'},{k:'c1',l:'车牌'},{k:'c2',l:'VIN'},{k:'c3',l:'所属集团'},{k:'c4',l:'所属大区'},{k:'c5',l:'所属小区'},{k:'c6',l:'门店全称'},{k:'c7',l:'总店'},{k:'c8',l:'委拍/收购'},{k:'c9',l:'查验次数'},{k:'c10',l:'检测成本(单位：元)',cls:'changed',tip:'原"查验成本"，已更名'},{k:'c11',l:'垫款利息(单位：元)'},{k:'c12',l:'交付类型'},{k:'c13',l:'是否过户'},{k:'c14',l:'交付过户成本(单位：元)',cls:'changed',tip:'字段保留，功能上线后字段值=0'},{k:'c15',l:'政企场地费'},{k:'c16',l:'业务合作服务费(单位：元)',cls:'changed',tip:'逻辑变动：同VIN码仅收取一次，清分后收取；售后退车不冲正；同车再次上拍不再收取'},{k:'c17',l:'维保出险(单位：元)'},{k:'cn1',l:'销售成本(单位：元)',cls:'new',tip:'新增字段：计算规则见车源绩效表'},{k:'cn2',l:'收购车成本(单位：元)',cls:'new',tip:'新增字段：计算规则见车源绩效表'},{k:'cn3',l:'提车费(单位：元)',cls:'new',tip:'新增字段：费用系统实时计算'},{k:'cn4',l:'空中交付成本(单位：元)',cls:'new',tip:'新增字段：费用系统实时计算'},{k:'cn5',l:'现场交付成本(单位：元)',cls:'new',tip:'新增字段：费用系统实时计算'},{k:'cn6',l:'现场过户成本(单位：元)',cls:'new',tip:'新增字段：费用系统实时计算'},{k:'c18',l:'其他(单位：元)'},{k:'c19',l:'总费用成本(单位：元)',tip:'取值已加上销售成本、收购车成本、提车费、空中交付成本、现场交付成本、现场过户成本金额'},{k:'c20',l:'成交时间（最近一次）'},{k:'c21',l:'清算时间（最近一次）'},{k:'c22',l:'拍卖方式（最近一次）'},{k:'c23',l:'毛利调整\n调账(单位：元)'}];
+const costCols=[{k:'c0',l:'vid'},{k:'c1',l:'车牌'},{k:'c2',l:'VIN'},{k:'c3',l:'所属集团'},{k:'c4',l:'所属大区'},{k:'c5',l:'所属小区'},{k:'c6',l:'门店全称'},{k:'c7',l:'总店'},{k:'c8',l:'委拍/收购'},{k:'c9',l:'查验次数'},{k:'c10',l:'检测成本(单位：元)',cls:'changed',tip:'原"查验成本"，已更名'},{k:'c11',l:'垫款利息(单位：元)'},{k:'c12',l:'交付类型'},{k:'c13',l:'是否过户'},{k:'c14',l:'交付过户成本(单位：元)',cls:'changed',tip:'字段保留，功能上线后字段值=0'},{k:'c15',l:'政企场地费'},{k:'c16',l:'业务合作服务费(单位：元)',cls:'changed',tip:'逻辑变动：同VIN码仅收取一次，清分后收取；售后退车不冲正；同车再次上拍不再收取'},{k:'c17',l:'维保出险(单位：元)'},{k:'cn1',l:'销售成本(单位：元)',cls:'new',tip:'新增字段：计算规则见车源绩效看板'},{k:'cn2',l:'收购车成本(单位：元)',cls:'new',tip:'新增字段：计算规则见车源绩效看板'},{k:'cn3',l:'提车费(单位：元)',cls:'new',tip:'新增字段：费用系统实时计算'},{k:'cn4',l:'空中交付成本(单位：元)',cls:'new',tip:'新增字段：费用系统实时计算'},{k:'cn5',l:'现场交付成本(单位：元)',cls:'new',tip:'新增字段：费用系统实时计算'},{k:'cn6',l:'现场过户成本(单位：元)',cls:'new',tip:'新增字段：费用系统实时计算'},{k:'c18',l:'其他(单位：元)'},{k:'c19',l:'总费用成本(单位：元)',tip:'取值已加上销售成本、收购车成本、提车费、空中交付成本、现场交付成本、现场过户成本金额'},{k:'c20',l:'成交时间（最近一次）'},{k:'c21',l:'清算时间（最近一次）'},{k:'c22',l:'拍卖方式（最近一次）'},{k:'c23',l:'毛利调整\n调账(单位：元)'}];
 const costData=[
 {c0:1707280639,c1:'粤AA82670',c2:'LNAA3AA17M5474598',c3:'昊城汽车',c4:'1-广东-广州',c5:'广东-广州',c6:'HC广州骏昊城',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'21.90',cn3:'0.00',cn4:'0.00',cn5:'0.00',cn6:'0.00',c18:'0.00',c19:'21.90',c20:'',c21:'',c22:'',c23:'0.00'},
 {c0:1707283717,c1:'粤A6N5J6',c2:'1FM5K8FH9HGD69370',c3:'其他集团门店',c4:'1-广东-广州',c5:'广东-广州',c6:'广州市华驰福威汽车销售服务有限公司-收购',c7:'',c8:'',c9:0,c10:'0.00',c11:'0.00',c12:'',c13:'否',c14:'0.00',c15:'0.00',c16:'0.00',c17:'24.00',cn3:'0.00',cn4:'0.00',cn5:'0.00',cn6:'0.00',c18:'0.00',c19:'24.00',c20:'',c21:'',c22:'',c23:'0.00'},

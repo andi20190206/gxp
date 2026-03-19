@@ -163,14 +163,14 @@
             <div class="sidebar-section-label">报表管理</div>
             <div class="sidebar-item" onclick="location.href='经管报表.html'"><span class="icon">📈</span> 经管报表</div>
             <div class="sidebar-item" onclick="location.href='经管报表.html#costDetail'"><span class="icon">📋</span> 费用明细</div>
-            <div class="sidebar-item active" onclick="setActive(this)"><span class="icon">🚗</span> 车源绩效表</div>
+            <div class="sidebar-item active" onclick="setActive(this)"><span class="icon">🚗</span> 车源绩效看板</div>
             <div class="sidebar-item" onclick="location.href='经管报表.html#financeRevenue'"><span class="icon">💰</span> 财务系统-收益明细</div>
         </div>
     </div>
     <!-- MAIN -->
     <div class="main">
         <div class="topbar">
-            <div class="topbar-left"><div class="topbar-title">车源绩效考核表</div><div class="topbar-breadcrumb"><span>报表管理</span><span class="sep">›</span><span>车源绩效表</span></div></div>
+            <div class="topbar-left"><div class="topbar-title">车源绩效看板</div><div class="topbar-breadcrumb"><span>报表管理</span><span class="sep">›</span><span>车源绩效看板</span></div></div>
             <div class="topbar-right"><span style="font-size:12px;color:var(--text-secondary);margin-right:8px;">分管领导：韩立</span><button class="topbar-btn" onclick="logout()">退出</button></div>
         </div>
         <div class="page">
@@ -178,7 +178,7 @@
             <div class="tabs-wrap">
                 <div class="tabs-header">
                     <button class="tab-btn active" onclick="switchTab(this,'tabDashboard')">数据看板</button>
-                    <button class="tab-btn" onclick="switchTab(this,'tabPerf')">绩效表</button>
+                    <button class="tab-btn" onclick="switchTab(this,'tabPerf')">绩效看板</button>
                     <button class="tab-btn" onclick="switchTab(this,'tabGuide')">使用指南</button>
                     <button class="tab-btn" onclick="switchTab(this,'tabGlossary')">字段含义</button>
                     <button class="tab-btn" onclick="switchTab(this,'tabReqNotes')">需求补充说明</button>
@@ -188,9 +188,9 @@
                 <div class="tab-pane active" id="tabDashboard" style="overflow-y:auto;padding:20px;">
                     <div style="max-width:1100px;" id="dashboardContent"></div>
                 </div>
-                <!-- 绩效表 -->
+                <!-- 绩效看板 -->
                 <div class="tab-pane" id="tabPerf">
-                    <!-- Filter inside 绩效表 tab -->
+                    <!-- Filter inside 绩效看板 tab -->
                     <div class="filter-card" style="border-radius:0;border-left:none;border-right:none;border-top:none;">
                         <div class="filter-head" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="toggleFilter()"><div class="filter-head-title">筛选条件</div><span id="filterToggle" style="font-size:12px;color:#94a3b8;transition:transform .2s;">▶</span></div>
                         <div class="filter-body" id="filterBody" style="display:none;">
@@ -310,7 +310,7 @@
                                 <tr><td style="padding:7px 12px;font-weight:600;color:#1e40af;">—</td><td style="padding:7px 12px;color:#475569;">垫款已全部回款</td><td style="padding:7px 12px;color:#475569;">再次写入垫款利息</td></tr>
                             </tbody>
                         </table>
-                        <h3 style="font-size:14px;font-weight:700;margin-bottom:14px;color:#0f172a;">📚 字段含义 <span style="font-size:13px;font-weight:500;color:#dc2626;margin-left:12px;">（纯解释，同"绩效表"-"指标含义"，功能上线不用展示此tab）</span></h3>
+                        <h3 style="font-size:14px;font-weight:700;margin-bottom:14px;color:#0f172a;">📚 字段含义 <span style="font-size:13px;font-weight:500;color:#dc2626;margin-left:12px;">（纯解释，同"绩效看板"-"指标含义"，功能上线不用展示此tab）</span></h3>
                         <table style="white-space:normal;width:100%;border-collapse:collapse;font-size:12.5px;">
                             <thead><tr style="background:#f8fafc;"><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;width:140px;font-size:11px;color:#64748b;font-weight:600;">字段名</th><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;color:#64748b;font-weight:600;">含义说明</th></tr></thead>
                             <tbody id="glossaryBody"></tbody>
@@ -373,11 +373,11 @@
                 </div>
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:12px 16px;">
                     <div style="font-weight:700;color:#1e40af;margin-bottom:6px;">2. 门店角色挂靠</div>
-                    <div>每个门店会挂：<span style="font-weight:600;">总监/副总监</span>、<span style="font-weight:600;">经理/副经理</span>、<span style="font-weight:600;">业务员</span>。<br><span style="font-weight:600;">绩效管理员</span>角色，全部数据可见，通常用于胡总、惠总、飞哥使用。<br>其他人，绩效表中能看到什么数据，对应数据看板中就看到名下对应的数据。</div>
+                    <div>每个门店会挂：<span style="font-weight:600;">总监/副总监</span>、<span style="font-weight:600;">经理/副经理</span>、<span style="font-weight:600;">业务员</span>。<br><span style="font-weight:600;">绩效管理员</span>角色，全部数据可见，通常用于胡总、惠总、飞哥使用。<br>其他人，绩效看板中能看到什么数据，对应数据看板中就看到名下对应的数据。</div>
                 </div>
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:12px 16px;">
                     <div style="font-weight:700;color:#1e40af;margin-bottom:6px;">3. 数据展示逻辑</div>
-                    <div>绩效表中能看到什么数据，对应数据看板中就看到名下对应的数据。<br><span style="color:#dc2626;font-weight:500;">如果门店分布在2个区域，则展示2个区域内关联的门店数据。</span></div>
+                    <div>绩效看板中能看到什么数据，对应数据看板中就看到名下对应的数据。<br><span style="color:#dc2626;font-weight:500;">如果门店分布在2个区域，则展示2个区域内关联的门店数据。</span></div>
                 </div>
             </div>
             <div style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:10px;border-left:3px solid #1e40af;padding-left:8px;">二、统计周期</div>
@@ -461,7 +461,7 @@ const fieldDefs=[
 ['分成','同财务系统"分成"字段'],
 ['销售成本','T3 订单清分后计入，按车源类型分档；功能上线后，人资未给新的数据，就按如下标准写入\\n省外委拍 70：委拍合同车源且BMS门店地址不在广东省\\n省内委拍 35：委拍合同车源且BMS门店地址在广东省\\n收购业务 15：收购合同的车源\\n政企业务 30：政企系统上传的车辆（包含政企专场车辆，若政企系统上传的车放到竞价大厅也纳入计算）\\n批量报废车 5：若政企系统中的车辆为"报废处理"，则按5元/台计算报废车成本；若系统无法区分报废处理，则该数据无法自动获取，需人工补录或确认'],
 ['收购车成本','T3 订单清分后，非汽贸收购车，按车价分档；功能上线后，人资未给新的数据，就按如下标准写入\\n0＜收购合同价≤30,000元；收购车成本=1500元/台\\n30,000元＜收购合同价≤50,000元，收购车成本=1800元/台\\n50,000元＜收购合同价≤100,000元，收购车成本=2000元/台\\n100,000元＜收购合同价，收购车成本=收购合同价*2.5%\\n报废车收购合同，收购车成本：500元/台'],
-['垫款利息','订单清分完成后，系统计算垫款利息。清分完成的状态分为两种：\\n<b>垫款全部回款：</b>垫款本金已全额回收，系统停止计息\\n<b>垫款部分回款：</b>仍在计息中，直至财务人工点击【回款】结束计算\\n当"垫款全部回款"发生时，系统将再次重新计算垫款利息。新计入的垫款利息 = 垫款利息 - 上次已计算的垫款利息\\n不论是否售后退车，都不做冲正\\n\\n<b>举例1：</b>1月20日：车辆A 垫款¥10,000，订单成交¥12,000，回款¥10,000，垫款利息¥50 → 全部回款，不再计息\\n<b>举例2：</b>1月20日：车辆B 垫款¥10,000，订单成交¥8,000，回款¥8,000，垫款利息¥50 → 部分回款，继续按余额¥2,000计息。1月31日：财务人工执行车辆B回款操作，垫款全部结束，最终利息¥55\\n\\n<div style="margin-top:8px;"><b>绩效表展示如下：</b></div><table style="border-collapse:collapse;width:100%;font-size:12px;margin-top:4px;"><thead><tr style="background:#f1f5f9;"><th style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;font-weight:600;">日期</th><th style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;font-weight:600;">车辆</th><th style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;font-weight:600;">垫款利息</th></tr></thead><tbody><tr><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">1.20</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">车辆A</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">¥50</td></tr><tr><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">1.20</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">车辆B</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">¥50</td></tr><tr><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">1.31</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">车辆B</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">¥55</td></tr></tbody></table><div style="margin-top:8px;"><b>若财务跨月执行人工回款（如2月3日）：</b></div><table style="border-collapse:collapse;width:100%;font-size:12px;margin-top:4px;"><thead><tr style="background:#f1f5f9;"><th style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;font-weight:600;">日期</th><th style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;font-weight:600;">车辆</th><th style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;font-weight:600;">垫款利息</th></tr></thead><tbody><tr><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">1.20</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">车辆B</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">¥50</td></tr><tr><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">2.3</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">车辆B</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">¥5</td></tr></tbody></table>'],
+['垫款利息','订单清分完成后，系统计算垫款利息。清分完成的状态分为两种：\\n<b>垫款全部回款：</b>垫款本金已全额回收，系统停止计息\\n<b>垫款部分回款：</b>仍在计息中，直至财务人工点击【回款】结束计算\\n当"垫款全部回款"发生时，系统将再次重新计算垫款利息。新计入的垫款利息 = 垫款利息 - 上次已计算的垫款利息\\n不论是否售后退车，都不做冲正\\n\\n<b>举例1：</b>1月20日：车辆A 垫款¥10,000，订单成交¥12,000，回款¥10,000，垫款利息¥50 → 全部回款，不再计息\\n<b>举例2：</b>1月20日：车辆B 垫款¥10,000，订单成交¥8,000，回款¥8,000，垫款利息¥50 → 部分回款，继续按余额¥2,000计息。1月31日：财务人工执行车辆B回款操作，垫款全部结束，最终利息¥55\\n\\n<div style="margin-top:8px;"><b>绩效看板展示如下：</b></div><table style="border-collapse:collapse;width:100%;font-size:12px;margin-top:4px;"><thead><tr style="background:#f1f5f9;"><th style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;font-weight:600;">日期</th><th style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;font-weight:600;">车辆</th><th style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;font-weight:600;">垫款利息</th></tr></thead><tbody><tr><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">1.20</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">车辆A</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">¥50</td></tr><tr><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">1.20</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">车辆B</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">¥50</td></tr><tr><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">1.31</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">车辆B</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">¥55</td></tr></tbody></table><div style="margin-top:8px;"><b>若财务跨月执行人工回款（如2月3日）：</b></div><table style="border-collapse:collapse;width:100%;font-size:12px;margin-top:4px;"><thead><tr style="background:#f1f5f9;"><th style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;font-weight:600;">日期</th><th style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;font-weight:600;">车辆</th><th style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;font-weight:600;">垫款利息</th></tr></thead><tbody><tr><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">1.20</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">车辆B</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">¥50</td></tr><tr><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">2.3</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">车辆B</td><td style="padding:6px 10px;border:1px solid #cbd5e1;text-align:center;">¥5</td></tr></tbody></table>'],
 ['政企场地费','人工核算，占位字段'],
 ['唯普毛利','归属唯普的毛利，同经管报表"唯普毛利"字段'],
 ['唯普云毛利','归属唯普云的毛利，同经管报表"唯普云毛利"字段'],
@@ -949,7 +949,7 @@ function renderReqNotes(){
     <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
         <div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:10px;">待确认事项</div>
         <div style="display:flex;flex-direction:column;gap:8px;font-size:12.5px;color:#475569;line-height:1.7;">
-            <div>1. 功能上线后，可能组织结构会发生变动：（大小区域变更等）绩效表需按新的架构跑一遍数据</div>
+            <div>1. 功能上线后，可能组织结构会发生变动：（大小区域变更等）绩效看板需按新的架构跑一遍数据</div>
         </div>
     </div>
     <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
@@ -979,7 +979,7 @@ function renderReqNotes(){
             <div>3. <b>合作服务费</b>，仲裁退车改规则</div>
             <div>4. <b>交付成本</b>=0（或作废）</div>
             <div>5. <b>新增</b>：提车费、空中交付成本、现场交付成本、现场过户成本</div>
-            <div style="margin-top:4px;padding-top:4px;border-top:1px dashed #fca5a5;color:#991b1b;font-weight:600;">以上费用系统实时计算，规则同绩效表同字段</div>
+            <div style="margin-top:4px;padding-top:4px;border-top:1px dashed #fca5a5;color:#991b1b;font-weight:600;">以上费用系统实时计算，规则同绩效看板同字段</div>
         </div>
     </div>
     <div style="background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
@@ -1013,7 +1013,7 @@ function selectRegion(r){document.getElementById('regionInput').value=r;document
 function searchSubRegion(val){const box=document.getElementById('subRegionSuggest');if(!selectedRegion){box.style.display='none';return}const subs=regionSubMap[selectedRegion]||[];const hits=val?subs.filter(s=>s.includes(val)):subs;if(!hits.length){box.style.display='none';return}box.innerHTML=hits.map(s=>`<div style="padding:7px 10px;font-size:12px;cursor:pointer;border-bottom:1px solid #f1f5f9;color:#475569;" onmouseover="this.style.background='#f0fdf4'" onmouseout="this.style.background=''" onclick="document.getElementById('subRegionInput').value='${s}';document.getElementById('subRegionSuggest').style.display='none'">${val?s.replace(new RegExp(val,'g'),'<b style=color:#16a34a>'+val+'</b>'):s}</div>`).join('');box.style.display='block'}
 const storeList=['广东广物福恒汽车贸易有限公司','广东广物羊城汽车销售有限公司','广州广物宝骏汽车销售服务有限公司','广东恒远汽车贸易有限公司','广东广物东本汽车贸易有限公司','广州广物盈凯汽车销售有限公司','广东长安汽车销售有限公司','广东君乐汽车贸易有限公司','广东五菱汽车销售服务有限公司','广州广物骏锐汽车销售服务有限公司','广东物通凯骏汽车有限公司','广州福远汽车贸易有限公司','广东物通鸿骏汽车有限公司','佛山市广物福恒汽车贸易有限公司','东莞市广物东捷汽车销售服务有限公司','广东广物骏孚汽车销售服务有限公司','广东物资君豪汽车贸易有限公司','广州广物德远汽车销售服务有限公司','广东广物骏达汽车贸易有限公司','湛江市广物福昌汽车销售服务有限公司','广东物通驭达汽车有限公司','广东广物上联汽车销售服务有限公司'];
 function searchStore(val){const box=document.getElementById('storeSuggest');if(!val||val.length<3){box.style.display='none';return}const hits=storeList.filter(s=>s.includes(val)).slice(0,8);if(!hits.length){box.style.display='none';return}box.innerHTML=hits.map(s=>`<div style="padding:7px 10px;font-size:12px;cursor:pointer;border-bottom:1px solid #f1f5f9;color:#475569;" onmouseover="this.style.background='#f0fdf4'" onmouseout="this.style.background=''" onclick="document.getElementById('storeInput').value='${s}';document.getElementById('storeSuggest').style.display='none'">${s.replace(new RegExp(val,'g'),'<b style=color:#16a34a>'+val+'</b>')}</div>`).join('');box.style.display='block'}
-function exportFile(type){alert(`正在导出 CSV 文件...\n文件名：车源绩效表_${new Date().toISOString().slice(0,10)}.csv`)}
+function exportFile(type){alert(`正在导出 CSV 文件...\n文件名：车源绩效看板_${new Date().toISOString().slice(0,10)}.csv`)}
 function printDetail(){window.print()}
 function logout(){if(confirm('确认退出系统？'))alert('已退出')}
 function showCardDesc(label,desc){
