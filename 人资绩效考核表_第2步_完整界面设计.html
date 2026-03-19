@@ -275,10 +275,13 @@
                         <div style="margin-top:24px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:16px 20px;">
                             <div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:10px;">权限说明</div>
                             <div style="display:flex;flex-direction:column;gap:8px;font-size:12.5px;color:#475569;line-height:1.7;">
-                                <div>• 支持各角色按<b>门店</b>配置权限</div>
-                                <div>• <b>人资</b>需按汇和和非汇和进行分类（汇和垫款门店 + 门店自垫款的12家门店）</div>
-                                <div>• <b>汇和财务</b>所看的内容同"汇和人资"</div>
-                                <div>• <b>业务员、门店总监、城市经理、副部长、部长</b>都是按照门店和事业部来配置的</div>
+                                <div>• <b>绩效管理员</b>：全部数据可见，通常用于胡总、惠总、飞哥使用</div>
+                                <div>• <b>绩效管理汇和人资</b>：汇和垫款车辆 + 门店自垫款车辆</div>
+                                <div>• <b>绩效管理唯普人资</b>：看非汇和人资数据</div>
+                                <div>• <b>绩效管理汇和财务</b>：数据权限 = 汇和人资</div>
+                                <div>• <b>绩效管理唯普财务</b>：数据权限 = 全部数据</div>
+                                <div>• <b>绩效管理评估师</b>：看自己名下关联的门店车辆数据，如果有多个门店关联，展示多个门店数据</div>
+                                <div>• <b>绩效管理xx角色</b>：支持按门店、大小区域、事业部配置，这个角色具体怎么定义由中控配置</div>
                             </div>
                         </div>
                         <div style="margin-top:12px;background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:16px 20px;">
@@ -298,7 +301,7 @@
                             <thead><tr style="background:#f8fafc;"><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;width:80px;font-size:11px;color:#64748b;font-weight:600;">时机点</th><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;width:140px;font-size:11px;color:#64748b;font-weight:600;">触发事件</th><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;color:#64748b;font-weight:600;">写入数据</th></tr></thead>
                             <tbody>
                                 <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T1</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">车辆首次入唯普库</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">提车费100元、入唯普库时间、入库地点、提车人、提车类型</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T2</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">检测报告过审</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">检测成本（省内85/省外120）、检测员、确认日期</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T2</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">检测报告过审</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">检测成本（省内85/省外120）、检测员</td></tr>
                                 <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">—</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">数据查询成功</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">数据成本（维保/出险/电池等查询费用，查询成功后触发）</td></tr>
                                 <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T3</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">成交付款清分后</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">成交价、合同价、起拍价、交易总毛利、各方毛利（唯普/唯普云/汇和/机拍）、评估费、销售成本、收购车成本、业务合作服务费</td></tr>
                                 <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T4</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">交付型出库</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">现场交付成本150元、现场交付部门</td></tr>
@@ -350,7 +353,7 @@
                     <tr style="background:#fafbfc;"><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">绩效毛利</td><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;line-height:1.6;">交易总毛利−所有成本费用项（提车费+检测成本+数据成本+销售成本+政企场地费+收购车成本+业务合作服务费+垫款利息+现场交付成本/空中交付成本+现场过户成本）。<br><span style="color:#64748b;font-size:11px;">示例值：198,350 元</span></td></tr>
                     <tr><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">售后台次</td><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;line-height:1.6;">统计周期内发生售后问题的车辆台次，<span style="color:#dc2626;font-weight:500;">不去重</span>（同一台车可多次售后）。<br><span style="color:#64748b;font-size:11px;">示例值：5 台</span></td></tr>
                     <tr style="background:#fafbfc;"><td style="padding:8px 12px;font-weight:600;">售后退车台次</td><td style="padding:8px 12px;line-height:1.6;">售后中最终退车处理的台次，<span style="color:#dc2626;font-weight:500;">不去重</span>（同一台车可多次售后退车）。<br><span style="color:#64748b;font-size:11px;">示例值：3 台</span></td></tr>
-                    <tr><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">管理门店</td><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;line-height:1.6;">当前账号关联的业务门店数量。<br>委拍业务：账号关联委拍业务门店数；<br>收购业务：账号关联收购门店数。<br><span style="color:#64748b;font-size:11px;">示例值：委拍 18 家 / 收购 12 家</span></td></tr>
+                    <tr><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">管理门店</td><td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;line-height:1.6;">当前账号关联的业务门店数量（门店状态=正常）。<br>委拍业务：账号关联委拍业务门店数；<br>收购业务：账号关联收购门店数。<br><span style="color:#64748b;font-size:11px;">示例值：委拍 18 家 / 收购 12 家</span></td></tr>
                 </tbody>
             </table>
         </div>
@@ -370,11 +373,11 @@
                 </div>
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:12px 16px;">
                     <div style="font-weight:700;color:#1e40af;margin-bottom:6px;">2. 门店角色挂靠</div>
-                    <div>每个门店会挂：<span style="font-weight:600;">总监/副总监</span>、<span style="font-weight:600;">经理/副经理</span>、<span style="font-weight:600;">业务员</span>。</div>
+                    <div>每个门店会挂：<span style="font-weight:600;">总监/副总监</span>、<span style="font-weight:600;">经理/副经理</span>、<span style="font-weight:600;">业务员</span>。<br><span style="font-weight:600;">绩效管理员</span>角色，全部数据可见，通常用于胡总、惠总、飞哥使用。<br>其他人，绩效表中能看到什么数据，对应数据看板中就看到名下对应的数据。</div>
                 </div>
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:12px 16px;">
                     <div style="font-weight:700;color:#1e40af;margin-bottom:6px;">3. 数据展示逻辑</div>
-                    <div>成交率数据，按账号挂钩的门店，展示对应的台次毛利等数据。<br><span style="color:#dc2626;font-weight:500;">如果门店分布在2个区域，则展示2个区域内关联的门店数据。</span><br>如果是业务员角色，他可以看到他名下的成交等数据。</div>
+                    <div>绩效表中能看到什么数据，对应数据看板中就看到名下对应的数据。<br><span style="color:#dc2626;font-weight:500;">如果门店分布在2个区域，则展示2个区域内关联的门店数据。</span></div>
                 </div>
             </div>
             <div style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:10px;border-left:3px solid #1e40af;padding-left:8px;">二、统计周期</div>
@@ -951,10 +954,13 @@ function renderReqNotes(){
     <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
         <div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:10px;">权限说明</div>
         <div style="display:flex;flex-direction:column;gap:8px;font-size:12.5px;color:#475569;line-height:1.7;">
-            <div>• 支持各角色按<b>门店</b>配置权限 <span style="color:#dc2626;font-weight:600;">（每个角色有对应数据查看权限和导出权限）</span></div>
-            <div>• <b>人资</b>需按汇和和非汇和进行分类（汇和垫款门店 + 门店自垫款的12家门店）</div>
-            <div>• <b>汇和财务</b>所看的内容同"汇和人资"</div>
-            <div>• <b>业务员、门店总监、城市经理、副部长、部长</b>都是按照门店和事业部来配置的</div>
+            <div>• <b>绩效管理员</b>：全部数据可见，通常用于 胡总、惠总、飞哥使用</div>
+            <div>• <b>汇和人资</b>：汇和垫款车辆 + 门店自垫款车辆</div>
+            <div>• <b>唯普人资</b>：看非汇和人资数据</div>
+            <div>• <b>汇和财务</b>：数据权限 = 汇和人资</div>
+            <div>• <b>唯普财务</b>：数据权限 = 全部数据</div>
+            <div>• <b>评估师</b>：看自己名下关联的门店车辆数据，如果有多个门店关联，展示多个门店数据</div>
+            <div>• <b>xx角色</b>：支持按门店、大小区域、事业部配置（具体角色定义由中控配置）</div>
         </div>
     </div>
     <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
