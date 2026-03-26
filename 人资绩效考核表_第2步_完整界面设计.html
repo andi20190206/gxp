@@ -308,7 +308,7 @@
                                 <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">—</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">数据查询成功</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">数据成本（维保/出险/电池等查询费用，查询成功后触发）</td></tr>
                                 <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T3</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">成交付款清分后</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">成交价、合同价、起拍价、交易总毛利、各方毛利（唯普/唯普云/汇和/机拍）、评估费、销售成本、收购车成本、业务合作服务费</td></tr>
                                 <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T4</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">交付型出库</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">现场交付成本150元、现场交付部门</td></tr>
-                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T5</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">过户资料回收</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">现场过户成本350元（过户费≠0时）、空中交付成本50元（车辆不在服务中心库/唯普库时）、过户部门、空中交付跟进人</td></tr>
+                                <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T5</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">过户资料回收</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">现场过户成本350元（过户费≠0时）、空中交付成本50元（车辆不在唯普库时）、过户部门、空中交付跟进人</td></tr>
                                 <tr><td style="padding:7px 12px;font-weight:600;color:#dc2626;">T6</td><td style="padding:7px 12px;color:#475569;">售后执行完成</td><td style="padding:7px 12px;color:#475569;">冲正行：仅冲回交易总毛利、各方毛利；所有成本项不做冲正。写入售后原因、责任方、是否豁免</td></tr>
                                 <tr><td style="padding:7px 12px;font-weight:600;color:#1e40af;">—</td><td style="padding:7px 12px;color:#475569;">垫款已全部回款</td><td style="padding:7px 12px;color:#475569;">再次写入垫款利息，利息金额看车辆是否已封存：如未封存，更新垫款利息数值；若已封存，则垫款利息 = 现有垫款利息 - 已封存的垫款利息</td></tr>
                             </tbody>
@@ -447,7 +447,7 @@ const fieldDefs=[
 ['区域经理','车辆对应城市经理'],
 ['副部长','大区负责人，BMS是否有此信息字段，若现状系统未维护则不提供'],
 ['事业部','同财务收益明细表中的"事业部"字段'],
-['入唯普库时间','T1 车辆首次入唯普库(服务中心库)时间'],
+['入唯普库时间','T1 车辆首次入唯普库时间'],
 ['入库地点','T1 入库的仓库名称(不需要分区,eg.白云服务中心1库)'],
 ['提车费','T1 入库 100 元 / 台，同 VIN 仅计一次'],
 ['提车人','收购车送车入库的送车人姓名；\\n提车助手小程序中将车辆送入唯普库的人'],
@@ -476,8 +476,8 @@ const fieldDefs=[
 ['交易总毛利','唯普 + 唯普云 + 汇和 + 机拍毛利合计'],
 ['现场交付成本','T4 交付型出库 150 元\\n交付型出库：包含3种情况①②③\\n①车辆在唯普库（不一定在库，车辆归于唯普库），且提车类型=已售交付\\n②车辆在唯普库，且提车类型=过户出库(临)且过户专员点击"过户不回库"\\n③车辆在唯普库，且提车类型=自过户提车\\n<span style="color:#dc2626;font-weight:600;">说明：还有1种情况，不能代表车辆交付给客户了，④车辆在唯普库，且出库类型=过户前临时放行（交付客户+交车给服务商办理年审、车辆修正）@红姐需知晓，所以这个交付型出库无法判定，看下人资的意见，是否改系统；未改系统就只能去除此逻辑</span>'],
 ['现场交付部门','执行现场交付的时候，车辆所在唯普库对应的服务中心\\n<span style="color:#dc2626;font-weight:600;">请注意这里不是过户任务单对应的跟进服务中心</span>'],
-['空中交付成本','50元；T5 过户资料回收完毕，车辆不在服务中心库时计入\\n空中交付：过户资料回收完毕 且 车辆不在服务中心库'],
-['空中交付部门','<span style="color:#dc2626">过户服务中心或中控\\n过户任务单中对应的服务中心；过户资料回收完毕时，车辆若在门店库，归属中控；排掉限定门店（小欣提供门店名单，门店列表若发生更新，历史数据不做改动）</span>'],
+['空中交付成本','50元；T5 过户资料回收完毕，车辆不在唯普库时计入\\n空中交付：过户资料回收完毕 且 车辆不在唯普库（库位定义：点击资料回收完毕的时候，车辆当前的库位是在门店库或唯普库）'],
+['空中交付部门','<span style="color:#dc2626">默认是中控，排除限定门店；限定门店的空中交付部门=过户任务单对应的服务中心（这部分门店是空中交付，但是交给服务中心来处理的）\\n（小欣提供门店名单，门店列表若发生更新，历史数据不做改动）</span>'],
 ['空中交付跟进人','点击资料回收完毕的操作人姓名'],
 ['现场过户成本','350元；T5过户资料回收完毕时，且过户费≠0时\\n现场过户：过户费≠0'],
 ['现场过户部门','<span style="color:#dc2626">执行过户的服务中心\\n过户任务单中对应的服务中心</span>'],
