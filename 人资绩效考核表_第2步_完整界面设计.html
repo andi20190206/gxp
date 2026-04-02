@@ -311,7 +311,7 @@
                                 <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T5</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">空中交付</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">现场过户成本、空中交付成本、过户部门、过户跟进人、空中交付跟进人</td></tr>
                                 <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#1e40af;">T5</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">现场过户</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">现场过户成本、过户部门、过户跟进人</td></tr>
                                 <tr><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#dc2626;">T6</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">售后执行(退车)</td><td style="padding:7px 12px;border-bottom:1px solid #f1f5f9;color:#475569;">冲正行：仅冲回交易总毛利、各方毛利；所有成本项不做冲正。写入售后原因、责任方、是否豁免</td></tr>
-                                <tr><td style="padding:7px 12px;font-weight:600;color:#dc2626;">T6</td><td style="padding:7px 12px;color:#475569;">售后执行(不退车)</td><td style="padding:7px 12px;color:#475569;">写入售后原因、责任方、售后金额</td></tr>
+                                <tr><td style="padding:7px 12px;font-weight:600;color:#dc2626;">T6</td><td style="padding:7px 12px;color:#475569;">售后执行(不退车)</td><td style="padding:7px 12px;color:#475569;">写入售后原因、责任方、售后金额<br><span style="font-size:11px;color:#94a3b8;">若交易总毛利未发生变化，则不需要更新车辆绩效数据</span> <a href="javascript:void(0)" onclick="document.getElementById('t6CaseModal').style.display='flex'" style="display:inline-block;padding:2px 8px;background:#2563eb;color:#fff;border-radius:4px;font-size:10px;text-decoration:none;cursor:pointer;vertical-align:middle;">实际案例</a></td></tr>
                                 <tr><td style="padding:7px 12px;font-weight:600;color:#1e40af;">—</td><td style="padding:7px 12px;color:#475569;">垫款回款</td><td style="padding:7px 12px;color:#475569;">再次写入垫款利息，利息金额看车辆是否已封存：如未封存，更新垫款利息数值；若已封存，则垫款利息 = 现有垫款利息 - 已封存的垫款利息</td></tr>
                             </tbody>
                         </table>
@@ -738,7 +738,7 @@ function openDetail(idx){
             <div class="tl-item"><div class="tl-dot ${r.dealPrice>0?'done':'pending'}"></div><div class="tl-card"><div class="tl-header"><span class="tl-title">T3 · 订单清分</span><span class="tl-time">${r.dealPrice>0?r.confirmDate:'未成交'}</span></div><div class="tl-details"><div class="tl-detail">成交价：<strong>${r.dealPrice?r.dealPrice.toLocaleString()+'元':'—'}</strong></div><div class="tl-detail">评估费：<strong>${r.evalFee?'+'+r.evalFee+'元':'—'}</strong></div></div></div></div>
             <div class="tl-item"><div class="tl-dot ${r.deliveryCost>0?'done':'pending'}"></div><div class="tl-card"><div class="tl-header"><span class="tl-title">T4 · 现场交付</span><span class="tl-time">${r.deliveryCost>0?r.confirmDate:'未完成'}</span></div><div class="tl-details"><div class="tl-detail">交付部门：<strong>${r.deliveryDept}</strong></div><div class="tl-detail">现场交付成本：<strong>${r.deliveryCost>0?'+'+r.deliveryCost+'元':'—'}</strong></div></div></div></div>
             <div class="tl-item"><div class="tl-dot ${r.transferCost>0||r.airDeliveryCost>0?'done':'pending'}"></div><div class="tl-card"><div class="tl-header"><span class="tl-title">T5 · 空中交付 / 现场过户</span><span class="tl-time">${r.transferCost>0||r.airDeliveryCost>0?r.confirmDate:'未完成'}</span></div><div class="tl-details"><div class="tl-detail">现场过户成本：<strong>${r.transferCost>0?'+'+r.transferCost+'元':'—'}</strong></div><div class="tl-detail">空中交付成本：<strong>${r.airDeliveryCost>0?'+'+r.airDeliveryCost+'元':'未触发'}</strong></div><div class="tl-detail">过户跟进人：<strong>${r.transferFollower||'—'}</strong></div><div class="tl-detail">空中交付跟进人：<strong>${r.airDeliveryFollower||'—'}</strong></div></div></div></div>
-            <div class="tl-item"><div class="tl-dot ${r.aftersaleRecord?'warn':'pending'}"></div><div class="tl-card" style="${r.aftersaleRecord?'border-color:#fca5a5;background:#fff5f5':''}"><div class="tl-header"><span class="tl-title" style="${r.aftersaleRecord?'color:#dc2626':''}">T6 · 售后执行</span><span class="tl-time">${r.aftersaleRecord?r.confirmDate:'未发生'}</span></div>${r.aftersaleRecord?`<div class="tl-details"><div class="tl-detail">是否退车：<strong>${r.aftersaleRecord.exempt!==undefined?(r.aftersale&&r.aftersale.includes('退车')?'退车':'不退车'):'—'}</strong></div><div class="tl-detail">售后类型：<strong>${r.aftersaleType||'—'}</strong></div><div class="tl-detail">责任方：<strong style="color:#dc2626">${r.aftersaleRecord.responsibility}</strong></div><div class="tl-detail">责任人：<strong>${r.responsiblePerson||'—'}</strong></div><div class="tl-detail" style="grid-column:span 2">情况说明：<strong>${r.situationDesc||'—'}</strong></div><div class="tl-detail">售后金额：<strong style="color:#dc2626">${r.aftersaleAmount?r.aftersaleAmount.toLocaleString()+'元':'—'}</strong></div><div class="tl-detail">豁免额：<strong>${r.aftersaleRecord.exempt?r.exemptionAmount+'元':'0元'}</strong></div><div class="tl-detail" style="grid-column:span 2">冲正项：<strong>交易总毛利、各方毛利（所有成本项不冲正）</strong></div></div><div style="font-size:11px;color:#94a3b8;margin-top:8px;padding-top:6px;border-top:1px dashed #e2e8f0;">售后交易总毛利未发生变化（售后执行前后交易总毛利不变），则不需要发生冲正行；需同步更新售后数据：更新"售后类型、售后金额、责任方、责任人"</div>`:'<div style="font-size:12px;color:#94a3b8;margin-top:4px">暂无售后记录</div>'}</div></div>
+            <div class="tl-item"><div class="tl-dot ${r.aftersaleRecord?'warn':'pending'}"></div><div class="tl-card" style="${r.aftersaleRecord?'border-color:#fca5a5;background:#fff5f5':''}"><div class="tl-header"><span class="tl-title" style="${r.aftersaleRecord?'color:#dc2626':''}">T6 · 售后执行</span><span class="tl-time">${r.aftersaleRecord?r.confirmDate:'未发生'}</span></div>${r.aftersaleRecord?`<div class="tl-details"><div class="tl-detail">是否退车：<strong>${r.aftersaleRecord.exempt!==undefined?(r.aftersale&&r.aftersale.includes('退车')?'退车':'不退车'):'—'}</strong></div><div class="tl-detail">售后类型：<strong>${r.aftersaleType||'—'}</strong></div><div class="tl-detail">责任方：<strong style="color:#dc2626">${r.aftersaleRecord.responsibility}</strong></div><div class="tl-detail">责任人：<strong>${r.responsiblePerson||'—'}</strong></div><div class="tl-detail" style="grid-column:span 2">情况说明：<strong>${r.situationDesc||'—'}</strong></div><div class="tl-detail">售后金额：<strong style="color:#dc2626">${r.aftersaleAmount?r.aftersaleAmount.toLocaleString()+'元':'—'}</strong></div><div class="tl-detail">豁免额：<strong>${r.aftersaleRecord.exempt?r.exemptionAmount+'元':'0元'}</strong></div><div class="tl-detail" style="grid-column:span 2">冲正项：<strong>交易总毛利、各方毛利（所有成本项不冲正）</strong></div></div><div style="font-size:11px;color:#94a3b8;margin-top:8px;padding-top:6px;border-top:1px dashed #e2e8f0;">售后交易总毛利未发生变化（售后执行前后交易总毛利不变），则计入该事件，无需进行售后相关内容写入。</div>`:'<div style="font-size:12px;color:#94a3b8;margin-top:4px">暂无售后记录</div>'}</div></div>
         </div></div>`;
     document.getElementById('detailModal').classList.add('open');
 }
@@ -852,7 +852,7 @@ function renderCases(){
             <span style="display:inline-block;margin-left:16px;">【原始行】T1→T4逐步累计的原始绩效毛利</span><br>
             <span style="display:inline-block;margin-left:16px;">【冲正行①】T6：原始交易总毛利按负数冲回（成本列全部为0）</span><br>
             <span style="display:inline-block;margin-left:16px;">【新毛利行②】T6：退车后实际毛利结果；更新对应车辆的售后金额、责任方、责任人、豁免额、责任额数据</span><br>
-            <b>2、</b>售后交易总毛利未发生变化（售后执行前后交易总毛利不变），则不需要发生冲正行；需同步更新售后数据：更新"售后类型、售后金额、责任方、责任人"<br>
+            <b>2、</b>售后交易总毛利未发生变化（售后执行前后交易总毛利不变），则本事件不做车辆数据更新<br>
             <b>3、</b>若车辆未发生清分，先售后：则仅存在一行数据（本月内，跨月的话存在多条数据）；根据实际情况写入数据
         </div>
         <div style="margin-top:8px;margin-bottom:6px;"><b>1.6 重拍成本计算原则</b></div>
@@ -1118,9 +1118,7 @@ function renderReqNotes(){
         <div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:10px;">待确认事项</div>
         <div style="display:flex;flex-direction:column;gap:8px;font-size:12.5px;color:#475569;line-height:1.7;">
             <div>1. 功能上线后，可能组织结构会发生变动：（大小区域变更等）绩效看板需按新的架构跑一遍数据</div>
-            <div>2. "业务合作费"可能存在变动；财务又提供了一份新的业务合作费。待人资确认细节</div>
-            <div>3. 功能上线后，重跑数据：功能上线当月的数据重跑。涉及：经管报表、绩效看板、财务收益表</div>
-            <div>4. 人资提及 除了交易总毛利，交易总毛利的构成项部分角色无法查阅，待人资明确</div>
+            <div>2. 功能上线后，重跑数据：功能上线当月的数据重跑。涉及：经管报表、绩效看板、财务收益表</div>
         </div>
     </div>
     <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
@@ -1133,6 +1131,7 @@ function renderReqNotes(){
             <div>• <b>唯普财务</b>：数据权限 = 全部数据</div>
             <div>• <b>评估师</b>：看自己名下关联的门店车辆数据，如果有多个门店关联，展示多个门店数据</div>
             <div>• <b>xx角色</b>：支持按门店、大小区域、事业部配置（具体角色定义由中控配置）</div>
+            <div style="margin-top:6px;padding-top:6px;border-top:1px dashed #bfdbfe;">• <b style="color:#dc2626;">毛利构成项权限</b>：除职能部门（绩效管理员、汇和人资、唯普人资、汇和财务、唯普财务）外，其他角色都只可查看交易总毛利，不可以查看"唯普毛利、汇和毛利、机拍毛利、唯普云毛利"</div>
         </div>
     </div>
     <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
@@ -1351,5 +1350,26 @@ renderGlossary();
 document.getElementById('detailModal').addEventListener('click',function(e){if(e.target===this)closeModal()});
 document.addEventListener('click',function(e){['regionSuggest','subRegionSuggest','storeSuggest'].forEach(id=>{const box=document.getElementById(id);if(box&&!box.contains(e.target)&&e.target.id!==id.replace('Suggest','Input'))box.style.display='none'})});
 </script>
+<!-- T6售后(不退车)实际案例弹框 -->
+<div id="t6CaseModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;align-items:center;justify-content:center;padding:24px">
+<div style="background:#fff;border-radius:12px;width:680px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);padding:0">
+<div style="padding:16px 20px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between"><span style="font-size:15px;font-weight:700;">T6 售后执行(不退车) — 实际案例</span><button onclick="document.getElementById('t6CaseModal').style.display='none'" style="background:none;border:none;font-size:18px;cursor:pointer;color:#94a3b8;padding:4px">✕</button></div>
+<div style="padding:20px;font-size:12.5px;line-height:1.8;color:#475569;">
+<div style="margin-bottom:16px;"><b>基本信息：</b>车牌：粤A82K0X；成交日期：2026-03-22；门店：广东物通凯骏汽车有限公司；业务员：广东物通凯骏汽车有限公司（门店）；区域经理：杨汉颖；买受人：倪胜</div>
+<div style="margin-bottom:16px;"><b>情况说明：</b>买受人提出该车出险记录更换较多配件但现车并无此情况，而且该车是试驾车，怀疑有骗保的行为，提出优惠3000-4000元或办理无偿退车的诉求。经与门店沟通同意成交价优惠3000元，撮合成交。</div>
+<div style="margin-bottom:16px;"><b>处理方案：</b>现申请门店优惠买家3000元，请领导审批</div>
+<div style="margin-bottom:8px;color:#94a3b8;">☑ 知会区域经理</div>
+<table style="border-collapse:collapse;width:100%;font-size:12px;margin-bottom:12px;">
+<thead><tr style="background:#f8fafc;"><th style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center;font-weight:600;"></th><th style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center;font-weight:600;">原应收/应付(元)</th><th style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center;font-weight:600;color:#dc2626;">售后金额(元)</th><th style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center;font-weight:600;">新应收/应付(元)</th></tr></thead>
+<tbody>
+<tr><td style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center;">买家</td><td style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center;">-181,900</td><td style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center;color:#dc2626;font-weight:600;">3,000</td><td style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center;">-178,900</td></tr>
+<tr><td style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center;">门店</td><td style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center;">179,200</td><td style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center;color:#dc2626;font-weight:600;">-3,000</td><td style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center;">176,200</td></tr>
+<tr><td style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center;">汇和</td><td style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center;">0</td><td style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center;">0</td><td style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center;">0</td></tr>
+<tr><td style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center;">唯普</td><td style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center;">2,700</td><td style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center;">0</td><td style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center;">2,700</td></tr>
+</tbody></table>
+<div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:6px;padding:10px 14px;font-size:12px;color:#92400e;">
+<b>说明：</b>唯普售后金额=0，交易总毛利未发生变化（售后执行前后交易总毛利不变），则不需要更新车辆绩效数据。
+</div>
+</div></div></div>
 </body>
 </html>
